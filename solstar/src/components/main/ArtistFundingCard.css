@@ -1,0 +1,25 @@
+.artist-funding-card {
+  width: 120px;
+}
+
+.artist-funding-img {
+  width: 120px;
+  height: 120px;
+  border: 0.5px solid #6c707230;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.artist-funding-artist {
+  font-size: 10px;
+  color: #86868770;
+  font-weight: 300;
+}
+
+.artist-funding-title {
+  width: 120px;
+  word-wrap: break-word;
+  white-space: normal;
+  font-size: 14px;
+  font-weight: 500;
+}
