@@ -9,6 +9,7 @@ import RecentPopularFundingCard from './RecentPopularFundingCard';
 
 function MainContainer() {
   // TODO : 선호 아티스트 펀딩 임시 데이터
+  // 0: 펀딩 진행 중, 1: 펀딩 성공, -1: 펀딩 실패
   const zzimArtistFundingTempData = [
     {
       fundingId: 1,
@@ -16,6 +17,8 @@ function MainContainer() {
       artist: '장원영',
       title: '원영이 생일 기념 지하철 광고 부착',
       achievement: 347,
+      isCertification: true,
+      status: 0,
     },
     {
       fundingId: 2,
@@ -23,6 +26,8 @@ function MainContainer() {
       artist: 'CIX',
       title: 'CIX 데뷔 5주년 기념',
       achievement: 110,
+      isCertification: false,
+      status: 1,
     },
     {
       fundingId: 3,
@@ -30,6 +35,8 @@ function MainContainer() {
       artist: '공유',
       title: '우리 배우님 커피차 같이 쏠 사람 !!',
       achievement: 80,
+      isCertification: false,
+      status: -1,
     },
   ];
 
@@ -41,6 +48,8 @@ function MainContainer() {
       artist: '변우석',
       title: '선업튀 촬영장 조공',
       achievement: 347,
+      isCertification: true,
+      status: 0,
     },
     {
       fundingId: 2,
@@ -48,6 +57,8 @@ function MainContainer() {
       artist: 'CIX',
       title: 'CIX 데뷔 5주년 기념',
       achievement: 110,
+      isCertification: false,
+      status: 0,
     },
     {
       fundingId: 3,
@@ -55,6 +66,8 @@ function MainContainer() {
       artist: '공유',
       title: '우리 배우님 커피차 같이 쏠 사람 !!',
       achievement: 80,
+      isCertification: true,
+      status: 0,
     },
   ];
 
