@@ -1,0 +1,12 @@
+/** css 파일 가져오기 */
+@import './fonts/css/noto-sans-korean.css';
+
+body,
+* {
+  font-family: 'Noto Sans Korean', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+}
+
+* {
+  margin: 0;
+}
