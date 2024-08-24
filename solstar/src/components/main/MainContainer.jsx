@@ -6,8 +6,11 @@ import Go from '../../assets/main/Go.png';
 
 import ArtistFundingCard from './ArtistFundingCard';
 import RecentPopularFundingCard from './RecentPopularFundingCard';
+import { useNavigate } from 'react-router-dom';
 
 function MainContainer() {
+  const navigate = useNavigate();
+
   // TODO : 선호 아티스트 펀딩 임시 데이터
   // 0: 펀딩 진행 중, 1: 펀딩 성공, -1: 펀딩 실패
   const zzimArtistFundingTempData = [
@@ -58,7 +61,7 @@ function MainContainer() {
       title: 'CIX 데뷔 5주년 기념',
       achievement: 110,
       isCertification: false,
-      status: 0,
+      status: 1,
     },
     {
       fundingId: 3,
@@ -69,13 +72,25 @@ function MainContainer() {
       isCertification: true,
       status: 0,
     },
+    {
+      fundingId: 4,
+      imageSrc: '../../assets/character/Sol.png',
+      artist: 'CIX',
+      title: 'CIX 데뷔 5주년 기념',
+      achievement: 110,
+      isCertification: false,
+      status: 2,
+    },
+    {
+      fundingId: 5,
+      imageSrc: '../../assets/character/Sol.png',
+      artist: '공유',
+      title: '우리 배우님 커피차 같이 쏠 사람 !! dafsdf',
+      achievement: 80,
+      isCertification: true,
+      status: 0,
+    },
   ];
-
-  // 선호 아티스트 펀딩 카드 핸들링 함수
-  const handleArtistFundingCard = () => {};
-
-  // 최근 인기 펀딩 카드 핸들링 함수
-  const handleRecentPopularFundingCard = () => {};
 
   return (
     <>
@@ -112,7 +127,9 @@ function MainContainer() {
               <ArtistFundingCard
                 key={funding.fundingId}
                 funding={funding}
-                onClick={handleArtistFundingCard}
+                onClick={() => {
+                  navigate(`/funding/${funding.fundingId}`);
+                }}
               />
             ))}
           </div>
@@ -128,11 +145,14 @@ function MainContainer() {
             </div>
           </div>
           <div className="main-popular-funding-list">
-            {recentPopularFundingTempData.map((funding) => (
+            {recentPopularFundingTempData.map((funding, index) => (
               <RecentPopularFundingCard
                 key={funding.fundingId}
+                index={index}
                 funding={funding}
-                onClick={handleRecentPopularFundingCard}
+                onClick={() => {
+                  navigate(`/funding/${funding.fundingId}`);
+                }}
               />
             ))}
           </div>

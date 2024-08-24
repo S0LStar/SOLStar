@@ -1,40 +1,43 @@
-.artist-funding-card {
-  width: 120px;
+.popular-funding-card {
+  display: flex;
+  margin-bottom: 10px;
 }
 
-.artist-funding-img-container {
-  width: 120px;
-  height: 120px;
+.popular-funding-card-index {
+  color: #0046ff;
+  font-weight: 500;
+  margin-right: 15px;
+}
+
+.popular-funding-img-container {
   position: relative;
-  margin-bottom: 5px;
+  width: 84px;
+  height: 84px;
+  margin-right: 15px;
 }
 
-.artist-funding-img {
+.popular-funding-img {
   width: 100%;
   height: 100%;
   border: 0.5px solid #6c707230;
-  border-radius: 14px;
-  object-fit: cover;
+  border-radius: 12px;
 }
 
-.certification-mark {
+.popular-funding-img-container .certification-mark {
   position: absolute;
-  left: 10px;
-  bottom: 10px;
-  z-index: 10px;
-  width: 24px;
-  height: 24px;
+  left: 7px;
+  bottom: 7px;
 }
 
-.artist-funding-artist {
+.popular-funding-artist {
   font-size: 10px;
-  color: #86868770;
+  color: #86868790;
   font-weight: 300;
   margin-bottom: 3px;
 }
 
-.artist-funding-title {
-  width: 120px;
+.popular-funding-title {
+  width: 200px;
   word-wrap: break-word;
   white-space: normal;
   font-size: 14px;
@@ -42,7 +45,7 @@
   margin-bottom: 3px;
 }
 
-.artist-funding-achievement.progress {
+.popular-funding-achievement.progress {
   display: flex;
   align-items: center;
   font-size: 12px;
@@ -50,8 +53,8 @@
   font-weight: 500;
 }
 
-.artist-funding-achievement.success,
-.artist-funding-achievement.fail {
+.popular-funding-achievement.success,
+.popular-funding-achievement.fail {
   display: flex;
   align-items: center;
   font-size: 12px;
