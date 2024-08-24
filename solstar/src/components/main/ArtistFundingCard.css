@@ -1,0 +1,78 @@
+.artist-funding-card {
+  width: 120px;
+}
+
+.artist-funding-img-container {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.artist-funding-img {
+  width: 100%;
+  height: 100%;
+  border: 0.5px solid #6c707230;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.certification-mark {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 10px;
+  width: 24px;
+  height: 24px;
+}
+
+.artist-funding-artist {
+  font-size: 10px;
+  color: #86868770;
+  font-weight: 300;
+  margin-bottom: 3px;
+}
+
+.artist-funding-title {
+  width: 120px;
+  word-wrap: break-word;
+  white-space: normal;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 3px;
+}
+
+.artist-funding-achievement.progress {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #0046ff;
+  font-weight: 500;
+}
+
+.artist-funding-achievement.success,
+.artist-funding-achievement.fail {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #303030;
+  font-weight: 500;
+}
+
+.achievement-badge {
+  margin-left: 5px;
+}
+
+.progress .achievement-badge {
+  background-color: #0046ff20;
+  padding: 3px;
+  border-radius: 5px;
+}
+
+.success .achievement-badge,
+.fail .achievement-badge {
+  background-color: #30303020;
+  color: #303030;
+  padding: 3px;
+  border-radius: 5px;
+}
