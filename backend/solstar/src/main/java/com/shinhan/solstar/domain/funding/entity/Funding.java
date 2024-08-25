@@ -66,4 +66,24 @@ public class Funding extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private FundingStatus status;
 
+    public static Funding createFunding(String title, String fundingImage, String content, String contentImage,
+                                        int goalAmount, LocalDateTime deadlineDate, int totalAmount, int totalJoin,
+                                        Artist artist, User host, FundingType type, FundingStatus status) {
+        return Funding.builder()
+                .title(title)
+                .fundingImage(fundingImage)
+                .content(content)
+                .contentImage(contentImage)
+                .goalAmount(goalAmount)
+                .deadlineDate(deadlineDate)
+                .totalAmount(totalAmount)
+                .totalJoin(totalJoin)
+                .account(null)
+                .artist(artist)
+                .host(host)
+                .type(type)
+                .status(status)
+                .build();
+    }
+
 }
