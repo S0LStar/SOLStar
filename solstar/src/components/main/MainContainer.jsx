@@ -139,7 +139,12 @@ function MainContainer() {
             <div className="recent-popular-funding-description">
               최근 인기 펀딩
             </div>
-            <div className="main-view-all">
+            <div
+              className="main-view-all"
+              onClick={() => {
+                navigate('/popular');
+              }}
+            >
               전체보기
               <img src={Go} alt="" className="main-view-all-icon" />
             </div>
