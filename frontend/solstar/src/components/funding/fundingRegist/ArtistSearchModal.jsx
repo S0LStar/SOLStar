@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import './ArtistSearchModal.css';
 import SearchIcon from '../../../assets/main/Search.png';
@@ -8,6 +8,22 @@ import DefaultArtistProfile from '../../../assets/common/DefaultArtist.png';
 function ArtistSearchModal({ isOpen, onClose, onSelectArtist }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredArtists, setFilteredArtists] = useState('');
+
+  // 모달이 열릴 때, 외부 화면 스크롤 비활성화
+  useEffect(() => {
+    if (isOpen) {
+      // 모달이 열리면 body의 스크롤을 비활성화
+      document.body.style.overflow = 'hidden';
+    } else {
+      // 모달이 닫히면 body의 스크롤을 다시 활성화
+      document.body.style.overflow = 'auto';
+    }
+
+    // 모달이 unmount 시에 스크롤 초기화
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
 
   // TODO: tempData
   const [artists] = useState([
@@ -69,6 +85,23 @@ function ArtistSearchModal({ isOpen, onClose, onSelectArtist }) {
           />
         </header>
         <ul className="artist-search-modal-list">
+          {searchQuery === '' &&
+            artists.map((artist) => (
+              <li
+                key={artist.artistId}
+                onClick={() => {
+                  onSelectArtist(artist);
+                  onClose(); // 선택 후 모달 닫기
+                }}
+              >
+                <img
+                  src={artist.profileImage || DefaultArtistProfile}
+                  alt=""
+                  className="search-modal-default-artist-profile"
+                />
+                <div>{artist.name}</div>
+              </li>
+            ))}
           {filteredArtists &&
             filteredArtists.map((artist) => (
               <li
