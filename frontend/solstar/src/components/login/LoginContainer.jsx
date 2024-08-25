@@ -79,8 +79,13 @@ function LoginContainer() {
           </WideButton>
         </form>
 
-        <div className="login-signup-link" onClick={() => navigate('/signup')}>
-          회원가입
+        <div className="login-signup-link-container">
+          <span
+            className="login-signup-link"
+            onClick={() => navigate('/signup')}
+          >
+            회원가입
+          </span>
         </div>
       </div>
     </>
