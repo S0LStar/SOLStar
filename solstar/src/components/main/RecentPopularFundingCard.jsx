@@ -10,29 +10,36 @@ function RecentPopularFundingCard({ funding, onClick, index }) {
       <div className="popular-funding-card-index">{index + 1}</div>
       <div className="popular-funding-img-container">
         <img src={temp} alt="img" className="popular-funding-img" />
-        {funding.isCertification && (
+        {funding.type === 'VERIFIED' && (
           <img src={Certification} className="certification-mark"></img>
         )}
       </div>
       <div className="popular-funding-content">
-        <div className="popular-funding-artist">{funding.artist}</div>
+        <header className="popular-funding-content-header">
+          <div className="popular-funding-artist">{funding.artistName}</div>
+        </header>
         <div className="popular-funding-title">{funding.title}</div>
-        {funding.status === 0 ? (
-          <div className="popular-funding-achievement progress">
-            {funding.achievement}%
-            <div className="achievement-badge">진행 중</div>
+        <div
+          className={`popular-funding-achievement-container 
+            ${
+              funding.status === 'PROCESSING'
+                ? 'progress'
+                : funding.status === 'SUCCESS' || funding.status === 'CLOSED'
+                  ? 'success'
+                  : 'fail'
+            }`}
+          style={{ '--achievement-percentage': funding.successRate }}
+        >
+          <div className="popular-funding-achievement">
+            <div className="popular-funding-achievement-percent">
+              {funding.successRate}%
+            </div>
+            <div className="popular-funding-amount">
+              {funding.totalAmount.toLocaleString()}원
+            </div>
           </div>
-        ) : funding.status === 1 ? (
-          <div className="popular-funding-achievement success">
-            {funding.achievement}%
-            <div className="achievement-badge">펀딩 성공</div>
-          </div>
-        ) : (
-          <div className="popular-funding-achievement fail">
-            {funding.achievement}%
-            <div className="achievement-badge">펀딩 무산</div>
-          </div>
-        )}
+          <div className="popular-funding-achievement-bar"></div>
+        </div>
       </div>
     </div>
   );
