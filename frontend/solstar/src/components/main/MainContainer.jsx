@@ -112,7 +112,14 @@ function MainContainer() {
             당신의 스타를 위한 SOL Star
           </div>
           <div className="main-funding-regist-under">
-            <button className="main-funding-regist-button">펀딩 만들기</button>
+            <button
+              className="main-funding-regist-button"
+              onClick={() => {
+                navigate('/funding/regist');
+              }}
+            >
+              펀딩 만들기
+            </button>
             <img src={Shoo} alt="" className="main-sol-image" />
           </div>
         </div>
