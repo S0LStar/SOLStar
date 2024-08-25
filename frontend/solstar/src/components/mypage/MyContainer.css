@@ -35,25 +35,25 @@
   margin-left: 10px;
 }
 
-.my-edit-button {
+.my-container .my-edit-button {
   display: flex;
   justify-content: center;
   gap: 8px;
   padding: 16px;
 }
 
-.wide-button {
-  min-width: 100px !important;
-  width: 40% !important;
-  height: 30px !important;
-  border-radius: 15px !important;
+.my-container .wide-button {
+  min-width: 100px;
+  width: 40%;
+  height: 30px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px !important;
+  font-size: 14px;
 }
 
-.wide-button.inactive {
+.my-container .wide-button.inactive {
   color: #303030;
 }
 
