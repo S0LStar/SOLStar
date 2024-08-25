@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import GoBack from '../../../assets/common/GoBack.png';
 import './PopularFundingContainer.css';
+import BackButton from '../../common/BackButton';
 import RecentPopularFundingCard from '../RecentPopularFundingCard';
 
 // 최근 인기 펀딩 전체보기 페이지
@@ -60,7 +60,7 @@ function PopularFundingContainer() {
       totalAmount: 1970000,
     },
     {
-      fundingId: 1,
+      fundingId: 6,
       fundingImage: '../../assets/character/Sol.png',
       artistName: '변우석',
       title: '선업튀 촬영장 조공',
@@ -70,7 +70,7 @@ function PopularFundingContainer() {
       totalAmount: 28600000,
     },
     {
-      fundingId: 2,
+      fundingId: 7,
       fundingImage: '../../assets/character/Sol.png',
       artistName: 'CIX',
       title: 'CIX 데뷔 5주년 기념',
@@ -80,7 +80,7 @@ function PopularFundingContainer() {
       totalAmount: 18600000,
     },
     {
-      fundingId: 3,
+      fundingId: 8,
       fundingImage: '../../assets/character/Sol.png',
       artistName: '공유',
       title: '우리 배우님 커피차 같이 쏠 사람 !!',
@@ -90,7 +90,7 @@ function PopularFundingContainer() {
       totalAmount: 1200000,
     },
     {
-      fundingId: 4,
+      fundingId: 9,
       fundingImage: '../../assets/character/Sol.png',
       artistName: 'CIX',
       title: 'CIX 데뷔 5주년 기념',
@@ -100,7 +100,7 @@ function PopularFundingContainer() {
       totalAmount: 1249800,
     },
     {
-      fundingId: 5,
+      fundingId: 12,
       fundingImage: '../../assets/character/Sol.png',
       artistName: '공유',
       title: '우리 배우님 커피차 같이 쏠 사람 !! dafsdf',
@@ -114,7 +114,7 @@ function PopularFundingContainer() {
   return (
     <div className="popular-funding-container">
       <header className="popular-funding-header">
-        <img src={GoBack} alt="" className="go-back" />
+        <BackButton />
         <div className="popular-funding-header-description">최근 인기 펀딩</div>
       </header>
       <div className="popular-funding-list">

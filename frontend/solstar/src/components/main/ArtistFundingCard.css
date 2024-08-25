@@ -52,9 +52,9 @@
 
 .advertise-badge {
   margin-left: auto;
-  font-size: 12px;
-  padding: 2px 3px;
-  background-color: #30303030;
+  font-size: 11px;
+  padding: 1px;
+  background-color: #30303020;
   border-radius: 5px;
   width: 40px;
   text-align: center;

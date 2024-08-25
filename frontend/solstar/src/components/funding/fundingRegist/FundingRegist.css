@@ -1,0 +1,16 @@
+.funding-regist-container {
+  padding: 16px;
+  margin-bottom: 80px;
+}
+
+.funding-regist-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.funding-regist-header-description {
+  margin: 0 auto;
+}

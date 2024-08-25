@@ -3,6 +3,12 @@ import { Route, Routes } from 'react-router-dom';
 // Main
 import MainPage from '../pages/MainPage';
 import MainContainer from '../components/main/MainContainer';
+
+// Funding
+import PopularFundingContainer from '../components/main/popular/PopularFundingContainer';
+import FundingPage from '../pages/FundingPage';
+import FundingRegist from '../components/funding/fundingRegist/FundingRegist';
+
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
 import ZzimPage from '../pages/ZzimPage';
@@ -12,10 +18,6 @@ import MyPageContainer from '../components/mypage/MyContainer';
 import EditProfileContainer from '../components/mypage/EditProfileContainer';
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer';
-
-import PopularFundingContainer from '../components/main/popular/PopularFundingContainer';
-// Funding
-import FundingPage from '../pages/FundingPage';
 
 function AppRoutes() {
   return (
@@ -27,7 +29,9 @@ function AppRoutes() {
 
       <Route path="/funding">
         <Route path=":id" element={<FundingPage />} />
+        <Route path="regist" element={<FundingRegist />}></Route>
       </Route>
+
       <Route path="/wallet" element={<WalletPage />}>
         <Route index element={<WalletContainer />}></Route>
       </Route>
