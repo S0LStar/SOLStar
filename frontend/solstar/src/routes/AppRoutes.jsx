@@ -15,6 +15,7 @@ import ZzimPage from '../pages/ZzimPage';
 import ZzimContainer from '../components/zzim/ZzimContainer';
 import MyPage from '../pages/MyPage';
 import MyPageContainer from '../components/mypage/MyContainer';
+import EditProfileContainer from '../components/mypage/EditProfileContainer';
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer';
 
@@ -39,6 +40,7 @@ function AppRoutes() {
       </Route>
       <Route path="/my" element={<MyPage />}>
         <Route index element={<MyPageContainer />}></Route>
+        <Route path="editprofile" element={<EditProfileContainer />} />
       </Route>
       <Route path="/login" element={<LoginPage />}>
         <Route index element={<LoginContainer />}></Route>

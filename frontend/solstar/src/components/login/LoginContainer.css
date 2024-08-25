@@ -7,7 +7,7 @@
 .login-logo {
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center; /* 수직 중앙 정렬 */
   align-items: center;
   padding: 50px;
   margin-bottom: 20%;
