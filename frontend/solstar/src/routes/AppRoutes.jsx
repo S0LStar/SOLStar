@@ -18,6 +18,8 @@ import MyPageContainer from '../components/mypage/MyContainer';
 import EditProfileContainer from '../components/mypage/EditProfileContainer';
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer';
+import SignUpPage from '../pages/SignUpPage';
+import SignUpContainer from '../components/signup/SignUpContainer';
 
 function AppRoutes() {
   return (
@@ -44,6 +46,9 @@ function AppRoutes() {
       </Route>
       <Route path="/login" element={<LoginPage />}>
         <Route index element={<LoginContainer />}></Route>
+      </Route>
+      <Route path="/signup" element={<SignUpPage />}>
+        <Route index element={<SignUpContainer />}></Route>
       </Route>
     </Routes>
   );
