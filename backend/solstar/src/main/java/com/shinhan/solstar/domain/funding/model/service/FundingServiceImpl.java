@@ -70,6 +70,14 @@ public class FundingServiceImpl implements FundingService {
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
 
+        // 펀딩 성공 시 상태 변경 및 펀딩 계좌 생성
+        // 필요에 따라 기능 분리 (펀딩 참여 시 수정되도록  구현)
+        if (funding.getGoalAmount() <= funding.getTotalAmount()) {
+            funding.setStatus(FundingStatus.SUCCESS);
+
+            fundingRepository.save(funding);
+        }
+
         return FundingDetailResponseDto.createResponseDto(funding);
     }
 

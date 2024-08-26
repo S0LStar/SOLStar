@@ -152,10 +152,6 @@ public class FundingController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 펀딩 정산 조회
-
-    // 펀딩 정산 작성
-
     // 펀딩 정산 - 결제내역 불러오기
 
     // 펀딩 참여하기

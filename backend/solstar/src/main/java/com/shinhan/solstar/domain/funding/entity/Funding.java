@@ -5,10 +5,7 @@ import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.shinhan.solstar.domain.user.entity.User;
 import com.shinhan.solstar.global.baseTimeEntity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
@@ -61,6 +58,7 @@ public class Funding extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private FundingType type;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private FundingStatus status;
 
