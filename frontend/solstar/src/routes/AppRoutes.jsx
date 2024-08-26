@@ -18,6 +18,7 @@ import MyPageContainer from '../components/mypage/MyContainer';
 import EditProfileContainer from '../components/mypage/EditProfileContainer';
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer';
+import FundingRegistContent from '../components/funding/fundingRegist/FundingRegistContent';
 
 function AppRoutes() {
   return (
@@ -30,6 +31,7 @@ function AppRoutes() {
       <Route path="/funding">
         <Route path=":id" element={<FundingPage />} />
         <Route path="regist" element={<FundingRegist />}></Route>
+        {/* <Route path="regist" element={<FundingRegistContent />}></Route> */}
       </Route>
 
       <Route path="/wallet" element={<WalletPage />}>

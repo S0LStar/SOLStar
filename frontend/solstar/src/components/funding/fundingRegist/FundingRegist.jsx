@@ -5,7 +5,8 @@ import FundingRegistInfo from './FundingRegistInfo';
 import FundingRegistContent from './FundingRegistContent';
 
 function FundingRegistContainer() {
-  const [step, setStep] = useState(1); // 펀딩 등록 단계
+  // TODO: 변경
+  const [step, setStep] = useState(2); // 펀딩 등록 단계
   const [funding, setFunding] = useState({
     // 펀딩 정보를 관리할 state
     type: 'COMMON',
