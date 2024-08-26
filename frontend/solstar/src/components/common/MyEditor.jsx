@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
-import 'react-quill/dist/quill.snow.css';
+import 'react-quill-new/dist/quill.snow.css';
 import './MyEditor.css';
 
 function MyEditor() {
@@ -41,7 +41,6 @@ function MyEditor() {
         value={editorValue}
         onChange={handleChange}
         theme="snow"
-        placeholder="내용을 입력하세요..."
         modules={modules}
         formats={[
           'header',
@@ -57,6 +56,7 @@ function MyEditor() {
         hooks={{
           addImageBlobHook: handleImageUpload,
         }}
+        style={{ height: '350px' }}
       />
     </div>
   );
