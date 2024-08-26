@@ -42,9 +42,13 @@ public class Agency implements UserDetails {
     @Column(name = "is_delete", nullable = false)
     private boolean isDelete;
 
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_AGENCY"));
+        return List.of(new SimpleGrantedAuthority("AGENCY"));
     }
 
     @Override

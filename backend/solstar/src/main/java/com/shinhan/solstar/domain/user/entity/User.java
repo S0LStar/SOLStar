@@ -65,10 +65,14 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "refresh_token", nullable = true)
     private String refreshToken;
 
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("USER"));
     }
 
     @Override

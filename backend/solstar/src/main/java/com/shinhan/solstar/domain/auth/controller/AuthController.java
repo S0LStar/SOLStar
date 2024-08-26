@@ -1,6 +1,8 @@
 package com.shinhan.solstar.domain.auth.controller;
 
+import com.shinhan.solstar.domain.auth.dto.request.LoginRequest;
 import com.shinhan.solstar.domain.auth.dto.request.SignupRequest;
+import com.shinhan.solstar.domain.auth.dto.response.LoginResponse;
 import com.shinhan.solstar.domain.auth.model.service.AuthService;
 import com.shinhan.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +31,19 @@ public class AuthController {
                 .status(HttpStatus.CREATED.value())
                 .message("회원가입 성공")
                 .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "로그인")
+    @PostMapping("login")
+    public ResponseEntity<ResponseDto<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
+        LoginResponse result = authService.login(loginRequest);
+        ResponseDto<LoginResponse> responseDto = ResponseDto.<LoginResponse>builder()
+                .status(HttpStatus.OK.value())
+                .message("로그인 성공")
+                .data(result)
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
