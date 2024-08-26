@@ -1,5 +1,8 @@
 package com.shinhan.solstar.domain.funding.controller;
 
+import com.shinhan.solstar.domain.board.dto.request.BoardCreateRequestDto;
+import com.shinhan.solstar.domain.board.entity.Board;
+import com.shinhan.solstar.domain.board.model.service.BoardService;
 import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.response.FundingContentResponseDto;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class FundingController {
 
     private final FundingService fundingService;
+    private final BoardService boardService;
 
     // 펀딩 생성
     @PostMapping
@@ -90,6 +94,18 @@ public class FundingController {
     }
 
     // 펀딩 공지 작성하기
+    @PostMapping("/notice/{fundingId}")
+    public ResponseEntity<?> createBoard(@PathVariable("fundingId") int fundingId, @RequestBody BoardCreateRequestDto boardDto) {
+        boardService.createBoard(fundingId, boardDto);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("공지 생성 완료")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
 
     // 펀딩 공지사항 조회
 

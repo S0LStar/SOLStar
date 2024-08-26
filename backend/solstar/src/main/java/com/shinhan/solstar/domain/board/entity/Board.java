@@ -30,13 +30,19 @@ public class Board extends BaseTimeEntity {
     @Column(name = "content", nullable = false, length = 1500)
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    private BoardType type;
-
-    @Column(name = "content_image", nullable = true, length = 255)
-    private String contentImage;
+//    @Column(name = "content_image", nullable = true, length = 255)
+//    private String contentImage;
 
     @Column(name = "is_delete", nullable = true)
     private Boolean isDelete;
+
+    public static Board createBoard(Funding funding, String title, String content) {
+        return Board.builder()
+                .funding(funding)
+                .title(title)
+                .content(content)
+                .isDelete(false)
+                .build();
+    }
 
 }
