@@ -24,7 +24,7 @@ public class Agency {
     @Column(name = "email", nullable = false, unique = true, length = 45)
     private String email;
 
-    @Column(name = "passowrd", nullable = false, length = 255)
+    @Column(name = "password", nullable = false, length = 255)
     private String passowrd;
 
     @Column(name = "phone", nullable = false, length = 45)

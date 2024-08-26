@@ -1,11 +1,11 @@
-package com.shinhan.solstar.domain.funding.dto;
+package com.shinhan.solstar.domain.funding.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -20,7 +20,7 @@ public class FundingCreateRequestDto {
     @NotNull
     private String title;
 
-    private LocalDateTime deadlineDate;
+    private LocalDate deadlineDate;
 
     private int goalAmount;
 

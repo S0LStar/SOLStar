@@ -1,6 +1,7 @@
 package com.shinhan.solstar.domain.funding.entity;
 
 import com.shinhan.solstar.domain.artist.entity.Artist;
+import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.shinhan.solstar.domain.user.entity.User;
 import com.shinhan.solstar.global.baseTimeEntity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -10,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -37,7 +38,7 @@ public class Funding extends BaseTimeEntity {
 
     private int goalAmount;
 
-    private LocalDateTime deadlineDate;
+    private LocalDate deadlineDate;
 
     @Column(nullable = false)
     private int totalAmount;
@@ -67,7 +68,7 @@ public class Funding extends BaseTimeEntity {
     private FundingStatus status;
 
     public static Funding createFunding(String title, String fundingImage, String content, String contentImage,
-                                        int goalAmount, LocalDateTime deadlineDate, int totalAmount, int totalJoin,
+                                        int goalAmount, LocalDate deadlineDate, int totalAmount, int totalJoin,
                                         Artist artist, User host, FundingType type, FundingStatus status) {
         return Funding.builder()
                 .title(title)
@@ -84,6 +85,24 @@ public class Funding extends BaseTimeEntity {
                 .type(type)
                 .status(status)
                 .build();
+    }
+
+    public void updateFundingDetails(FundingUpdateRequestDto fundingDto) {
+        if (fundingDto.getTitle() != null) {
+            this.title = fundingDto.getTitle();
+        }
+
+        if (fundingDto.getFundingImage() != null) {
+            this.fundingImage = fundingDto.getFundingImage();
+        }
+
+        if (fundingDto.getContent() != null) {
+            this.content = fundingDto.getContent();
+        }
+
+        if (fundingDto.getContentImage() != null) {
+            this.contentImage = fundingDto.getContentImage();
+        }
     }
 
 }

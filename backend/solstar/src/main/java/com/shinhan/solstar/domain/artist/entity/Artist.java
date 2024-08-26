@@ -29,7 +29,7 @@ public class Artist {
     @Column(name = "name", nullable = false, length = 45)
     private String name;
 
-    @Column(name = "group", nullable = true, length = 45)
+    @Column(name = "group_name", nullable = true, length = 45)
     private String group;
 
     @Column(name = "profile_image", nullable = true, length = 255)

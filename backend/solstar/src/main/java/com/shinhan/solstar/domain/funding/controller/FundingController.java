@@ -1,15 +1,13 @@
 package com.shinhan.solstar.domain.funding.controller;
 
-import com.shinhan.solstar.domain.funding.dto.FundingCreateRequestDto;
+import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
+import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.shinhan.solstar.domain.funding.model.service.FundingService;
 import com.shinhan.solstar.global.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/funding")
@@ -21,6 +19,7 @@ public class FundingController {
     // 펀딩 생성
     @PostMapping
     public ResponseEntity<?> createFunding(@RequestBody FundingCreateRequestDto fundingDto) {
+        System.out.println("컨트롤러 들어옴");
         fundingService.createFunding(fundingDto);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
@@ -33,6 +32,18 @@ public class FundingController {
     }
 
     // 펀딩 수정
+    @PatchMapping("/{fundingId}")
+    public ResponseEntity<?> updateFunding(@PathVariable("fundingId") int fundingId, @RequestBody FundingUpdateRequestDto fundingDto) {
+        fundingService.updateFunding(fundingId, fundingDto);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("펀딩 수정 완료")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
 
     // 펀딩 삭제
 
