@@ -2,6 +2,8 @@ package com.shinhan.solstar.domain.funding.controller;
 
 import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
+import com.shinhan.solstar.domain.funding.dto.response.FundingDetailResponseDto;
+import com.shinhan.solstar.domain.funding.entity.Funding;
 import com.shinhan.solstar.domain.funding.model.service.FundingService;
 import com.shinhan.solstar.global.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +62,18 @@ public class FundingController {
     }
 
     // 펀딩 상세 정보 조회
+    @GetMapping("/{fundingId}")
+    public ResponseEntity<?> getFundingInfo(@PathVariable("fundingId") int fundingId) {
+        FundingDetailResponseDto selectedFunding = fundingService.getFundingById(fundingId);
+
+        ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
+                .status(HttpStatus.OK.value())
+                .message("펀딩 상세 조회 완료")
+                .data(selectedFunding)
+                .build();
+        
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
     // 펀딩 프로젝트 소개 조회
 
