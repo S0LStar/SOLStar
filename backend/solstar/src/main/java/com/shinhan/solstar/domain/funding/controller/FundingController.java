@@ -1,11 +1,10 @@
 package com.shinhan.solstar.domain.funding.controller;
 
 import com.shinhan.solstar.domain.funding.dto.FundingCreateRequestDto;
-import com.shinhan.solstar.domain.funding.message.SuccessMessage;
 import com.shinhan.solstar.domain.funding.model.service.FundingService;
-import com.shinhan.solstar.global.util.HttpMethodCode;
-import com.shinhan.solstar.global.util.HttpResponseUtil;
+import com.shinhan.solstar.global.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,14 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class FundingController {
 
     private final FundingService fundingService;
-    private final HttpResponseUtil responseUtil;
 
     // 펀딩 생성
     @PostMapping
     public ResponseEntity<?> createFunding(@RequestBody FundingCreateRequestDto fundingDto) {
-//        fundingService.createFunding(fundingDto);
+        fundingService.createFunding(fundingDto);
 
-        return responseUtil.createResponse(HttpMethodCode.POST, SuccessMessage.SUCCESS_CREATE_FUNDING.getMessage());
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("펀딩 생성 완료")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     // 펀딩 수정

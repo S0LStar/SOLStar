@@ -15,7 +15,7 @@ public class FundingCreateRequestDto {
     @NotNull
     private String type;
 
-    private String profileImage;
+    private String fundingImage;
 
     @NotNull
     private String title;
