@@ -139,6 +139,18 @@ public class FundingController {
     }
 
     // 펀딩 공지사항 삭제
+    @DeleteMapping("/notice/{boardId}")
+    public ResponseEntity<?> deleteBoard(@PathVariable("boardId") int boardId) {
+        boardService.deleteBoard(boardId);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.OK.value())
+                .message("펀딩 공지사항 삭제 완료")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
     // 펀딩 정산 조회
 

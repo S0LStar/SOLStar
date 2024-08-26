@@ -15,7 +15,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,6 +63,20 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_BOARD_EXCEPTION));
 
+        // 현재 로그인한 유저가 해당 펀딩의 host 인지 확인
+
         board.updateBoardDetails(boardDto);
+    }
+
+    @Transactional
+    public void deleteBoard(int boardId) {
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_BOARD_EXCEPTION));
+
+        // 현재 로그인한 유저가 해당 펀딩의 host 인지 확인
+
+        board.deleteBoard();
+        boardRepository.save(board);
     }
 }

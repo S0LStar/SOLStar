@@ -48,7 +48,6 @@ public class Board extends BaseTimeEntity {
 
     public void updateBoardDetails(BoardUpdateRequestDto boardDto) {
         if (boardDto.getTitle() != null) {
-            System.out.printf(boardDto.getTitle());
             this.title = boardDto.getTitle();
         }
 
@@ -57,4 +56,7 @@ public class Board extends BaseTimeEntity {
         }
     }
 
+    public void deleteBoard() {
+        this.isDelete = true;
+    }
 }
