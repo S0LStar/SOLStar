@@ -3,17 +3,19 @@ package com.shinhan.solstar.domain.auth.controller;
 import com.shinhan.solstar.domain.auth.dto.request.LoginRequest;
 import com.shinhan.solstar.domain.auth.dto.request.SignupRequest;
 import com.shinhan.solstar.domain.auth.dto.response.LoginResponse;
+import com.shinhan.solstar.domain.auth.dto.response.RefreshResponse;
 import com.shinhan.solstar.domain.auth.model.service.AuthService;
+import com.shinhan.solstar.global.exception.CustomException;
+import com.shinhan.solstar.global.exception.ExceptionResponse;
 import com.shinhan.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,15 +39,43 @@ public class AuthController {
     }
 
     @Operation(summary = "로그인")
-    @PostMapping("login")
-    public ResponseEntity<ResponseDto<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDto<LoginResponse>> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         LoginResponse result = authService.login(loginRequest);
+
+        // refresh token은 쿠키에 저장하여 응답 보내줌
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", result.getRefreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(7*24*60*60)
+                .sameSite("Strict")
+                .build();
+
+        response.setHeader("Set-Cookie", refreshCookie.toString());
+
         ResponseDto<LoginResponse> responseDto = ResponseDto.<LoginResponse>builder()
                 .status(HttpStatus.OK.value())
                 .message("로그인 성공")
                 .data(result)
                 .build();
 
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "토큰 재발급")
+    @PostMapping("/refresh")
+    public ResponseEntity<ResponseDto<RefreshResponse>> refresh(@CookieValue(value = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
+        if(refreshToken == null) {
+            throw new ExceptionResponse(CustomException.EXPIRED_JWT_EXCEPTION);
+        }
+        RefreshResponse result = authService.refresh(refreshToken);
+
+        ResponseDto<RefreshResponse> responseDto = ResponseDto.<RefreshResponse>builder()
+                .status(HttpStatus.OK.value())
+                .message("새 액세스 토큰 발급 성공")
+                .data(result)
+                .build();
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

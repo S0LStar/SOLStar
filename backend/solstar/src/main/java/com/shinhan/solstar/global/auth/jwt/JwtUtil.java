@@ -58,6 +58,11 @@ public class JwtUtil {
         return getClaimsFromToken(token).getSubject();
     }
 
+    // 토큰으로부터 role 추출
+    public String roleFromToken(String token) throws ExpiredJwtException, JwtException {
+        return getClaimsFromToken(token).get("role", String.class);
+    }
+
     // AccessToken인지 검사
     public boolean isAccessToken(String token) {
         return "access_token".equals(getClaimsFromToken(token).get("type"));

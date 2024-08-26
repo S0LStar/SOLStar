@@ -15,4 +15,6 @@ public interface AgencyRepository extends JpaRepository<Agency, Long> {
 
     boolean existsByName(String name);
 
+    Optional<Agency> findByRefreshToken(String refreshToken);
+
 }

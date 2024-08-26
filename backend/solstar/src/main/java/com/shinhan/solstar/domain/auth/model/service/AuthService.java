@@ -7,6 +7,7 @@ import com.shinhan.solstar.domain.agency.model.repository.AgencyRepository;
 import com.shinhan.solstar.domain.auth.dto.request.LoginRequest;
 import com.shinhan.solstar.domain.auth.dto.request.SignupRequest;
 import com.shinhan.solstar.domain.auth.dto.response.LoginResponse;
+import com.shinhan.solstar.domain.auth.dto.response.RefreshResponse;
 import com.shinhan.solstar.domain.user.entity.User;
 import com.shinhan.solstar.domain.user.model.repository.UserRepository;
 import com.shinhan.solstar.global.auth.CustomUserDetailsService;
@@ -120,5 +121,34 @@ public class AuthService {
             throw new ExceptionResponse(CustomException.PASSWORD_INPUT_EXCEPTION);
         }
 
+    }
+
+    // 토큰 재발급
+    public RefreshResponse refresh(String refreshToken) {
+
+        // 만료된 리프레시 토큰일 경우
+        if(!jwtUtil.validateToken(refreshToken)) {
+            throw new ExceptionResponse(CustomException.EXPIRED_JWT_EXCEPTION);
+        }
+
+        String role = jwtUtil.roleFromToken(refreshToken);
+        String email = null;
+
+        if(role.equals("USER")) {
+            // 해당 리프레시 토큰을 갖는 유저가 없을 경우
+            User user = userRepository.findByRefreshToken(refreshToken)
+                    .orElseThrow(()-> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+            email = user.getEmail();
+        }
+        else if(role.equals("AGENCY")) {
+            Agency agency = agencyRepository.findByRefreshToken(refreshToken)
+                    .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+            email = agency.getEmail();
+        }
+
+        RefreshResponse refreshResponse = RefreshResponse.builder()
+                .accessToken(jwtUtil.generateAccessToken(email, role))
+                .build();
+        return refreshResponse;
     }
 }
