@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BoardResponseDto {
 
+    private int id;
+
     private String title;
 
     private String content;
@@ -19,6 +21,6 @@ public class BoardResponseDto {
     private LocalDateTime createDate;
 
     public static BoardResponseDto createResponseDto(Board board) {
-        return new BoardResponseDto(board.getTitle(), board.getContent(), board.getCreateDate());
+        return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getCreateDate());
     }
 }

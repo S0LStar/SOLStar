@@ -1,6 +1,7 @@
 package com.shinhan.solstar.domain.board.model.service;
 
 import com.shinhan.solstar.domain.board.dto.request.BoardCreateRequestDto;
+import com.shinhan.solstar.domain.board.dto.request.BoardUpdateRequestDto;
 import com.shinhan.solstar.domain.board.dto.response.BoardResponseDto;
 import com.shinhan.solstar.domain.board.entity.Board;
 import com.shinhan.solstar.domain.board.model.repository.BoardRepository;
@@ -54,5 +55,13 @@ public class BoardService {
 
         Collections.reverse(responseDtos);
         return responseDtos;
+    }
+
+    public void updateBoard(int boardId, BoardUpdateRequestDto boardDto) {
+
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_BOARD_EXCEPTION));
+
+        board.updateBoardDetails(boardDto);
     }
 }

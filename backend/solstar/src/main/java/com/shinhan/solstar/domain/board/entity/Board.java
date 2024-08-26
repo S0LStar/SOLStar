@@ -1,5 +1,6 @@
 package com.shinhan.solstar.domain.board.entity;
 
+import com.shinhan.solstar.domain.board.dto.request.BoardUpdateRequestDto;
 import com.shinhan.solstar.domain.funding.entity.Funding;
 import com.shinhan.solstar.global.baseTimeEntity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -43,6 +44,17 @@ public class Board extends BaseTimeEntity {
                 .content(content)
                 .isDelete(false)
                 .build();
+    }
+
+    public void updateBoardDetails(BoardUpdateRequestDto boardDto) {
+        if (boardDto.getTitle() != null) {
+            System.out.printf(boardDto.getTitle());
+            this.title = boardDto.getTitle();
+        }
+
+        if (boardDto.getContent() != null) {
+            this.content = boardDto.getContent();
+        }
     }
 
 }

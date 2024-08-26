@@ -1,6 +1,7 @@
 package com.shinhan.solstar.domain.funding.controller;
 
 import com.shinhan.solstar.domain.board.dto.request.BoardCreateRequestDto;
+import com.shinhan.solstar.domain.board.dto.request.BoardUpdateRequestDto;
 import com.shinhan.solstar.domain.board.dto.response.BoardResponseDto;
 import com.shinhan.solstar.domain.board.entity.Board;
 import com.shinhan.solstar.domain.board.model.service.BoardService;
@@ -125,6 +126,18 @@ public class FundingController {
     }
 
     // 펀딩 공지사항 수정
+    @PatchMapping("/notice/{boardId}")
+    public ResponseEntity<?> updateBoard(@PathVariable("boardId") int boardId, @RequestBody BoardUpdateRequestDto boardDto) {
+        boardService.updateBoard(boardId, boardDto);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("펀딩 공지사항 수정 완료")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
 
     // 펀딩 공지사항 삭제
 
