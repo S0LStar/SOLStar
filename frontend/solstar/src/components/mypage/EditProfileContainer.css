@@ -54,14 +54,17 @@
   background-color: #fcfcfc;
 }
 
-.edit-buttons {
+.edit-container .edit-buttons {
   margin-top: 20px;
   display: flex;
-  gap: 20px !important;
+  gap: 20px;
 }
 
-.edit-buttons .wide-button {
-  width: 100% !important;
-  border-radius: 15px !important;
-  height: 36px !important;
+.edit-container .edit-buttons .wide-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-radius: 15px;
+  height: 36px;
 }
