@@ -1,14 +1,23 @@
-import { useState, useRef } from 'react';
+import propTypes from 'prop-types';
+
+import { useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import './MyEditor.css';
 
-function MyEditor() {
-  const [editorValue, setEditorValue] = useState('');
+function MyEditor({ funding, onChange, setRegistActive }) {
   const editorRef = useRef(null);
 
+  useEffect(() => {
+    const isEmptyContent =
+      !funding.content || funding.content === '<p><br></p>';
+    setRegistActive(!isEmptyContent);
+    console.log(funding.content);
+  }, [funding.content]);
+
   const handleChange = (value) => {
-    setEditorValue(value);
+    // content 값이 변경될 때 onChange를 호출하여 funding 객체를 업데이트합니다.
+    onChange({ target: { id: 'content', value } });
   };
 
   const handleImageUpload = (file, callback) => {
@@ -38,7 +47,7 @@ function MyEditor() {
     <div className="react-quill-container">
       <ReactQuill
         ref={editorRef}
-        value={editorValue}
+        value={funding.content || ''}
         onChange={handleChange}
         theme="snow"
         modules={modules}
@@ -52,7 +61,6 @@ function MyEditor() {
           'image',
           'align',
         ]}
-        // 이미지 업로드 핸들러를 hooks를 통해 추가
         hooks={{
           addImageBlobHook: handleImageUpload,
         }}
@@ -61,5 +69,11 @@ function MyEditor() {
     </div>
   );
 }
+
+MyEditor.propTypes = {
+  funding: propTypes.object.isRequired,
+  onChange: propTypes.func.isRequired,
+  setRegistActive: propTypes.func.isRequired,
+};
 
 export default MyEditor;
