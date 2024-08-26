@@ -3,7 +3,6 @@ package com.shinhan.solstar.domain.funding.controller;
 import com.shinhan.solstar.domain.board.dto.request.BoardCreateRequestDto;
 import com.shinhan.solstar.domain.board.dto.request.BoardUpdateRequestDto;
 import com.shinhan.solstar.domain.board.dto.response.BoardResponseDto;
-import com.shinhan.solstar.domain.board.entity.Board;
 import com.shinhan.solstar.domain.board.model.service.BoardService;
 import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;

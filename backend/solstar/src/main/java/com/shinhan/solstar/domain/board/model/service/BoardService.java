@@ -11,6 +11,7 @@ import com.shinhan.solstar.domain.user.entity.User;
 import com.shinhan.solstar.domain.user.model.repository.UserRepository;
 import com.shinhan.solstar.global.exception.CustomException;
 import com.shinhan.solstar.global.exception.ExceptionResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +58,7 @@ public class BoardService {
         return responseDtos;
     }
 
+    @Transactional
     public void updateBoard(int boardId, BoardUpdateRequestDto boardDto) {
 
         Board board = boardRepository.findById(boardId)
