@@ -1,6 +1,7 @@
 package com.shinhan.solstar.domain.board.model.service;
 
 import com.shinhan.solstar.domain.board.dto.request.BoardCreateRequestDto;
+import com.shinhan.solstar.domain.board.dto.response.BoardResponseDto;
 import com.shinhan.solstar.domain.board.entity.Board;
 import com.shinhan.solstar.domain.board.model.repository.BoardRepository;
 import com.shinhan.solstar.domain.funding.entity.Funding;
@@ -11,6 +12,11 @@ import com.shinhan.solstar.global.exception.CustomException;
 import com.shinhan.solstar.global.exception.ExceptionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -37,5 +43,16 @@ public class BoardService {
         Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent());
 
         boardRepository.save(createdBoard);
+    }
+
+    public List<BoardResponseDto> getBoardList(int fundingId) {
+        List<Board> boardEntities = boardRepository.findByFunding_Id(fundingId);
+
+        List<BoardResponseDto> responseDtos = boardEntities.stream()
+                .map(board -> BoardResponseDto.createResponseDto(board))
+                .collect(Collectors.toList());
+
+        Collections.reverse(responseDtos);
+        return responseDtos;
     }
 }

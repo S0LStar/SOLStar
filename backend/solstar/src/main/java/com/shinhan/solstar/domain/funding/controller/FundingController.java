@@ -1,6 +1,7 @@
 package com.shinhan.solstar.domain.funding.controller;
 
 import com.shinhan.solstar.domain.board.dto.request.BoardCreateRequestDto;
+import com.shinhan.solstar.domain.board.dto.response.BoardResponseDto;
 import com.shinhan.solstar.domain.board.entity.Board;
 import com.shinhan.solstar.domain.board.model.service.BoardService;
 import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/funding")
@@ -100,7 +103,7 @@ public class FundingController {
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
-                .message("공지 생성 완료")
+                .message("펀딩 공지사항 생성 완료")
                 .data(null)
                 .build();
 
@@ -108,6 +111,18 @@ public class FundingController {
     }
 
     // 펀딩 공지사항 조회
+    @GetMapping("/notice/{fundingId}")
+    public ResponseEntity<?> getBoardList(@PathVariable("fundingId") int fundingId) {
+        List<BoardResponseDto> boardList = boardService.getBoardList(fundingId);
+
+        ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
+                .status(HttpStatus.OK.value())
+                .message("펀딩 공지사항 조회 완료")
+                .data(boardList)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
     // 펀딩 공지사항 수정
 
