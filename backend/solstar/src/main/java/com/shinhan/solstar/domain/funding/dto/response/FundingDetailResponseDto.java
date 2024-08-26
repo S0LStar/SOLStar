@@ -21,8 +21,6 @@ public class FundingDetailResponseDto {
 
     private String content;
 
-    private String contentImage;
-
     private int totalAmount;
 
     private int goalAmount;
@@ -44,7 +42,6 @@ public class FundingDetailResponseDto {
         this.hostIntroduction = hostIntroduction;
         this.hostProfileImage = hostProfileImage;
         this.content = content;
-        this.contentImage = contentImage;
         this.totalAmount = totalAmount;
         this.goalAmount = goalAmount;
         this.deadlineDate = deadlineDate;
@@ -61,7 +58,6 @@ public class FundingDetailResponseDto {
                 .hostIntroduction(funding.getHost().getIntroduction())
                 .hostProfileImage(funding.getHost().getProfileImage())
                 .content(funding.getContent())
-                .contentImage(funding.getContentImage())
                 .totalAmount(funding.getTotalAmount())
                 .goalAmount(funding.getGoalAmount())
                 .deadlineDate(funding.getDeadlineDate())

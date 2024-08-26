@@ -30,6 +30,4 @@ public class FundingCreateRequestDto {
     @NotNull
     private String content;
 
-    private String contentImage;
-
 }

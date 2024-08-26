@@ -3,7 +3,6 @@ package com.shinhan.solstar.domain.funding.controller;
 import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.response.FundingDetailResponseDto;
-import com.shinhan.solstar.domain.funding.entity.Funding;
 import com.shinhan.solstar.domain.funding.model.service.FundingService;
 import com.shinhan.solstar.global.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
