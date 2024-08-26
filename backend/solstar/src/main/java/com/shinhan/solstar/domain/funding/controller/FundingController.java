@@ -46,6 +46,18 @@ public class FundingController {
     }
 
     // 펀딩 삭제
+    @DeleteMapping("/{fundingId}")
+    public ResponseEntity<?> deleteFunding(@PathVariable("fundingId") int fundingId) {
+        fundingService.deleteFunding(fundingId);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.OK.value())
+                .message("펀딩 삭제 완료")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
     // 펀딩 상세 정보 조회
 

@@ -10,4 +10,7 @@ public interface FundingService {
 
     // 펀딩 수정
     void updateFunding(int fundingId, FundingUpdateRequestDto fundingDto);
+
+    // 펀딩 삭제
+    void deleteFunding(int fundingId);
 }

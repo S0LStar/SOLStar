@@ -105,4 +105,8 @@ public class Funding extends BaseTimeEntity {
         }
     }
 
+    public void deleteFunding() {
+        this.isDelete = true;
+    }
+
 }

@@ -51,4 +51,15 @@ public class FundingServiceImpl implements FundingService {
         funding.updateFundingDetails(fundingDto);
     }
 
+    @Override
+    @Transactional
+    public void deleteFunding(int fundingId) {
+
+        Funding funding = fundingRepository.findById(fundingId)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        funding.deleteFunding();
+        fundingRepository.save(funding);
+    }
+
 }
