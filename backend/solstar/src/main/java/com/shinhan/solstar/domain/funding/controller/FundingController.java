@@ -2,6 +2,7 @@ package com.shinhan.solstar.domain.funding.controller;
 
 import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
+import com.shinhan.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.shinhan.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.shinhan.solstar.domain.funding.model.service.FundingService;
 import com.shinhan.solstar.global.util.ResponseDto;
@@ -74,7 +75,19 @@ public class FundingController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 펀딩 프로젝트 소개 조회
+    // 펀딩 프로젝트 내용 조회
+    @GetMapping("/content/{fundingId}")
+    public ResponseEntity<?> getFundingContent(@PathVariable("fundingId") int fundingId) {
+        FundingContentResponseDto selectedFunding = fundingService.getFundingContent(fundingId);
+
+        ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
+                .status(HttpStatus.OK.value())
+                .message("펀딩 내용 조회 완료")
+                .data(selectedFunding)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
     // 펀딩 공지 작성하기
 

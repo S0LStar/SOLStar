@@ -4,6 +4,7 @@ import com.shinhan.solstar.domain.artist.entity.Artist;
 import com.shinhan.solstar.domain.artist.model.repository.ArtistRepository;
 import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
+import com.shinhan.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.shinhan.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.shinhan.solstar.domain.funding.entity.Funding;
 import com.shinhan.solstar.domain.funding.entity.FundingStatus;
@@ -70,6 +71,15 @@ public class FundingServiceImpl implements FundingService {
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
 
         return FundingDetailResponseDto.createResponseDto(funding);
+    }
+
+    @Override
+    public FundingContentResponseDto getFundingContent(int fundingId) {
+
+        Funding funding = fundingRepository.findById(fundingId)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        return FundingContentResponseDto.createResponseDto(funding);
     }
 
 }
