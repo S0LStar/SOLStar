@@ -18,19 +18,20 @@ import MyPageContainer from '../components/mypage/MyContainer';
 import EditProfileContainer from '../components/mypage/EditProfileContainer';
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer';
-import FundingRegistContent from '../components/funding/fundingRegist/FundingRegistContent';
+import MainSearch from '../components/main/MainSearch';
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<MainPage />}>
         <Route index element={<MainContainer />} />
-        <Route path="popular" element={<PopularFundingContainer />}></Route>
+        <Route path="search" element={<MainSearch />} />
+        <Route path="popular" element={<PopularFundingContainer />} />
       </Route>
 
       <Route path="/funding">
         <Route path=":id" element={<FundingPage />} />
-        <Route path="regist" element={<FundingRegist />}></Route>
+        <Route path="regist" element={<FundingRegist />} />
       </Route>
 
       <Route path="/wallet" element={<WalletPage />}>

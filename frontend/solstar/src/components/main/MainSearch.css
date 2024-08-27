@@ -1,0 +1,32 @@
+.main-search-container {
+  padding: 16px;
+}
+
+.main-search-container .main-search-bar {
+  margin: 0 5px;
+}
+
+.main-search-container .main-search-input {
+  width: 85%;
+}
+
+.main-search-description-img {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+}
+
+.main-search-description {
+  display: flex;
+  padding: 30px 10px;
+}
+
+.main-search-description-title {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.main-search-description-content {
+  font-size: 14px;
+  color: #84848470;
+}
