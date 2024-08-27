@@ -1,6 +1,7 @@
 package com.shinhan.solstar.domain.artist.controller;
 
 import com.shinhan.solstar.domain.artist.dto.response.ArtistResponseDto;
+import com.shinhan.solstar.domain.artist.dto.response.ArtistSearchResponseDto;
 import com.shinhan.solstar.domain.artist.dto.response.LikeArtistResponseDto;
 import com.shinhan.solstar.domain.artist.model.service.ArtistService;
 import com.shinhan.solstar.global.util.ResponseDto;
@@ -20,6 +21,18 @@ public class ArtistController {
     private final ArtistService artistService;
 
     // 검색어로 아티스트 조회
+    @GetMapping
+    public ResponseEntity<?> searchArtists(@RequestParam("keyword") String keyword) {
+        List<ArtistSearchResponseDto> artistList = artistService.searchArtists(keyword);
+
+        ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
+                .status(HttpStatus.OK.value())
+                .message("아티스트 검색 완료")
+                .data(Map.of("artistList", artistList))
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
     // 특정 아티스트 상세 조회
     @GetMapping("/{artistId}")

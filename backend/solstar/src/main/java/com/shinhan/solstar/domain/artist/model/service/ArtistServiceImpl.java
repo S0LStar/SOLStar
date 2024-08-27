@@ -1,6 +1,7 @@
 package com.shinhan.solstar.domain.artist.model.service;
 
 import com.shinhan.solstar.domain.artist.dto.response.ArtistResponseDto;
+import com.shinhan.solstar.domain.artist.dto.response.ArtistSearchResponseDto;
 import com.shinhan.solstar.domain.artist.dto.response.LikeArtistResponseDto;
 import com.shinhan.solstar.domain.artist.entity.Artist;
 import com.shinhan.solstar.domain.artist.model.repository.ArtistRepository;
@@ -30,6 +31,25 @@ public class ArtistServiceImpl implements ArtistService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
     private final LikeListRepository likeListRepository;
+
+    @Override
+    public List<ArtistSearchResponseDto> searchArtists(String keyword) {
+        // 로그인한 유저 불러오기
+        User loginUser = userRepository.findById(1);
+
+        // 검색어로 아티스트 리스트 불러오기
+        List<Artist> artists = artistRepository.findByNameContainingIgnoreCaseOrGroupContainingIgnoreCase(keyword, keyword);
+
+        // 아티스트마다 찜 여부 확인 후, dto로 변환
+        List<ArtistSearchResponseDto> artistSearchResponseList = artists.stream()
+                .map(artist -> {
+                    boolean isLiked = likeListRepository.existsByUserAndArtist(loginUser, artist);
+                    return ArtistSearchResponseDto.createResponseDto(artist, isLiked);
+                })
+                .collect(Collectors.toList());
+
+        return artistSearchResponseList;
+    }
 
     @Override
     public ArtistResponseDto getArtistById(int artistId) {
