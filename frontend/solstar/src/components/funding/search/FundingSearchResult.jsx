@@ -4,6 +4,8 @@ import SearchReset from '../../../assets/common/SearchReset.png';
 import BackButton from '../../common/BackButton';
 import Go from '../../../assets/common/Go.png';
 import temp from '../../../assets/character/Sol.png';
+import Zzim from '../../../assets/artist/Zzim.png';
+import NoZzim from '../../../assets/artist/NoZzim.png';
 
 import './FundingSearchResult.css';
 
@@ -48,7 +50,18 @@ function FundingSearchResult() {
           remainDays: null,
         },
         {
-          fundingId: '3',
+          fundingId: 3,
+          type: 'COMMON',
+          artistName: '뉴진스',
+          title: '뉴진스 한정판 굿즈 💖 팬심으로 만든 특별 아이템',
+          fundingImage: 'funding_image_3_url',
+          successRate: 50,
+          totalAmount: 1230000,
+          status: 'FAIL',
+          remainDays: null,
+        },
+        {
+          fundingId: 4,
           type: 'COMMON',
           artistName: '뉴진스',
           title: '뉴진스 한정판 굿즈 💖 팬심으로 만든 특별 아이템',
@@ -67,7 +80,7 @@ function FundingSearchResult() {
           group: null,
           profileImage: 'artist_image_1_url',
           popularity: 230,
-          isLike: 'false',
+          isLike: false,
         },
         {
           artistId: 2,
@@ -76,7 +89,7 @@ function FundingSearchResult() {
           group: '뉴진스',
           profileImage: 'artist_image_2_url',
           popularity: 200,
-          isLike: 'true',
+          isLike: true,
         },
         {
           artistId: 3,
@@ -85,7 +98,7 @@ function FundingSearchResult() {
           group: '뉴진스',
           profileImage: 'artist_image_3_url',
           popularity: 180,
-          isLike: 'false',
+          isLike: false,
         },
         {
           artistId: 4,
@@ -94,7 +107,7 @@ function FundingSearchResult() {
           group: '뉴진스',
           profileImage: 'artist_image_4_url',
           popularity: 160,
-          isLike: 'false',
+          isLike: false,
         },
       ],
     };
@@ -110,6 +123,20 @@ function FundingSearchResult() {
     if (e.key === 'Enter') {
       navigate(`/funding/search?query=${searchValue}`, { replace: true });
     }
+  };
+
+  const toggleZzim = (artistId) => {
+    // TODO: 찜/찜 해제 API 요청
+    setData((prevData) => {
+      const updatedArtistList = prevData.artistList.map((artist) => {
+        if (artist.artistId === artistId) {
+          return { ...artist, isLike: !artist.isLike };
+        }
+        return artist;
+      });
+
+      return { ...prevData, artistList: updatedArtistList };
+    });
   };
 
   return (
@@ -144,6 +171,21 @@ function FundingSearchResult() {
           {data.artistList.map((artist) => (
             <div key={artist.artistId} className="artist-item">
               <img src={temp} alt={artist.name} className="artist-image" />
+              {artist.isLike ? (
+                <img
+                  src={Zzim}
+                  alt=""
+                  className="artist-item-zzim"
+                  onClick={() => toggleZzim(artist.artistId)}
+                />
+              ) : (
+                <img
+                  src={NoZzim}
+                  alt=""
+                  className="artist-item-zzim"
+                  onClick={() => toggleZzim(artist.artistId)}
+                />
+              )}
               <span className="artist-name">{artist.name}</span>
             </div>
           ))}
@@ -155,29 +197,49 @@ function FundingSearchResult() {
           <h2>펀딩</h2>
           <img src={Go} alt="" className="search-result-go" />
         </div>
-        <div className="funding-list">
+        <div className="search-result-funding-list">
           {data.fundingList.map((funding) => (
-            <div key={funding.fundingId} className="funding-item">
-              <img src={temp} alt="" className="funding-image" />
-              <div className="funding-info">
-                <span className="funding-artist">{funding.artistName}</span>
-                <h3 className="funding-title">{funding.title}</h3>
-                <div className="funding-details">
-                  <span className="funding-progress">
-                    {funding.successRate}%
-                  </span>
-                  <span className="funding-amount">
-                    {funding.totalAmount.toLocaleString()}원
-                  </span>
-                  {funding.remainDays ? (
-                    <span className="funding-days-left">
-                      {funding.remainDays}일 남음
+            <div key={funding.fundingId} className="search-result-funding-item">
+              <img src={temp} alt="" className="search-result-funding-image" />
+              <div className="search-result-funding-info">
+                <span className="search-result-funding-artist">
+                  {funding.artistName}
+                </span>
+                <h3 className="search-result-funding-title">{funding.title}</h3>
+                <div
+                  className={`search-result-funding-details 
+                    ${
+                      funding.status === 'PROCESSING'
+                        ? 'progress'
+                        : funding.status === 'SUCCESS' ||
+                            funding.status === 'CLOSED'
+                          ? 'success'
+                          : 'fail'
+                    }`}
+                  style={{ '--achievement-percentage': funding.successRate }}
+                >
+                  <div className="search-result-funding-detail">
+                    <span className="search-result-funding-progress">
+                      {funding.successRate}%
                     </span>
-                  ) : funding.status === 'SUCCESS' ? (
-                    <>펀딩 성공</>
-                  ) : (
-                    <>펀딩 무산</>
-                  )}
+                    <span className="search-result-funding-amount">
+                      {funding.totalAmount.toLocaleString()}원
+                    </span>
+                    {funding.remainDays ? (
+                      <span className="search-result-funding-days-left">
+                        {funding.remainDays}일 남음
+                      </span>
+                    ) : funding.status === 'SUCCESS' ? (
+                      <span className="search-result-funding-days-left">
+                        펀딩 성공
+                      </span>
+                    ) : (
+                      <span className="search-result-funding-days-left">
+                        펀딩 무산
+                      </span>
+                    )}
+                  </div>
+                  <div className="popular-funding-achievement-bar"></div>
                 </div>
               </div>
             </div>
