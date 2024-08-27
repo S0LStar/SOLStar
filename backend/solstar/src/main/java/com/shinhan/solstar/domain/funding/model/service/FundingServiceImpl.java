@@ -29,7 +29,8 @@ public class FundingServiceImpl implements FundingService {
     @Override
     public void createFunding(FundingCreateRequestDto fundingDto) {
 
-        Artist artist = artistRepository.findById(fundingDto.getArtistId());
+        Artist artist = artistRepository.findById(fundingDto.getArtistId())
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
         // 임시로 User 생성하여 host 찾기
         // Security 구현 시 로그인한 유저를 가져오는 것으로 구현
         User host = userRepository.findById(1);
