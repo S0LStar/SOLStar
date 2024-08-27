@@ -11,6 +11,8 @@ import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.entity.FundingStatus;
 import com.common.solstar.domain.funding.entity.FundingType;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
+import com.common.solstar.domain.fundingAgency.entity.FundingAgency;
+import com.common.solstar.domain.fundingAgency.model.repository.FundingAgencyRepository;
 import com.common.solstar.domain.likeList.entity.LikeList;
 import com.common.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.common.solstar.domain.user.entity.User;
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 public class FundingServiceImpl implements FundingService {
 
     private final FundingRepository fundingRepository;
+    private final FundingAgencyRepository fundingAgencyRepository;
     private final UserRepository userRepository;
     private final ArtistRepository artistRepository;
     private final LikeListRepository likeListRepository;
@@ -49,6 +52,12 @@ public class FundingServiceImpl implements FundingService {
                 fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
 
         fundingRepository.save(createdFunding);
+
+        if (createdFunding.getType().equals(FundingType.VERIFIED)) {
+            FundingAgency fundingAgency = FundingAgency.createFundingAgency(createdFunding, createdFunding.getArtist().getAgency());
+
+            fundingAgencyRepository.save(fundingAgency);
+        }
     }
 
     @Override
