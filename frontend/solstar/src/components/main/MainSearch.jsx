@@ -1,9 +1,22 @@
+import { useNavigate } from 'react-router-dom';
 import Search from '../../assets/main/ColorSearch.png';
 import BackButton from '../common/BackButton';
 import './MainSearch.css';
+import { useState } from 'react';
 
 function MainSearch() {
-  const [searchValue, setSearchValue] = useState();
+  const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState(''); // 검색어 상태 관리
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      navigate(`funding/search?query=${searchValue}`);
+    }
+  };
+
+  const handleChange = (e) => {
+    setSearchValue(e.target.value);
+  };
 
   return (
     <div className="main-search-container">
@@ -14,7 +27,8 @@ function MainSearch() {
           className="main-search-input"
           placeholder="펀딩, 아티스트 검색"
           value={searchValue}
-          // onKeyDown={() = {}}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
         />
       </div>
       <div className="main-search-description">

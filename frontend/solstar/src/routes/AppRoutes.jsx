@@ -7,7 +7,8 @@ import MainContainer from '../components/main/MainContainer';
 // Funding
 import PopularFundingContainer from '../components/main/popular/PopularFundingContainer';
 import FundingPage from '../pages/FundingPage';
-import FundingRegist from '../components/funding/fundingRegist/FundingRegist';
+import FundingRegist from '../components/funding/regist/FundingRegist';
+import FundingSearchResult from '../components/funding/search/FundingSearchResult';
 
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
@@ -32,6 +33,7 @@ function AppRoutes() {
       <Route path="/funding">
         <Route path=":id" element={<FundingPage />} />
         <Route path="regist" element={<FundingRegist />} />
+        <Route path="search" element={<FundingSearchResult />}></Route>
       </Route>
 
       <Route path="/wallet" element={<WalletPage />}>
