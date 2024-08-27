@@ -20,6 +20,16 @@ import EditProfileContainer from '../components/mypage/EditProfileContainer';
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer';
 import MainSearch from '../components/main/MainSearch';
+import SignUpPage from '../pages/SignUpPage';
+import SignUpContainer from '../components/signup/SignUpContainer';
+import TermOfService from '../components/signup/accountRegist/TermOfService';
+import CreateAccount from '../components/signup/accountRegist/CreateAccount';
+import AccountRegistration from '../components/signup/accountRegist/AccountRegistration';
+import AccountVerification from '../components/signup/accountRegist/AccountVerification';
+import SetPassword from '../components/signup/accountRegist/SetPassword';
+import ResetPassword from '../components/signup/accountRegist/ResetPassword';
+import CreatedAccount from '../components/signup/accountRegist/CreatedAccount';
+
 
 function AppRoutes() {
   return (
@@ -48,6 +58,17 @@ function AppRoutes() {
       </Route>
       <Route path="/login" element={<LoginPage />}>
         <Route index element={<LoginContainer />}></Route>
+      </Route>
+      <Route path="/signup" element={<SignUpPage />}>
+        <Route index element={<TermOfService />}></Route>
+        {/* <Route index element={<SignUpContainer />}></Route> */}
+        <Route path="term" element={<TermOfService />} />
+        <Route path="create" element={<CreateAccount />} />
+        <Route path="regist" element={<AccountRegistration />} />
+        <Route path="verify" element={<AccountVerification />} />
+        <Route path="set" element={<SetPassword />} />
+        <Route path="reset" element={<ResetPassword />} />
+        <Route path="created" element={<CreatedAccount />} />
       </Route>
     </Routes>
   );
