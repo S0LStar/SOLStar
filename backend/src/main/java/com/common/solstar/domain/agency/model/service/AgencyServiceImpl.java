@@ -72,4 +72,30 @@ public class AgencyServiceImpl implements AgencyService {
         }
     }
 
+    @Override
+    @Transactional
+    public void rejectFunding(int fundingId) {
+
+        // 로그인한 소속사 정보 불러오기
+        Agency agency = agencyRepository.findById(1)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
+
+        // 펀딩의 아티스트의 소속사가 현재 로그인한 소속사가 맞는지 검증
+        Funding selectedFunding = fundingRepository.findById(fundingId)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        FundingAgency matchConnection = fundingAgencyRepository.findByFunding(selectedFunding)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_AGENCY_EXCEPTION));
+
+        if (!matchConnection.getAgency().equals(agency))
+            throw new ExceptionResponse(CustomException.NOT_MATCH_AGENCY_EXCEPTION);
+
+        // 펀딩 인증 요청이 거절되면 해당 펀딩은 삭제 처리
+        if (!matchConnection.isStatus()) {
+            matchConnection.getFunding().deleteFunding();
+        } else {
+            throw new ExceptionResponse(CustomException.ALREADY_ACCEPT_FUNDING_EXCEPTION);
+        }
+    }
+
 }

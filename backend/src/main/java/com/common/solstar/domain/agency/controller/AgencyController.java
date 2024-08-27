@@ -46,5 +46,17 @@ public class AgencyController {
     }
 
     // 펀딩 인증 요청 거절
+    @PatchMapping("/funding-reject/{fundingId}")
+    public ResponseEntity<?> rejectFunding(@PathVariable("fundingId") int fundinId) {
+        agencyService.rejectFunding(fundinId);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("펀딩 인증 요청 거절 성공")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
 
 }

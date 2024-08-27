@@ -9,4 +9,6 @@ public interface AgencyService {
     List<FundingAgencyResponseDto> getFundingList();
 
     void acceptFunding(int fundingId);
+
+    void rejectFunding(int fundingId);
 }
