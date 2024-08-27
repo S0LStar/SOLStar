@@ -75,12 +75,12 @@
   width: 60%;
 }
 
-.wide-button.inactive {
+.create-container .wide-button.inactive {
   background-color: #ccc; /* Inactive button color */
   cursor: not-allowed;
 }
 
-.wide-button.active {
+.create-container .wide-button.active {
   background-color: #0046ff; /* Active button color */
   cursor: pointer;
 }
