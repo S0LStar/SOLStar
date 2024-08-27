@@ -1,4 +1,4 @@
-import './SetPassword.css';
+import './ResetPassword.css';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ProgressBar from '../accountRegist/ProgressBar';
@@ -86,7 +86,7 @@ function ResetPassword() {
           isActive={nextActive}
           onClick={() => {
             if (nextActive) {
-              navigate('/signup/reset', { state: { account, password } });
+              navigate('/signup/created', { state: { account, password } });
             }
           }}
           className="resetpass-next-button"
