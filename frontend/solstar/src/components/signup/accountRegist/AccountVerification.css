@@ -1,0 +1,150 @@
+.accountverify-container {
+  padding: 16px;
+  /* width: 360px;
+  margin: 0 auto; */
+}
+
+.accountverify-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.accountverify-header img {
+  margin-right: 10px;
+  height: 14px;
+}
+
+.accountverify-header-backInfo {
+  min-width: 120px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.accountverify-description {
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.accountverify-bank-info {
+  background-color: #fcfcfc;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #303030;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  border: 0.25px solid #6c7072;
+  padding-left: 16px;
+}
+
+.accountverify-info-box {
+  background-color: #f0f8ff;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.accountverify-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: #6c7072;
+}
+
+.accountverify-info-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  font-size: 16px;
+  color: #6c7072;
+}
+
+.accountverify-digits {
+  display: flex;
+  gap: 10px; /* Space between digit boxes */
+}
+
+.digit-box {
+  width: 36px;
+  height: 36px;
+  background-color: #0046ff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.accountverify-info-footer {
+  font-size: 10px;
+  color: #6c7072;
+  /* text-align: center; */
+}
+
+.accountverify-form {
+  width: 100%;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-sizing: border-box;
+}
+
+.accountverify-form-field {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.accountverify-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.accountverify-form-field input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  font-size: 16px;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+.clear-icon {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+}
+
+.accountverify-container .wide-button {
+  width: 100%;
+  margin-top: 20px;
+  background-color: #0046ff;
+  border: none;
+  padding: 12px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.accountverify-container .wide-button:hover {
+  background-color: #003bb3;
+}
+
+.accountverify-container .wide-button.inactive {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
