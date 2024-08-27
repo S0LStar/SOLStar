@@ -7,18 +7,19 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
+  align-items: center;
 }
 
 .main-search-input {
   display: flex;
-  width: 88%;
+  width: 82%;
   height: 36px;
   border: 1.5px solid #72777a50;
   border-radius: 14px;
+  padding: 0 10px;
 }
 
 .main-search-input::placeholder {
-  padding: 10px;
   color: #72777a50;
 }
 
