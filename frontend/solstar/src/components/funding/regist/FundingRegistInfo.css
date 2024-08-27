@@ -58,18 +58,6 @@
   width: 120px;
 }
 
-.funding-regist-type div {
-  position: relative;
-  width: 120px;
-}
-
-.funding-type-select-icon {
-  position: absolute;
-  right: 10px;
-  width: 14px;
-  top: 18px;
-}
-
 .funding-regist-type select:focus,
 .funding-regist-title input:focus,
 .funding-regist-end-date input:focus,
