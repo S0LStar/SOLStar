@@ -18,6 +18,7 @@ import MyPageContainer from '../components/mypage/MyContainer';
 import EditProfileContainer from '../components/mypage/EditProfileContainer';
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer';
+import FundingRegistContent from '../components/funding/fundingRegist/FundingRegistContent';
 
 function AppRoutes() {
   return (

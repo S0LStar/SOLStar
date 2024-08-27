@@ -15,7 +15,6 @@ function FundingRegistContainer() {
     goalAmount: '',
     artistId: '',
     content: '',
-    contentImage: '',
   });
 
   const handleChange = (e) => {
@@ -24,8 +23,8 @@ function FundingRegistContainer() {
   };
 
   const handleRegist = () => {
-    // 등록 완료
-    console.log('등록 완료 !');
+    // TODO: 등록 완료, API 연결 필요
+    console.log(funding);
   };
 
   return (
