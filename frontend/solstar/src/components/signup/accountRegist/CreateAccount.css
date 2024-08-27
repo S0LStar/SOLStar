@@ -27,12 +27,6 @@
 }
 
 .create-form-field input {
-  /* width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  box-sizing: border-box; */
   font-size: 16px;
   width: 100%;
   height: 36px;
@@ -71,6 +65,9 @@
 }
 
 .create-container .wide-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 60%;
 }
 
@@ -82,10 +79,4 @@
 .wide-button.active {
   background-color: #0046ff; /* Active button color */
   cursor: pointer;
-}
-
-.create-container .wide-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
