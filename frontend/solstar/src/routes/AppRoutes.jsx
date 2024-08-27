@@ -8,6 +8,7 @@ import MyArtistFundingContainer from '../components/main/myartist/MyArtistFundin
 
 // Funding
 import FundingPage from '../pages/FundingPage';
+import FundingDetail from '../components/funding/detail/FundingDetail';
 import FundingRegist from '../components/funding/regist/FundingRegist';
 import FundingSearchResult from '../components/funding/search/FundingSearchResult';
 
@@ -31,7 +32,6 @@ import SetPassword from '../components/signup/accountRegist/SetPassword';
 import ResetPassword from '../components/signup/accountRegist/ResetPassword';
 import CreatedAccount from '../components/signup/accountRegist/CreatedAccount';
 
-
 function AppRoutes() {
   return (
     <Routes>
@@ -42,8 +42,8 @@ function AppRoutes() {
         <Route path="my-artist" element={<MyArtistFundingContainer />}></Route>
       </Route>
 
-      <Route path="/funding">
-        <Route path=":id" element={<FundingPage />} />
+      <Route path="/funding" element={<FundingPage />}>
+        <Route path=":id" element={<FundingDetail />} />
         <Route path="regist" element={<FundingRegist />} />
         <Route path="search" element={<FundingSearchResult />}></Route>
       </Route>
