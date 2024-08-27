@@ -118,7 +118,7 @@ function PopularFundingContainer() {
         <div className="popular-funding-header-description">최근 인기 펀딩</div>
       </header>
       <div className="popular-funding-list">
-        {recentPopularFundingTempData.map((funding, index) => (
+        {recentPopularFundingTempData.slice(0, 10).map((funding, index) => (
           <RecentPopularFundingCard
             key={funding.fundingId}
             index={index}

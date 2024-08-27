@@ -94,6 +94,16 @@ function MainContainer() {
       status: 'PROCESSING',
       totalAmount: 1970000,
     },
+    {
+      fundingId: 6,
+      fundingImage: '../../assets/character/Sol.png',
+      artistName: '공유',
+      title: '우리 배우님 커피차 같이 쏠 사람 !! dafsdf',
+      successRate: 80,
+      type: 'COMMON',
+      status: 'PROCESSING',
+      totalAmount: 1970000,
+    },
   ];
 
   return (
@@ -143,7 +153,7 @@ function MainContainer() {
             </div>
           </div>
           <div className="main-artist-funding-list">
-            {zzimArtistFundingTempData.map((funding) => (
+            {zzimArtistFundingTempData.slice(0, 10).map((funding) => (
               <ArtistFundingCard
                 key={funding.fundingId}
                 funding={funding}
@@ -170,7 +180,7 @@ function MainContainer() {
             </div>
           </div>
           <div className="main-popular-funding-list">
-            {recentPopularFundingTempData.map((funding, index) => (
+            {recentPopularFundingTempData.slice(0, 5).map((funding, index) => (
               <RecentPopularFundingCard
                 key={funding.fundingId}
                 index={index}
