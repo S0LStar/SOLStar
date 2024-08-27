@@ -4,74 +4,94 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
-import CircleX from '../../../assets/signup/CircleX.png';
 
 function SetPassword() {
   const navigate = useNavigate();
-  const location = useLocation(); // Use useLocation to get the passed state
-  const [currentStep] = useState(3);
-  const account = location.state?.account || {}; // Retrieve the account data from location.state safely
+  const location = useLocation();
+  const [currentStep] = useState(4);
+  const account = location.state?.account || {};
 
-  const [nextActive, setNextActive] = useState(false); // 다음 버튼 활성화 상태
+  const [password, setPassword] = useState('');
+  const [nextActive, setNextActive] = useState(false);
 
-  // 모든 필드가 채워졌는지 확인
+  // Check if password is set to enable the next button
   useEffect(() => {
-    const isFormComplete = Boolean(account.accountHolder);
-    setNextActive(isFormComplete);
-  }, [account]);
+    setNextActive(password.length === 6); // Enable 'Next' button when 6 characters are entered
+  }, [password]);
 
-  // Input change handler
-  const handleChange = (e) => {
-    // Assuming we need to handle changes within this component
-    const { id, value } = e.target;
-    setAccount((prevAccount) => ({
-      ...prevAccount,
-      [id]: value,
-    }));
+  // Handle number button clicks
+  const handleNumberClick = (num) => {
+    if (password.length < 6) {
+      setPassword(password + num);
+    }
+  };
+
+  // Handle clear action
+  const handleClear = () => {
+    setPassword('');
+  };
+
+  // Handle backspace action
+  const handleBackspace = () => {
+    setPassword(password.slice(0, -1));
   };
 
   return (
     <>
-      <div>
-        <div>
-          <div>
+      <div className="setpass-container">
+        <div className="setpass-header">
+          <div className="setpass-header-backInfo">
             <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
             비밀번호 설정
           </div>
           <ProgressBar currentStep={currentStep} />
         </div>
 
-        <div>
-          입금자명의 4자리 숫자를
-          <br />
-          입력해 주세요.
+        <div className="setpass-instruction">비밀번호 입력</div>
+
+        <div className="setpass-input-indicator">
+          {[...Array(6)].map((_, index) => (
+            <div
+              key={index}
+              className={`circle ${password.length > index ? 'active' : ''}`}
+            />
+          ))}
         </div>
 
-        <div>{account.accountNumber}</div>
-        <div>{account.bankName}</div>
-        <div>{account.accountHolder}</div>
-        <form>
-          <div>
-            <label htmlFor="accountHolder">입금자명</label>
-            <input
-              type="text"
-              id="accountHolder"
-              value={account.accountHolder || ''}
-              onChange={handleChange}
-              placeholder="SOLSTAR 제외 4자리 숫자"
-            />
-            <img src={CircleX} alt="" />
-          </div>
-          <button>확인</button>
-        </form>
+        <div className="keypad">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, '전체 삭제', 0, '←'].map(
+            (item, index) => (
+              <button
+                key={index}
+                className={`keypad-button ${
+                  item === '전체 삭제' ? 'small-text' : ''
+                }`}
+                onClick={() => {
+                  if (item === '전체 삭제') {
+                    handleClear();
+                  } else if (item === '←') {
+                    handleBackspace();
+                  } else {
+                    handleNumberClick(item);
+                  }
+                }}
+              >
+                {item}
+              </button>
+            )
+          )}
+        </div>
 
         <WideButton
           isActive={nextActive}
           onClick={() => {
-            navigate('/signup/reset', { state: { account } });
+            if (nextActive) {
+              navigate('/signup/reset', { state: { account, password } });
+            }
           }}
+          className="setpass-next-button"
         >
-          다음
+          확인
         </WideButton>
       </div>
     </>
