@@ -27,4 +27,9 @@ public class LikeList {
     @JoinColumn(name = "artist_id", referencedColumnName = "id", nullable = false)
     private Artist artist;
 
+    public LikeList(User user, Artist artist) {
+        this.user = user;
+        this.artist = artist;
+    }
+
 }
