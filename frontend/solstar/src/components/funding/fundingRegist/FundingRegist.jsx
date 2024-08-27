@@ -5,8 +5,7 @@ import FundingRegistInfo from './FundingRegistInfo';
 import FundingRegistContent from './FundingRegistContent';
 
 function FundingRegistContainer() {
-  // TODO: 변경
-  const [step, setStep] = useState(2); // 펀딩 등록 단계
+  const [step, setStep] = useState(1); // 펀딩 등록 단계
   const [funding, setFunding] = useState({
     // 펀딩 정보를 관리할 state
     type: 'COMMON',
@@ -16,7 +15,6 @@ function FundingRegistContainer() {
     goalAmount: '',
     artistId: '',
     content: '',
-    contentImage: '',
   });
 
   const handleChange = (e) => {
@@ -25,8 +23,8 @@ function FundingRegistContainer() {
   };
 
   const handleRegist = () => {
-    // 등록 완료
-    console.log('등록 완료 !');
+    // TODO: 등록 완료, API 연결 필요
+    console.log(funding);
   };
 
   return (

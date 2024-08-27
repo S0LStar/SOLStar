@@ -7,6 +7,7 @@ function WideButton({ children, isActive, onClick }) {
       <button
         onClick={onClick}
         className={`wide-button ${isActive ? 'active' : 'inactive'}`}
+        disabled={!isActive && true}
       >
         {children}
       </button>
