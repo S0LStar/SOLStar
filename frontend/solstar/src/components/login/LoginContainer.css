@@ -33,7 +33,7 @@
   width: 100%;
   height: 36px;
   border-radius: 15px;
-  border: 1.5px solid color-mix(in srgb, #6c7072 50%, white 50%);
+  border: 0.25px solid color-mix(in srgb, #6c7072 50%, white 50%);
   padding: 0 16px;
   background-color: #fcfcfc;
 }

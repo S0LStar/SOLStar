@@ -147,7 +147,7 @@ function CreateAccount() {
           isActive={nextActive}
           onClick={() => {
             if (nextActive) {
-              navigate('/signup/regist');
+              navigate('/signup/regist', { state: { account } });
             }
           }}
         >
