@@ -1,11 +1,13 @@
-/* src/components/FundingCard/FundingCard.css */
-
-.search-result-funding-item {
+.funding-card-item {
   display: flex;
   margin-bottom: 10px;
 }
 
-.search-result-funding-image {
+.funding-card-image-container {
+  position: relative;
+}
+
+.funding-card-image {
   width: 100px;
   height: 100px;
   border: 0.7px solid #6c707230;
@@ -13,54 +15,74 @@
   margin-right: 15px;
 }
 
-.search-result-funding-artist {
+.funding-card-artist {
   font-size: 10px;
   color: #30303070;
 }
 
-.search-result-funding-title {
-  font-size: 14px;
+.funding-card-title {
+  font-size: 12px;
   font-weight: 500;
   margin-bottom: 10px;
 }
 
-.search-result-funding-details {
+.funding-card-details {
   font-size: 12px;
 }
 
-.search-result-funding-detail {
+.funding-card-detail {
   display: flex;
 }
 
-.search-result-funding-progress {
+.funding-card-progress {
   font-weight: 800;
   margin-right: 10px;
 }
 
-.progress .search-result-funding-progress {
+.progress .funding-card-progress {
   color: #0046ff;
 }
 
-.success .search-result-funding-progress {
+.success .funding-card-progress {
   color: #303030;
 }
 
-.fail .search-result-funding-progress,
-.fail .search-result-funding-amount,
-.fail .search-result-funding-days-left {
+.fail .funding-card-progress,
+.fail .funding-card-amount,
+.fail .funding-card-days-left {
   color: #30303070;
 }
 
-.search-result-funding-days-left {
+.funding-card-days-left {
   margin-left: auto;
   margin-right: 5px;
 }
 
-.progress.popular-funding-achievement-bar::before {
+.funding-card-achievement-bar {
+  margin-top: 5px;
+  height: 5px;
+  border-radius: 4px;
+  background-color: #eeeff1;
+  position: relative;
+  overflow: hidden;
+}
+
+.funding-card-achievement-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #0046ff;
+  width: 0;
+  transition: width 0.4s ease-in-out;
+}
+
+.progress .funding-card-achievement-bar::before {
   width: calc(100% * (min(1, var(--achievement-percentage) / 100)));
 }
 
-.success.popular-funding-achievement-bar::before {
+.success .funding-card-achievement-bar::before {
   width: 100%;
   background-color: #303030;
 }
