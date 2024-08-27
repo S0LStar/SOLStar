@@ -29,7 +29,4 @@ public class Account {
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    @Column(name = "bank_code", nullable = false, length = 45)
-    private String bankCode;
-
 }
