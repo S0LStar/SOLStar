@@ -56,7 +56,7 @@ public class ArtistController {
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
                 .message("찜한 아티스트 리스트 조회 완료")
-                .data(likeArtistList)
+                .data(Map.of("likeArtistList", likeArtistList))
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
