@@ -132,7 +132,12 @@ function MainContainer() {
             <div className="zzim-artist-funding-description">
               나의 선호 아티스트 펀딩
             </div>
-            <div className="main-view-all">
+            <div
+              className="main-view-all"
+              onClick={() => {
+                navigate('/my-artist');
+              }}
+            >
               전체보기
               <img src={Go} alt="" className="main-view-all-icon" />
             </div>
