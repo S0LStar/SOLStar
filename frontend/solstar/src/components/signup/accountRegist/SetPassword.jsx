@@ -91,7 +91,7 @@ function SetPassword() {
           }}
           className="setpass-next-button"
         >
-          확인
+          다음
         </WideButton>
       </div>
     </>
