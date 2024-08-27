@@ -1,5 +1,6 @@
 package com.shinhan.solstar.domain.board.entity;
 
+import com.shinhan.solstar.domain.board.dto.request.BoardUpdateRequestDto;
 import com.shinhan.solstar.domain.funding.entity.Funding;
 import com.shinhan.solstar.global.baseTimeEntity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -30,13 +31,32 @@ public class Board extends BaseTimeEntity {
     @Column(name = "content", nullable = false, length = 1500)
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    private BoardType type;
-
-    @Column(name = "content_image", nullable = true, length = 255)
-    private String contentImage;
+//    @Column(name = "content_image", nullable = true, length = 255)
+//    private String contentImage;
 
     @Column(name = "is_delete", nullable = true)
     private Boolean isDelete;
 
+    public static Board createBoard(Funding funding, String title, String content) {
+        return Board.builder()
+                .funding(funding)
+                .title(title)
+                .content(content)
+                .isDelete(false)
+                .build();
+    }
+
+    public void updateBoardDetails(BoardUpdateRequestDto boardDto) {
+        if (boardDto.getTitle() != null) {
+            this.title = boardDto.getTitle();
+        }
+
+        if (boardDto.getContent() != null) {
+            this.content = boardDto.getContent();
+        }
+    }
+
+    public void deleteBoard() {
+        this.isDelete = true;
+    }
 }

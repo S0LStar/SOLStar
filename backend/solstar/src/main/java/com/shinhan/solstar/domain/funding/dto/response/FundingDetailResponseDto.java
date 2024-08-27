@@ -19,10 +19,6 @@ public class FundingDetailResponseDto {
 
     private String hostProfileImage;
 
-    private String content;
-
-    private String contentImage;
-
     private int totalAmount;
 
     private int goalAmount;
@@ -37,14 +33,12 @@ public class FundingDetailResponseDto {
     
     // 추가적으로 아티스트 관련 정보도 넘겨줘야 함
     @Builder
-    private FundingDetailResponseDto(String title, String fundingImage, String hostNickname,String hostIntroduction, String hostProfileImage, String content, String contentImage, int totalAmount, int goalAmount, LocalDate deadlineDate, int totalJoin, String type, String status) {
+    private FundingDetailResponseDto(String title, String fundingImage, String hostNickname, String hostIntroduction, String hostProfileImage, int totalAmount, int goalAmount, LocalDate deadlineDate, int totalJoin, String type, String status) {
         this.title = title;
         this.fundingImage = fundingImage;
         this.hostNickname = hostNickname;
         this.hostIntroduction = hostIntroduction;
         this.hostProfileImage = hostProfileImage;
-        this.content = content;
-        this.contentImage = contentImage;
         this.totalAmount = totalAmount;
         this.goalAmount = goalAmount;
         this.deadlineDate = deadlineDate;
@@ -60,8 +54,6 @@ public class FundingDetailResponseDto {
                 .hostNickname(funding.getHost().getNickname())
                 .hostIntroduction(funding.getHost().getIntroduction())
                 .hostProfileImage(funding.getHost().getProfileImage())
-                .content(funding.getContent())
-                .contentImage(funding.getContentImage())
                 .totalAmount(funding.getTotalAmount())
                 .goalAmount(funding.getGoalAmount())
                 .deadlineDate(funding.getDeadlineDate())

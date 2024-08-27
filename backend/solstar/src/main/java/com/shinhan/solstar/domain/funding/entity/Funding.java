@@ -5,10 +5,7 @@ import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.shinhan.solstar.domain.user.entity.User;
 import com.shinhan.solstar.global.baseTimeEntity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
@@ -32,9 +29,6 @@ public class Funding extends BaseTimeEntity {
 
     @Column(length = 1500, nullable = false)
     private String content;
-
-    @Column(length = 255)
-    private String contentImage;
 
     private int goalAmount;
 
@@ -64,17 +58,17 @@ public class Funding extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private FundingType type;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private FundingStatus status;
 
-    public static Funding createFunding(String title, String fundingImage, String content, String contentImage,
+    public static Funding createFunding(String title, String fundingImage, String content,
                                         int goalAmount, LocalDate deadlineDate, int totalAmount, int totalJoin,
                                         Artist artist, User host, FundingType type, FundingStatus status) {
         return Funding.builder()
                 .title(title)
                 .fundingImage(fundingImage)
                 .content(content)
-                .contentImage(contentImage)
                 .goalAmount(goalAmount)
                 .deadlineDate(deadlineDate)
                 .totalAmount(totalAmount)
@@ -98,10 +92,6 @@ public class Funding extends BaseTimeEntity {
 
         if (fundingDto.getContent() != null) {
             this.content = fundingDto.getContent();
-        }
-
-        if (fundingDto.getContentImage() != null) {
-            this.contentImage = fundingDto.getContentImage();
         }
     }
 
