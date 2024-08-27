@@ -8,6 +8,7 @@ import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.shinhan.solstar.domain.funding.dto.response.FundingDetailResponseDto;
+import com.shinhan.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.shinhan.solstar.domain.funding.model.service.FundingService;
 import com.shinhan.solstar.global.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -161,11 +162,12 @@ public class FundingController {
     // 메인화면 - 나의 선호 아티스트 펀딩 조회
     @GetMapping("/my-like-artist")
     public ResponseEntity<?> getMyLikeArtistFunding() {
+        List<FundingResponseDto> fundingList = fundingService.getMyLikeArtistFunding();
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
                 .message("나의 선호 아티스트 펀딩 조회 완료")
-                .data(null)
+                .data(fundingList)
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

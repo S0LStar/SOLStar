@@ -6,6 +6,7 @@ import com.shinhan.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.shinhan.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.shinhan.solstar.domain.funding.dto.response.FundingDetailResponseDto;
+import com.shinhan.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.shinhan.solstar.domain.funding.entity.Funding;
 import com.shinhan.solstar.domain.funding.entity.FundingStatus;
 import com.shinhan.solstar.domain.funding.entity.FundingType;
@@ -98,7 +99,7 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
-    public List<Funding> getMyLikeArtistFunding() {
+    public List<FundingResponseDto> getMyLikeArtistFunding() {
 
         // 로그인한 유저 찾기
         User loginUser = userRepository.findById(1);
@@ -110,7 +111,11 @@ public class FundingServiceImpl implements FundingService {
                 .map(LikeList::getArtist)
                 .collect(Collectors.toList());
 
-        List<Funding> fundingList = fundingRepository.findByArtistIn(likeArtistEntities);
+        List<Funding> fundingEntities = fundingRepository.findByArtistIn(likeArtistEntities);
+
+        List<FundingResponseDto> fundingList = fundingEntities.stream()
+                .map(funding -> FundingResponseDto.createResponseDto(funding))
+                .collect(Collectors.toList());
 
         return fundingList;
     }
