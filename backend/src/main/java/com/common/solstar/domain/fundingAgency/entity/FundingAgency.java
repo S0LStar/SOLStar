@@ -40,4 +40,8 @@ public class FundingAgency {
                 .build();
     }
 
+    public void acceptFunding() {
+        this.status = true;
+    }
+
 }

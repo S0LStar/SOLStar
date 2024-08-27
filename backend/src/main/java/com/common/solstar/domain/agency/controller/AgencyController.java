@@ -6,9 +6,7 @@ import com.common.solstar.global.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,6 +32,18 @@ public class AgencyController {
     }
 
     // 펀딩 인증 요청 승인
+    @PatchMapping("/funding-accept/{fundingId}")
+    public ResponseEntity<?> acceptFunding(@PathVariable("fundingId") int fundingId) {
+        agencyService.acceptFunding(fundingId);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("펀딩 인증 요청 승인 성공")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
 
     // 펀딩 인증 요청 거절
 

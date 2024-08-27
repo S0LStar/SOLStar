@@ -24,6 +24,11 @@ public enum CustomException {
     // 펀딩 공지사항
     NOT_FOUND_BOARD_EXCEPTION(400, "NotFoundBoardException", "펀딩 공지사항이 존재하지 않습니다."),
 
+    // 펀딩 소속사
+    NOT_FOUND_FUNDING_AGENCY_EXCEPTION(400, "NotFoundFundingAgencyException", "해당 소속사와 연결된 펀딩이 아닙니다."),
+    NOT_MATCH_AGENCY_EXCEPTION(400, "NotMatchAgencyException", "해당 소속사는 펀딩 소속사와 일치하지 않습니다."),
+    ALREADY_ACCEPT_FUNDING_EXCEPTION(400, "AlreadyAcceptFundingException", "해당 펀딩은 이미 소속사 승인이 되었습니다."),
+
     // 아티스트
     NOT_FOUND_ARTIST_EXCEPTION(400, "NotFoundArtistException", "아티스트가 존재하지 않습니다."),
 

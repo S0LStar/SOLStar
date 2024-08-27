@@ -4,10 +4,12 @@ import com.common.solstar.domain.agency.entity.Agency;
 import com.common.solstar.domain.agency.model.repository.AgencyRepository;
 import com.common.solstar.domain.funding.dto.response.FundingAgencyResponseDto;
 import com.common.solstar.domain.funding.entity.Funding;
+import com.common.solstar.domain.funding.model.repository.FundingRepository;
 import com.common.solstar.domain.fundingAgency.entity.FundingAgency;
 import com.common.solstar.domain.fundingAgency.model.repository.FundingAgencyRepository;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +20,14 @@ import java.util.stream.Collectors;
 @Service
 public class AgencyServiceImpl implements AgencyService {
 
+    private final FundingRepository fundingRepository;
     private final FundingAgencyRepository fundingAgencyRepository;
     private final AgencyRepository agencyRepository;
 
+    @Override
     public List<FundingAgencyResponseDto> getFundingList() {
 
-        // 로그인한 사용자의 agency 정보 불러오기
+        // 로그인한 소속사 정보 불러오기
         Agency agency = agencyRepository.findById(1)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
 
@@ -40,6 +44,32 @@ public class AgencyServiceImpl implements AgencyService {
                 .collect(Collectors.toList());
 
         return fundingList;
+    }
+
+    @Override
+    @Transactional
+    public void acceptFunding(int fundingId) {
+
+        // 로그인한 소속사 정보 불러오기
+        Agency agency = agencyRepository.findById(1)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
+
+        // 펀딩의 아티스트의 소속사가 현재 로그인한 소속사가 맞는지 검증
+        Funding selectedFunding = fundingRepository.findById(fundingId)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        FundingAgency matchConnection = fundingAgencyRepository.findByFunding(selectedFunding)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_AGENCY_EXCEPTION));
+
+        if (!matchConnection.getAgency().equals(agency))
+            throw new ExceptionResponse(CustomException.NOT_MATCH_AGENCY_EXCEPTION);
+
+        // 미승인 상태라면, 승인 상태로 수정
+        if (!matchConnection.isStatus()) {
+            matchConnection.acceptFunding();
+        } else {
+            throw new ExceptionResponse(CustomException.ALREADY_ACCEPT_FUNDING_EXCEPTION);
+        }
     }
 
 }
