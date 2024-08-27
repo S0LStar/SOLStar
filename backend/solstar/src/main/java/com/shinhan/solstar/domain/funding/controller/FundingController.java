@@ -159,6 +159,17 @@ public class FundingController {
     // 쏠 스코어 남기기
 
     // 메인화면 - 나의 선호 아티스트 펀딩 조회
+    @GetMapping("/my-like-artist")
+    public ResponseEntity<?> getMyLikeArtistFunding() {
+
+        ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
+                .status(HttpStatus.OK.value())
+                .message("나의 선호 아티스트 펀딩 조회 완료")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
     // 메인화면 - 최근 인기 펀딩 조회
 

@@ -10,6 +10,8 @@ import com.shinhan.solstar.domain.funding.entity.Funding;
 import com.shinhan.solstar.domain.funding.entity.FundingStatus;
 import com.shinhan.solstar.domain.funding.entity.FundingType;
 import com.shinhan.solstar.domain.funding.model.repository.FundingRepository;
+import com.shinhan.solstar.domain.likeList.entity.LikeList;
+import com.shinhan.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.shinhan.solstar.domain.user.entity.User;
 import com.shinhan.solstar.domain.user.model.repository.UserRepository;
 import com.shinhan.solstar.global.exception.CustomException;
@@ -18,6 +20,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class FundingServiceImpl implements FundingService {
@@ -25,6 +30,7 @@ public class FundingServiceImpl implements FundingService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
     private final ArtistRepository artistRepository;
+    private final LikeListRepository likeListRepository;
 
     @Override
     public void createFunding(FundingCreateRequestDto fundingDto) {
@@ -89,6 +95,24 @@ public class FundingServiceImpl implements FundingService {
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
 
         return FundingContentResponseDto.createResponseDto(funding);
+    }
+
+    @Override
+    public List<Funding> getMyLikeArtistFunding() {
+
+        // 로그인한 유저 찾기
+        User loginUser = userRepository.findById(1);
+
+        List<LikeList> likeListEntities = likeListRepository.findByUser_Id(loginUser.getId());
+
+        // LikeList 엔티티에서 Artist 엔티티 추출
+        List<Artist> likeArtistEntities = likeListEntities.stream()
+                .map(LikeList::getArtist)
+                .collect(Collectors.toList());
+
+        List<Funding> fundingList = fundingRepository.findByArtistIn(likeArtistEntities);
+
+        return fundingList;
     }
 
 }

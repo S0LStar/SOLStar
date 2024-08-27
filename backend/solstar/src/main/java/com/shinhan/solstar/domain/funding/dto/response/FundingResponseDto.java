@@ -1,6 +1,7 @@
 package com.shinhan.solstar.domain.funding.dto.response;
 
 import com.shinhan.solstar.domain.funding.entity.Funding;
+import com.shinhan.solstar.domain.funding.entity.FundingStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -25,8 +26,10 @@ public class FundingResponseDto {
 
     private int totalAmount;
 
+    private String fundingImage;
+
     @Builder
-    private FundingResponseDto(int id, String title, String artistName, int remainDays, String status, int goalAmount, int totalAmount) {
+    private FundingResponseDto(int id, String title, String artistName, int remainDays, String status, int goalAmount, int totalAmount, String fundingImage) {
         this.id = id;
         this.title = title;
         this.artistName = artistName;
@@ -34,6 +37,7 @@ public class FundingResponseDto {
         this.status = status;
         this.goalAmount = goalAmount;
         this.totalAmount = totalAmount;
+        this.fundingImage = fundingImage;
     }
 
     public static FundingResponseDto createResponseDto(Funding funding) {
@@ -46,14 +50,18 @@ public class FundingResponseDto {
 
         long remainDays = ChronoUnit.DAYS.between(LocalDate.now(), deadlineDate);
 
+        FundingStatus status = funding.getStatus();
+        if (status == FundingStatus.CLOSED) status = FundingStatus.SUCCESS;
+
         return FundingResponseDto.builder()
                 .id(funding.getId())
                 .title(funding.getTitle())
                 .artistName(artistName)
                 .remainDays((int) (remainDays - 1))
-                .status(funding.getStatus().getMessage())
+                .status(status.name())
                 .goalAmount(funding.getGoalAmount())
                 .totalAmount(funding.getTotalAmount())
+                .fundingImage(funding.getFundingImage())
                 .build();
     }
 
