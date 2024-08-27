@@ -3,9 +3,10 @@ import { Route, Routes } from 'react-router-dom';
 // Main
 import MainPage from '../pages/MainPage';
 import MainContainer from '../components/main/MainContainer';
+import PopularFundingContainer from '../components/main/popular/PopularFundingContainer';
+import MyArtistFundingContainer from '../components/main/myartist/MyArtistFundingContainer';
 
 // Funding
-import PopularFundingContainer from '../components/main/popular/PopularFundingContainer';
 import FundingPage from '../pages/FundingPage';
 import FundingRegist from '../components/funding/regist/FundingRegist';
 import FundingSearchResult from '../components/funding/search/FundingSearchResult';
@@ -38,6 +39,7 @@ function AppRoutes() {
         <Route index element={<MainContainer />} />
         <Route path="search" element={<MainSearch />} />
         <Route path="popular" element={<PopularFundingContainer />} />
+        <Route path="my-artist" element={<MyArtistFundingContainer />}></Route>
       </Route>
 
       <Route path="/funding">
