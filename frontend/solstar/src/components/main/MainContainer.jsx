@@ -104,6 +104,10 @@ function MainContainer() {
             type="text"
             className="main-search-input"
             placeholder="펀딩, 아티스트 검색"
+            onClick={() => {
+              navigate('/search');
+            }}
+            readOnly
           />
           <img src={SearchIcon} alt="search" className="main-search-icon" />
         </div>

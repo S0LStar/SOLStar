@@ -7,7 +7,8 @@ import MainContainer from '../components/main/MainContainer';
 // Funding
 import PopularFundingContainer from '../components/main/popular/PopularFundingContainer';
 import FundingPage from '../pages/FundingPage';
-import FundingRegist from '../components/funding/fundingRegist/FundingRegist';
+import FundingRegist from '../components/funding/regist/FundingRegist';
+import FundingSearchResult from '../components/funding/search/FundingSearchResult';
 
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
@@ -18,18 +19,21 @@ import MyPageContainer from '../components/mypage/MyContainer';
 import EditProfileContainer from '../components/mypage/EditProfileContainer';
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer';
+import MainSearch from '../components/main/MainSearch';
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<MainPage />}>
         <Route index element={<MainContainer />} />
-        <Route path="popular" element={<PopularFundingContainer />}></Route>
+        <Route path="search" element={<MainSearch />} />
+        <Route path="popular" element={<PopularFundingContainer />} />
       </Route>
 
       <Route path="/funding">
         <Route path=":id" element={<FundingPage />} />
-        <Route path="regist" element={<FundingRegist />}></Route>
+        <Route path="regist" element={<FundingRegist />} />
+        <Route path="search" element={<FundingSearchResult />}></Route>
       </Route>
 
       <Route path="/wallet" element={<WalletPage />}>
