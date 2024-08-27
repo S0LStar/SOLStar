@@ -127,7 +127,7 @@
 }
 
 .accountverify-container .wide-button {
-  width: 100%;
+  width: 60%;
   margin-top: 20px;
   background-color: #0046ff;
   border: none;
@@ -137,6 +137,9 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .accountverify-container .wide-button:hover {
