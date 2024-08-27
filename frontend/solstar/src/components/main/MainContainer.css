@@ -11,18 +11,14 @@
 
 .main-search-input {
   display: flex;
-  width: 84%;
+  width: 88%;
   height: 36px;
   border: 1.5px solid #72777a50;
   border-radius: 14px;
-  padding: 0 10px;
-}
-
-.main-search-input:focus {
-  outline: none;
 }
 
 .main-search-input::placeholder {
+  padding: 10px;
   color: #72777a50;
 }
 

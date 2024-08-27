@@ -3,15 +3,12 @@ import PropTypes from 'prop-types';
 
 function WideButton({ children, isActive, onClick }) {
   return (
-    <div className="wide-button-container">
-      <button
-        onClick={onClick}
-        className={`wide-button ${isActive ? 'active' : 'inactive'}`}
-        disabled={!isActive && true}
-      >
-        {children}
-      </button>
-    </div>
+    <button
+      onClick={onClick}
+      className={`wide-button ${isActive ? 'active' : 'inactive'}`}
+    >
+      {children}
+    </button>
   );
 }
 
