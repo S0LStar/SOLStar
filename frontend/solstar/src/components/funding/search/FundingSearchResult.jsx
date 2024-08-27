@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SearchReset from '../../../assets/common/SearchReset.png';
-import BackButton from '../../common/BackButton';
+import GoBack from '../../../assets/common/GoBack.png';
 import Go from '../../../assets/common/Go.png';
 import temp from '../../../assets/character/Sol.png';
 import Zzim from '../../../assets/artist/Zzim.png';
@@ -22,6 +22,7 @@ function FundingSearchResult() {
   });
 
   useEffect(() => {
+    console.log(query);
     // TODO : API 연결
     // 검색 결과 데이터
     const fetchedData = {
@@ -142,7 +143,14 @@ function FundingSearchResult() {
   return (
     <div className="search-results-container">
       <div className="main-search-bar">
-        <BackButton />
+        <img
+          src={GoBack}
+          alt=""
+          className="go-back"
+          onClick={() => {
+            navigate('/');
+          }}
+        />
         <div className="main-search-result-input-container">
           <input
             type="text"
