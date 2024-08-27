@@ -1,4 +1,4 @@
-package com.common.solstar.domain.entity;
+package com.common.solstar.domain.fundingAgency.entity;
 
 import com.common.solstar.domain.agency.entity.Agency;
 import com.common.solstar.domain.funding.entity.Funding;
@@ -31,5 +31,13 @@ public class FundingAgency {
     @ColumnDefault("false")
     @Column(columnDefinition = "TINYINT(1)")
     private boolean status;
+
+    public static FundingAgency createFundingAgency(Funding funding, Agency agency) {
+        return FundingAgency.builder()
+                .funding(funding)
+                .agency(agency)
+                .status(false)
+                .build();
+    }
 
 }

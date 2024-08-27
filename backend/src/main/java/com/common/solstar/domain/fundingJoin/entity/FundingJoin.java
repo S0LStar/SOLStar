@@ -1,4 +1,4 @@
-package com.common.solstar.domain.entity;
+package com.common.solstar.domain.fundingJoin.entity;
 
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.user.entity.User;

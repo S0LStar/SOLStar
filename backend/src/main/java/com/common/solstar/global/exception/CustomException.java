@@ -25,7 +25,10 @@ public enum CustomException {
     NOT_FOUND_BOARD_EXCEPTION(400, "NotFoundBoardException", "펀딩 공지사항이 존재하지 않습니다."),
 
     // 아티스트
-    NOT_FOUND_ARTIST_EXCEPTION(400, "NotFoundArtistException", "아티스트가 존재하지 않습니다"),
+    NOT_FOUND_ARTIST_EXCEPTION(400, "NotFoundArtistException", "아티스트가 존재하지 않습니다."),
+
+    // 소속사
+    NOT_FOUND_AGENCY_EXCEPTION(400, "NotFoundAgencyException", "소속사가 존재하지 않습니다."),
 
     // 인증 에러 401
     EXPIRED_JWT_EXCEPTION(401,"ExpiredJwtException","토큰이 만료했습니다."),
