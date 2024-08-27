@@ -10,7 +10,7 @@ function MainSearch() {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      navigate(`funding/search?query=${searchValue}`);
+      navigate(`/funding/search?query=${searchValue}`);
     }
   };
 
