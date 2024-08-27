@@ -8,12 +8,6 @@
 
 .main-search-container .main-search-input {
   width: 85%;
-  padding: 0 10px;
-}
-
-.main-search-input::placeholder {
-  all: unset;
-  color: #72777a50;
 }
 
 .main-search-description-img {
