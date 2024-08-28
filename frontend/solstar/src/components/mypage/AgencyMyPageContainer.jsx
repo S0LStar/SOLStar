@@ -45,13 +45,13 @@ function AgencyMyPageContainer() {
         <div className="agencymy-funding">
           <div className="agencymy-funding-label">소속사</div>
           <hr />
-          <div
-            className="agencymy-funding-container"
-            onClick={() => {
-              navigate(`/agencymy/request`);
-            }}
-          >
-            <div className="agencymy-funding-context">
+          <div className="agencymy-funding-container">
+            <div
+              className="agencymy-funding-context"
+              onClick={() => {
+                navigate(`/agencymy/request`);
+              }}
+            >
               인증 펀딩 요청
               <img src={RightVector} alt="" />
             </div>
