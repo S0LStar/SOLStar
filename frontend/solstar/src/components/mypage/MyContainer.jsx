@@ -76,6 +76,9 @@ function MyContainer() {
         <button onClick={() => navigate('/login')}>
           <span>로그인</span>
         </button>
+        <button onClick={() => navigate('/agencymy')}>
+          <span>소속사 마이페이지</span>
+        </button>
       </div>
     </>
   );
