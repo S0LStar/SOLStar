@@ -81,7 +81,7 @@ function RequestFunding() {
                   onClick={() => handleCancel(funding.fundingId)}
                   isActive={false}
                 >
-                  반려
+                  거절
                 </WideButton>
                 <WideButton
                   onClick={() => handleComplete(funding.fundingId)}
