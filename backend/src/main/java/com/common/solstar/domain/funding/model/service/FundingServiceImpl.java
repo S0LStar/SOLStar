@@ -144,4 +144,18 @@ public class FundingServiceImpl implements FundingService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<FundingResponseDto> getSearchFunding(String keyword) {
+
+        // 로그인한 유저 불러오기
+        User loginUser = userRepository.findById(1);
+
+        // 검색어로 펀딩 리스트 불러오기
+        List<Funding> searchFundings = fundingRepository.findByTitleContainingIgnoreCase(keyword);
+
+        return searchFundings.stream()
+                .map(FundingResponseDto::createResponseDto)
+                .collect(Collectors.toList());
+    }
+
 }

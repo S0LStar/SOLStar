@@ -188,5 +188,17 @@ public class FundingController {
     }
 
     // 메인화면 - 검색어로 펀딩 조회
+    @GetMapping
+    public ResponseEntity<?> getSearchFunding(@RequestParam String keyword) {
+        List<FundingResponseDto> searchFundings = fundingService.getSearchFunding(keyword);
+
+        ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
+                .status(HttpStatus.OK.value())
+                .message("펀딩 검색 조회 완료")
+                .data(searchFundings)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
 }

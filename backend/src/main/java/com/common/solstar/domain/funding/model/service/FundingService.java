@@ -30,4 +30,7 @@ public interface FundingService {
 
     // 최근 인기 펀딩 조회
     List<FundingResponseDto> getPopularFunding();
+
+    // 펀딩 검색 조회
+    List<FundingResponseDto> getSearchFunding(String keyword);
 }
