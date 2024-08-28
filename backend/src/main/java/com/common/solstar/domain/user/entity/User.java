@@ -54,7 +54,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     private float score;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+//    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private Account account;
 
     @Column(length = 255)

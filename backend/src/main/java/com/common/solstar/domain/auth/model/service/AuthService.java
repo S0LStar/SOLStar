@@ -57,6 +57,7 @@ public class AuthService {
 
         String userKey = "userKey"; // 금융 api에서 email로 계좌 정보 조회에서 불러와야함
 
+        // account 입력받는 로직 추가해야 함
         User user = User.builder()
                 .email(email)
                 .nickname(nickname)
@@ -65,11 +66,11 @@ public class AuthService {
                 .birthDate(signupRequest.getBirthDate())
                 .phone(signupRequest.getPhone())
                 .profileImage(signupRequest.getProfileImage())
+                .account(null)
                 .userKey(userKey) // userKey 받아오는 로직 수정필요
                 .build();
 
         Account account = Account.builder()
-                .user(user)
                 .accountNumber(signupRequest.getAccountNumber())
                 .password(signupRequest.getAccountPassword())
                 .bankCode(signupRequest.getBankCode())
