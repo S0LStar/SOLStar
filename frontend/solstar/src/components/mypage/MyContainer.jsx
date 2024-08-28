@@ -53,13 +53,13 @@ function MyContainer() {
         <div className="my-funding">
           <div className="my-funding-label">내 펀딩</div>
           <hr />
-          <div
-            className="my-funding-container"
-            onClick={() => {
-              navigate(`/my/participantfunding`);
-            }}
-          >
-            <div className="my-funding-context">
+          <div className="my-funding-container">
+            <div
+              className="my-funding-context"
+              onClick={() => {
+                navigate(`/my/participantfunding`);
+              }}
+            >
               내 참여 펀딩
               <img src={RightVector} alt="" />
             </div>
