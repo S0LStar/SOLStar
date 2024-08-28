@@ -180,7 +180,20 @@ margin-bottom: 20px;
   color: #303030b9
 }
 
+.funding-content-tab-button {
+  font-size: 14px;
+  border: none;
+  background: none;
+  color: #00000070;
+  font-weight: 500;
+  padding: 10px;
+}
 
+.funding-content-tab-button.active {
+  color: #303030;
+  font-weight: 800;
+  border-bottom: 3px solid #303030;
+}
 
 .wide-button-fix {
   display: flex;
