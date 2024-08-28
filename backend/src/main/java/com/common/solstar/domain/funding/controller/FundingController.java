@@ -176,11 +176,12 @@ public class FundingController {
     // 메인화면 - 최근 인기 펀딩 조회
     @GetMapping("/popular")
     public ResponseEntity<?> getPopularFunding() {
+        List<FundingResponseDto> fundingList = fundingService.getPopularFunding();
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
                 .message("최근 인기 펀딩 조회 완료")
-                .data(null)
+                .data(fundingList)
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

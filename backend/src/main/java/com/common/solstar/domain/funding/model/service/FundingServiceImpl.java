@@ -129,4 +129,19 @@ public class FundingServiceImpl implements FundingService {
         return fundingList;
     }
 
+    @Override
+    public List<FundingResponseDto> getPopularFunding() {
+
+        // 로그인한 유저 찾기
+        User loginUser = userRepository.findById(1);
+
+        // totalJoin 기준으로 내림차순 정렬된 펀딩 목록을 가져옴
+        List<Funding> popularFundings = fundingRepository.findPopularFundings();
+
+        // Funding 엔티티를 FundingResponseDto 로 변환
+        return popularFundings.stream()
+                .map(FundingResponseDto::createResponseDto)
+                .collect(Collectors.toList());
+    }
+
 }

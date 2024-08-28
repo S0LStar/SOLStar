@@ -28,4 +28,6 @@ public interface FundingService {
     // 내가 선호하는 아티스트 펀딩 조회
     List<FundingResponseDto> getMyLikeArtistFunding();
 
+    // 최근 인기 펀딩 조회
+    List<FundingResponseDto> getPopularFunding();
 }
