@@ -1,70 +1,62 @@
-.edit-container {
+.myartist-container {
   padding: 16px;
-  margin: 0 auto;
   margin-bottom: 80px;
-  /* width: 360px; */
 }
 
-.edit-header {
+.myartist-header {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.myartist-container .artist-list {
+  display: block;
+  overflow-x: auto;
+  width: 95vw;
+  margin-left: calc(-50vw + 55%);
+  margin-top: 30px;
+}
+
+.myartist-container .artist-item {
+  position: relative;
   display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin: 10px 5px;
+  justify-content: left;
   align-items: center;
-  margin-bottom: 20px;
 }
 
-.edit-header img {
-  margin-right: 10px;
-  height: 14px;
+.myartist-container .artist-image {
+  width: 84px;
+  height: 84px;
+  border: 0.5px solid #6c707230;
+  border-radius: 50%;
 }
 
-.edit-myprofile-img {
-  display: flex;
-  width: 120px;
-  height: 120px;
-  padding: 50px;
-  margin: 0 auto;
+.myartist-container .artist-item-zzim {
+  position: absolute;
+  left: 60px;
+  bottom: 5px;
+  width: 30px;
 }
 
-.edit-contents {
+.myartist-container .artist-text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-right: 36px;
+  margin-left: 30px;
+  margin-bottom: 5px;
+  font-size: 12px;
 }
 
-.edit-content {
-  width: 100%;
-  padding-right: 36x;
-  margin-bottom: 20px;
-}
-
-.edit-label {
-  padding: 4px;
+.myartist-container .artist-name {
   font-size: 14px;
-  color: #6c7072;
-  margin-bottom: 10px;
+  color: #0046ff;
+  font-weight: bold;
 }
 
-.edit-input {
-  font-size: 16px;
-  width: 100%;
-  height: 36px;
-  border-radius: 15px;
-  border: 1.5px solid color-mix(in srgb, #6c7072 50%, white 50%);
-  padding: 0 16px;
-  background-color: #fcfcfc;
-}
-
-.edit-container .edit-buttons {
-  margin-top: 20px;
+.myartist-container .wide-button {
+  width: 60%;
   display: flex;
-  gap: 20px;
-}
-
-.edit-container .edit-buttons .wide-button {
-  display: flex;
-  align-items: center;
   justify-content: center;
-  width: 100%;
-  border-radius: 15px;
-  height: 36px;
+  align-items: center;
 }

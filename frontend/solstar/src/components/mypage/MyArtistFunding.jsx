@@ -1,4 +1,4 @@
-import './RequestFunding.css';
+import './MyArtistFunding.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import WideButton from '../common/WideButton';
