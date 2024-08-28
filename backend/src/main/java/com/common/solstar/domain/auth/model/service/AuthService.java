@@ -6,16 +6,22 @@ import com.common.solstar.domain.agency.entity.Agency;
 import com.common.solstar.domain.agency.model.repository.AgencyRepository;
 import com.common.solstar.domain.auth.dto.request.LoginRequest;
 import com.common.solstar.domain.auth.dto.request.SignupRequest;
+import com.common.solstar.domain.auth.dto.request.UserAccountValidateRequest;
 import com.common.solstar.domain.auth.dto.response.LoginResponse;
 import com.common.solstar.domain.auth.dto.response.RefreshResponse;
+import com.common.solstar.domain.auth.dto.response.UserAccountValidateResponse;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.auth.CustomUserDetailsService;
 import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.models.parameters.RequestBody;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +30,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +44,13 @@ public class AuthService {
     private final CustomUserDetailsService customUserDetailsService;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final WebClient webClient = WebClient.builder()
+            .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1/")
+            .build();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Value("${ssafy.api.key}")
+    private String apiKey;
 
 
     // 회원가입
@@ -149,5 +164,44 @@ public class AuthService {
                 .accessToken(jwtUtil.generateAccessToken(email, role))
                 .build();
         return refreshResponse;
+    }
+
+    // 금융 API 상 사용자 계정 조회 (useKey 조회용)
+    public UserAccountValidateResponse validateUser(UserAccountValidateRequest request) {
+        String url = "/member/search";
+
+        String requestBody = """
+                {
+                    "apiKey" : "%s",
+                    "userId" : "%s"
+                }
+                """.formatted(apiKey, request.getUserId());
+
+        // API 요청 보내기
+        Mono<String> responseMono = webClient.post()
+                .uri(url)
+                .header("Content-Type", "application/json")
+                .bodyValue(requestBody)
+                .retrieve()
+                .bodyToMono(String.class);
+
+        String response = responseMono.block();
+
+        try{
+            JsonNode root = objectMapper.readTree(response);
+
+            if(!root.has("userKey")) {
+                throw new ExceptionResponse(CustomException.NOT_SAME_USER_EXCEPTION);
+            }
+
+            String userKey = root.get("userKey").asText();
+
+            return UserAccountValidateResponse.builder()
+                    .useKey(userKey)
+                    .build();
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
 }

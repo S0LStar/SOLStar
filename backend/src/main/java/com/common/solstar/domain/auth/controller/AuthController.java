@@ -2,8 +2,10 @@ package com.common.solstar.domain.auth.controller;
 
 import com.common.solstar.domain.auth.dto.request.LoginRequest;
 import com.common.solstar.domain.auth.dto.request.SignupRequest;
+import com.common.solstar.domain.auth.dto.request.UserAccountValidateRequest;
 import com.common.solstar.domain.auth.dto.response.LoginResponse;
 import com.common.solstar.domain.auth.dto.response.RefreshResponse;
+import com.common.solstar.domain.auth.dto.response.UserAccountValidateResponse;
 import com.common.solstar.domain.auth.model.service.AuthService;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
@@ -74,6 +76,19 @@ public class AuthController {
         ResponseDto<RefreshResponse> responseDto = ResponseDto.<RefreshResponse>builder()
                 .status(HttpStatus.OK.value())
                 .message("새 액세스 토큰 발급 성공")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "사용자 계정 조회")
+    @PostMapping("/user-account/validate")
+    public ResponseEntity<ResponseDto<UserAccountValidateResponse>> userAccountValidate (@RequestBody UserAccountValidateRequest request) {
+        UserAccountValidateResponse result = authService.validateUser(request);
+
+        ResponseDto<UserAccountValidateResponse> responseDto = ResponseDto.<UserAccountValidateResponse>builder()
+                .status(HttpStatus.OK.value())
+                .message("금융 API 사용자 계정 조회 성공")
                 .data(result)
                 .build();
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
