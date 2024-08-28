@@ -75,6 +75,14 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.refreshToken = refreshToken;
     }
 
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public void deleteIntroduction(){
+        this.introduction = null;
+    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
