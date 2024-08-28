@@ -1,11 +1,11 @@
-import './EditProfileContainer.css';
+import './EditProfile.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import WideButton from '../common/WideButton';
 import temp from '../../assets/character/Shoo.png';
 import LeftVector from '../../assets/common/LeftVector.png';
 
-function EditProfileContainer() {
+function EditProfile() {
   const navigate = useNavigate();
 
   const [profileData, setProfileData] = useState({
@@ -127,4 +127,4 @@ function EditProfileContainer() {
   );
 }
 
-export default EditProfileContainer;
+export default EditProfile;
