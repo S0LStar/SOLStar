@@ -3,13 +3,19 @@ package com.common.solstar.domain.funding.dto.response;
 import com.common.solstar.domain.funding.entity.Funding;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
+@Builder
 public class FundingDetailResponseDto {
 
     private String title;
+
+    private String artistProfileImage;
+
+    private String artistName;
 
     private String fundingImage;
 
@@ -30,26 +36,15 @@ public class FundingDetailResponseDto {
     private String type;
 
     private String status;
-    
-    // 추가적으로 아티스트 관련 정보도 넘겨줘야 함
-    @Builder
-    private FundingDetailResponseDto(String title, String fundingImage, String hostNickname, String hostIntroduction, String hostProfileImage, int totalAmount, int goalAmount, LocalDate deadlineDate, int totalJoin, String type, String status) {
-        this.title = title;
-        this.fundingImage = fundingImage;
-        this.hostNickname = hostNickname;
-        this.hostIntroduction = hostIntroduction;
-        this.hostProfileImage = hostProfileImage;
-        this.totalAmount = totalAmount;
-        this.goalAmount = goalAmount;
-        this.deadlineDate = deadlineDate;
-        this.totalJoin = totalJoin;
-        this.type = type;
-        this.status = status;
-    }
+
+    @Setter
+    private int joinStatus;
 
     public static FundingDetailResponseDto createResponseDto(Funding funding) {
         return FundingDetailResponseDto.builder()
                 .title(funding.getTitle())
+                .artistProfileImage(funding.getArtist().getProfileImage())
+                .artistName(funding.getArtist().getName())
                 .fundingImage(funding.getFundingImage())
                 .hostNickname(funding.getHost().getNickname())
                 .hostIntroduction(funding.getHost().getIntroduction())
@@ -59,7 +54,8 @@ public class FundingDetailResponseDto {
                 .deadlineDate(funding.getDeadlineDate())
                 .totalJoin(funding.getTotalJoin())
                 .type(funding.getType().name())
-                .status(funding.getStatus().getMessage())
+                .status(funding.getStatus().name())
+                .joinStatus(0)
                 .build();
     }
 

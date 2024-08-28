@@ -31,17 +31,18 @@ public class Board extends BaseTimeEntity {
     @Column(name = "content", nullable = false, length = 1500)
     private String content;
 
-//    @Column(name = "content_image", nullable = true, length = 255)
-//    private String contentImage;
+    @Column(name = "content_image", nullable = true, length = 255)
+    private String contentImage;
 
-    @Column(name = "is_delete", nullable = true)
+    @Column(name = "is_delete", nullable = false)
     private Boolean isDelete;
 
-    public static Board createBoard(Funding funding, String title, String content) {
+    public static Board createBoard(Funding funding, String title, String content, String contentImage) {
         return Board.builder()
                 .funding(funding)
                 .title(title)
                 .content(content)
+                .contentImage(contentImage)
                 .isDelete(false)
                 .build();
     }
@@ -53,6 +54,10 @@ public class Board extends BaseTimeEntity {
 
         if (boardDto.getContent() != null) {
             this.content = boardDto.getContent();
+        }
+
+        if (boardDto.getContentImage() != null) {
+            this.contentImage = boardDto.getContentImage();
         }
     }
 

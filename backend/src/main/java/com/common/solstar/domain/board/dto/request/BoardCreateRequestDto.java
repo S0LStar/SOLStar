@@ -16,4 +16,6 @@ public class BoardCreateRequestDto {
     @NotNull
     private String content;
 
+    private String contentImage;
+
 }

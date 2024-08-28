@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit;
 @Getter
 public class FundingResponseDto {
 
-    private int id;
+    private int fundingId;
 
     private String title;
 
@@ -28,8 +28,8 @@ public class FundingResponseDto {
     private String fundingImage;
 
     @Builder
-    private FundingResponseDto(int id, String title, String artistName, int remainDays, String status, int goalAmount, int totalAmount, String fundingImage) {
-        this.id = id;
+    private FundingResponseDto(int fundingId, String title, String artistName, int remainDays, String status, int goalAmount, int totalAmount, String fundingImage) {
+        this.fundingId = fundingId;
         this.title = title;
         this.artistName = artistName;
         this.remainDays = remainDays;
@@ -53,7 +53,7 @@ public class FundingResponseDto {
         if (status == FundingStatus.CLOSED) status = FundingStatus.SUCCESS;
 
         return FundingResponseDto.builder()
-                .id(funding.getId())
+                .fundingId(funding.getId())
                 .title(funding.getTitle())
                 .artistName(artistName)
                 .remainDays((int) (remainDays - 1))

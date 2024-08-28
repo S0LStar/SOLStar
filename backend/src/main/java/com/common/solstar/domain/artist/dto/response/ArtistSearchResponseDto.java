@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class ArtistSearchResponseDto {
 
-    private int id;
+    private int artistId;
 
     private String type;
 
@@ -24,7 +24,7 @@ public class ArtistSearchResponseDto {
 
     public static ArtistSearchResponseDto createResponseDto(Artist artist, boolean isLiked) {
         return ArtistSearchResponseDto.builder()
-                .id(artist.getId())
+                .artistId(artist.getId())
                 .type(artist.getType().name())
                 .name(artist.getName())
                 .group(artist.getGroup())
