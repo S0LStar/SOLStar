@@ -1,5 +1,7 @@
 package com.common.solstar.domain.funding.model.service;
 
+import com.common.solstar.domain.account.entity.Account;
+import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
@@ -13,6 +15,9 @@ import com.common.solstar.domain.funding.entity.FundingType;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
 import com.common.solstar.domain.fundingAgency.entity.FundingAgency;
 import com.common.solstar.domain.fundingAgency.model.repository.FundingAgencyRepository;
+import com.common.solstar.domain.fundingJoin.dto.request.FundingJoinCreateRequestDto;
+import com.common.solstar.domain.fundingJoin.entity.FundingJoin;
+import com.common.solstar.domain.fundingJoin.model.repository.FundingJoinRepository;
 import com.common.solstar.domain.likeList.entity.LikeList;
 import com.common.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.common.solstar.domain.user.entity.User;
@@ -23,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +41,8 @@ public class FundingServiceImpl implements FundingService {
     private final UserRepository userRepository;
     private final ArtistRepository artistRepository;
     private final LikeListRepository likeListRepository;
+    private final AccountRepository accountRepository;
+    private final FundingJoinRepository fundingJoinRepository;
 
     @Override
     public void createFunding(FundingCreateRequestDto fundingDto) {
@@ -105,6 +113,36 @@ public class FundingServiceImpl implements FundingService {
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
 
         return FundingContentResponseDto.createResponseDto(funding);
+    }
+
+    @Override
+    public void joinFunding(FundingJoinCreateRequestDto joinFundingDto) {
+
+        // 로그인한 유저 찾기
+        User loginUser = userRepository.findById(2);
+
+        // 해당 유저가 소유한 계좌가 있는지 확인
+        Account account = accountRepository.findByUser(loginUser)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ACCOUNT_EXCEPTION));
+
+        // 비밀번호가 맞는지 확인
+        if (!joinFundingDto.getPassword().equals(account.getPassword())) {
+            throw new ExceptionResponse(CustomException.NOT_MATCH_ACCOUNT_PASSWORD_EXCEPTION);
+        }
+
+        // 펀딩에 대한 유효성 검사
+        // 펀딩 존재 유무
+        Funding funding = fundingRepository.findById(joinFundingDto.getFundingId())
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        // 펀딩이 진행중인 펀딩인지 확인
+        if (!funding.getStatus().equals(FundingStatus.PROCESSING))
+            throw new ExceptionResponse(CustomException.NOT_PROCESSING_FUNDING_EXCEPTION);
+
+        // FundingJoin 객체 만들어서 저장
+        FundingJoin fundingJoin = new FundingJoin(joinFundingDto.getFundingId(), loginUser, funding, joinFundingDto.getAmount(), LocalDateTime.now());
+
+        fundingJoinRepository.save(fundingJoin);
     }
 
     @Override

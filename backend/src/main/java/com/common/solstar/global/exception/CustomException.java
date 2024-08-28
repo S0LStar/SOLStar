@@ -18,8 +18,13 @@ public enum CustomException {
     DUPLICATED_ID_EXCEPTION(400,"DuplicatedIDException","가입된 아이디가 존재합니다."),
     DUPLICATED_NAME_EXCEPTION(400,"DuplicateNameException","가입된 닉네임 또는 이름이 존재합니다."),
 
+    // 계좌
+    NOT_FOUND_ACCOUNT_EXCEPTION(400, "NotFoundAccountException", "계좌가 존재하지 않습니다."),
+    NOT_MATCH_ACCOUNT_PASSWORD_EXCEPTION(403, "NotMatchAccountPasswordException", "해당 계좌의 비밀번호가 맞지 않습니다."),
+
     // 펀딩
     NOT_FOUND_FUNDING_EXCEPTION(400, "NotFoundFundingException", "펀딩이 존재하지 않습니다"),
+    NOT_PROCESSING_FUNDING_EXCEPTION(400, "NotProcessingFundingException", "현재 진행중인 펀딩이 아닙니다."),
 
     // 펀딩 공지사항
     NOT_FOUND_BOARD_EXCEPTION(400, "NotFoundBoardException", "펀딩 공지사항이 존재하지 않습니다."),

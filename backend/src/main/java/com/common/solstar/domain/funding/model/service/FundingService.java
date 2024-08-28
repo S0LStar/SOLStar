@@ -5,6 +5,7 @@ import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.common.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
+import com.common.solstar.domain.fundingJoin.dto.request.FundingJoinCreateRequestDto;
 
 import java.util.List;
 
@@ -24,6 +25,9 @@ public interface FundingService {
 
     // 펀딩 내용 조회
     FundingContentResponseDto getFundingContent(int fundingId);
+
+    // 펀딩 참여
+    void joinFunding(FundingJoinCreateRequestDto joinFundingDto);
 
     // 내가 선호하는 아티스트 펀딩 조회
     List<FundingResponseDto> getMyLikeArtistFunding();

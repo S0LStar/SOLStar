@@ -10,6 +10,7 @@ import com.common.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.common.solstar.domain.funding.model.service.FundingService;
+import com.common.solstar.domain.fundingJoin.dto.request.FundingJoinCreateRequestDto;
 import com.common.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -168,6 +169,18 @@ public class FundingController {
     // 펀딩 정산 - 결제내역 불러오기
 
     // 펀딩 참여하기
+    @PostMapping("/join")
+    public ResponseEntity<?> joinFunding(@RequestBody FundingJoinCreateRequestDto joinFundingDto) {
+        fundingService.joinFunding(joinFundingDto);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("펀딩 참여 성공")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
 
     // 쏠 스코어 남기기
 
