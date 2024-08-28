@@ -17,6 +17,7 @@ import FundingNoticeRegist from '../components/funding/detail/FundingNoticeRegis
 
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
+import FundingWalletDetail from '../components/wallet/FundingWalletDetail';
 import ZzimPage from '../pages/ZzimPage';
 import ZzimContainer from '../components/zzim/ZzimContainer';
 import MyPage from '../pages/MyPage';
@@ -60,6 +61,7 @@ function AppRoutes() {
 
       <Route path="/wallet" element={<WalletPage />}>
         <Route index element={<WalletContainer />}></Route>
+        <Route path=":id" element={<FundingWalletDetail />}></Route>
       </Route>
       <Route path="/zzim" element={<ZzimPage />}>
         <Route index element={<ZzimContainer />}></Route>

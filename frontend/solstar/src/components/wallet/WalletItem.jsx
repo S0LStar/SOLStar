@@ -1,7 +1,7 @@
 import React from 'react';
 import './WalletItem.css';
 import Wallet from '../../assets/wallet/Wallet.png';
-import FunddingWallet from '../../assets/wallet/FunddingWallet.png';
+import FundingWallet from '../../assets/wallet/FundingWallet.png';
 import Shinhan from '../../assets/wallet/Shinhan.png';
 
 // 필요에 따라 더 많은 아이콘 추가 가능
