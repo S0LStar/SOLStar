@@ -122,8 +122,7 @@ public class FundingServiceImpl implements FundingService {
         User loginUser = userRepository.findById(2);
 
         // 해당 유저가 소유한 계좌가 있는지 확인
-        Account account = accountRepository.findByUser(loginUser)
-                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ACCOUNT_EXCEPTION));
+        Account account = loginUser.getAccount();
 
         // 비밀번호가 맞는지 확인
         if (!joinFundingDto.getPassword().equals(account.getPassword())) {

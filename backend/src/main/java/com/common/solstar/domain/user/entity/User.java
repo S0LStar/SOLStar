@@ -1,5 +1,6 @@
 package com.common.solstar.domain.user.entity;
 
+import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.global.baseTimeEntity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -51,6 +52,10 @@ public class User extends BaseTimeEntity implements UserDetails {
     private String introduction;
 
     private float score;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Account account;
 
     @Column(length = 255)
     private String userKey;
