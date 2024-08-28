@@ -170,6 +170,7 @@ public class FundingController {
 
     // 펀딩 참여하기
     @PostMapping("/join")
+    @Operation(summary = "펀딩 참여")
     public ResponseEntity<?> joinFunding(@RequestBody FundingJoinCreateRequestDto joinFundingDto) {
         fundingService.joinFunding(joinFundingDto);
 
