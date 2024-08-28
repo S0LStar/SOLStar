@@ -4,6 +4,7 @@ import WideButton from '../../common/WideButton';
 import './FundingDetail.css';
 import FundingPlan from './FundingPlan';
 import FundingNoti from './FundingNotiList';
+import FundingJoinModal from './FundingJoinModal';
 
 import Sol from '../../../assets/character/Sol.png'; // temp Image
 import Certification from '../../../assets/common/Certification.png';
@@ -14,7 +15,8 @@ import Closed from '../../../assets/funding/Closed.png';
 function FundingDetail() {
   const location = useLocation();
   const [funding, setFunding] = useState(null);
-  const [activeTab, setActiveTab] = useState('plan');
+  const [activeTab, setActiveTab] = useState('plan'); // 활성화 탭 상태관리
+  const [joinModalOpen, setJoinModalOpen] = useState(false); // 펀딩 참여 모달 상태 관리
 
   useEffect(() => {
     // TODO : API 연결
@@ -43,20 +45,24 @@ function FundingDetail() {
     return <div>Loading...</div>;
   }
 
-  const isVerified = funding.type === 'VERIFIED';
   const progressPercentage = Math.floor(
     (funding.totalAmount / funding.goalAmount) * 100
   );
 
   const handleJoin = () => {
     console.log('펀딩 참여!');
+    setJoinModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setJoinModalOpen(false);
   };
 
   return (
     <div className="funding-detail-container">
       <img src={Sol} alt="Funding" className="funding-detail-image" />
       <div className="funding-detail-header">
-        {isVerified && (
+        {funding.type === 'VERIFIED' && (
           <div className="certification-header">
             <img
               src={Certification}
@@ -203,6 +209,8 @@ function FundingDetail() {
           </WideButton>
         </div>
       )}
+
+      <FundingJoinModal isOpen={joinModalOpen} closeModal={closeModal} />
     </div>
   );
 }
