@@ -1,0 +1,64 @@
+.myartistfunding-container {
+  padding: 16px;
+  margin: 0 auto;
+  margin-bottom: 80px;
+  /* width: 360px; */
+}
+
+.myartistfunding-header {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.myartistfunding-container .artist-list {
+  display: block;
+  overflow-x: auto;
+  width: 95vw;
+  margin-left: calc(-50vw + 55%);
+  margin-top: 30px;
+}
+
+.myartistfunding-container .artist-item {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin: 10px 5px;
+  justify-content: left;
+  align-items: center;
+}
+
+.myartistfunding-container .artist-image {
+  width: 84px;
+  height: 84px;
+  border: 0.5px solid #6c707230;
+  border-radius: 50%;
+}
+
+.myartistfunding-container .artist-item-zzim {
+  position: absolute;
+  left: 60px;
+  bottom: 5px;
+  width: 30px;
+}
+
+.myartistfunding-container .artist-text {
+  display: flex;
+  flex-direction: column;
+  margin-left: 30px;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.myartistfunding-container .artist-name {
+  font-size: 14px;
+  color: #0046ff;
+  font-weight: bold;
+}
+
+.myartistfunding-container .wide-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+}

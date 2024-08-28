@@ -50,23 +50,23 @@ function MyContainer() {
           </WideButton>
         </div>
 
-        <div className="my-fundding">
-          <div className="my-fundding-label">내 펀딩</div>
+        <div className="my-funding">
+          <div className="my-funding-label">내 펀딩</div>
           <hr />
           <div
-            className="my-fundding-container"
+            className="my-funding-container"
             onClick={() => {
-              navigate(`/my/participantfundding`);
+              navigate(`/my/participantfunding`);
             }}
           >
-            <div className="my-fundding-context">
+            <div className="my-funding-context">
               내 참여 펀딩
               <img src={RightVector} alt="" />
             </div>
             <div
-              className="my-fundding-context"
+              className="my-funding-context"
               onClick={() => {
-                navigate(`/my/createdfundding`);
+                navigate(`/my/createdfunding`);
               }}
             >
               내 주최 펀딩 <img src={RightVector} alt="" />
@@ -75,6 +75,9 @@ function MyContainer() {
         </div>
         <button onClick={() => navigate('/login')}>
           <span>로그인</span>
+        </button>
+        <button onClick={() => navigate('/agencymy')}>
+          <span>소속사 마이페이지</span>
         </button>
       </div>
     </>
