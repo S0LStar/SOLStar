@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './FundingJoinModal.css';
 import PropTypes from 'prop-types';
+import WideButton from '../../common/WideButton';
 
 const FundingJoinModal = ({ isOpen, closeModal }) => {
   const [totalJoinAmount, setTotalAmount] = useState(0);
@@ -18,13 +19,40 @@ const FundingJoinModal = ({ isOpen, closeModal }) => {
     };
   }, [isOpen]);
 
+  // 사용자가 금액 입력시에, 숫자만 입력 받음
   const handleJoinAmount = (event) => {
-    const value = parseInt(event.target.value, 10);
-    setTotalAmount(isNaN(value) ? 0 : value);
+    const value = event.target.value;
+
+    if (/^\d*$/.test(value)) {
+      setTotalAmount(value);
+    } else if (value === '') {
+      setTotalAmount(0);
+    }
   };
 
+  // 금액 추가 버튼 클릭 시 이전 금액에 합
   const handleAmountButtonClick = (amount) => {
-    setTotalAmount((totalJoinAmount) => totalJoinAmount + amount);
+    setTotalAmount((prevTotalAmount) => {
+      const newTotal = parseInt(prevTotalAmount || '0', 10) + amount;
+      return newTotal.toString();
+    });
+  };
+
+  // input에 focus 시에 총액이 0이면, 빈문자열로 초기화
+  const handleFocus = () => {
+    if (totalJoinAmount === 0) {
+      setTotalAmount('');
+    }
+  };
+
+  const handleBlur = () => {
+    if (totalJoinAmount === '') {
+      setTotalAmount('0');
+    }
+  };
+
+  const handleJoin = () => {
+    console.log(totalJoinAmount);
   };
 
   return (
@@ -57,11 +85,17 @@ const FundingJoinModal = ({ isOpen, closeModal }) => {
             type="number"
             value={totalJoinAmount}
             onChange={handleJoinAmount}
+            inputMode="numeric"
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            pattern="[0-9]*"
+            className="join-modal-current-amount-input"
           />
+          원
         </div>
-        <button className="join-modal-join-button" onClick={closeModal}>
-          펀딩 참여하기
-        </button>
+        <WideButton onClick={handleJoin} isActive={totalJoinAmount > 0}>
+          펀딩 후원하기
+        </WideButton>
       </div>
     </div>
   );

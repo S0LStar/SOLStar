@@ -22,6 +22,7 @@
 .join-modal-content h2 {
   font-size: 14px;
   font-weight: 800;
+  margin-left: 10px;
 }
 
 .join-modal-pull-handle {
@@ -49,6 +50,15 @@
 .join-modal-current-amount {
   display: flex;
   justify-content: end;
+  align-items: end;
+  margin-right: 15px;
+  margin-bottom: 10px;
+}
+
+.join-modal-current-amount-input {
+  text-align: end;
+  border: none;
+  font-size: 18px;
 }
 
 .join-modal-join-button {
