@@ -35,7 +35,7 @@
   margin-left: 10px;
 }
 
-.agencymy-container .my-edit-button {
+.agencymy-container .agencymy-edit-button {
   display: flex;
   justify-content: center;
   gap: 8px;
@@ -43,7 +43,7 @@
 }
 
 .agencymy-container .wide-button {
-  min-width: 100px;
+  min-width: 125px;
   width: 40%;
   height: 30px;
   border-radius: 15px;
