@@ -6,7 +6,7 @@ import Shinhan from '../../assets/wallet/Shinhan.png';
 
 // 필요에 따라 더 많은 아이콘 추가 가능
 
-function FundingWalletItem({ walletData }) {
+function FundingWalletItem({ walletData, onClick }) {
   let icon;
 
   // code에 따라 아이콘 선택
@@ -21,7 +21,7 @@ function FundingWalletItem({ walletData }) {
 
   return (
     <div className="fundingwallet-item">
-      <div className="fundingwallet-background">
+      <div className="fundingwallet-background" onClick={onClick}>
         <div className="fundingwallet-owner">
           {walletData.name}님의 충전 계좌
         </div>
@@ -30,8 +30,22 @@ function FundingWalletItem({ walletData }) {
           {walletData.balance.toLocaleString()} 원
         </div>
         <div className="fundingwallet-buttons">
-          <button className="fundingwallet-calculatebutton">정산</button>
-          <button className="fundingwallet-withdrawbutton">이체</button>
+          <button
+            className="fundingwallet-calculatebutton"
+            onClick={() => {
+              console.log(1);
+            }}
+          >
+            정산
+          </button>
+          <button
+            className="fundingwallet-withdrawbutton"
+            onClick={() => {
+              console.log(2);
+            }}
+          >
+            이체
+          </button>
         </div>
         <img
           src={FundingWallet}
