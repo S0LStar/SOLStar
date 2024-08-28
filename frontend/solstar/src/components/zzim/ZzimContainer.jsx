@@ -45,6 +45,15 @@ function ZzimContainer() {
         popularity: 160,
         isLike: true,
       },
+      {
+        artistId: 4,
+        type: 'SOLO',
+        name: '아이유',
+        group: null,
+        profileImage: 'artist_image_4_url',
+        popularity: 160,
+        isLike: true,
+      },
     ];
     setZzimArtist(artistData);
   }, []); // Add dependency array to run only once
@@ -66,11 +75,7 @@ function ZzimContainer() {
         <div className="artist-list">
           {zzimArtist.map((artist) => (
             <div key={artist.artistId} className="artist-item">
-              <img
-                src={artist.profileImage || temp}
-                alt={artist.name}
-                className="artist-image"
-              />
+              <img src={temp} alt={artist.name} className="artist-image" />
               {artist.isLike ? (
                 <img
                   src={Zzim}
@@ -86,7 +91,16 @@ function ZzimContainer() {
                   onClick={() => toggleZzim(artist.artistId)}
                 />
               )}
-              <span className="artist-name">{artist.name}</span>
+              <div className="artist-text">
+                <span className="artist-type">
+                  {artist.type === 'MEMBER'
+                    ? artist.group
+                    : artist.type === 'GROUP'
+                      ? '그룹'
+                      : 'SOLO'}
+                </span>
+                <span className="artist-name">{artist.name}</span>
+              </div>
             </div>
           ))}
         </div>
