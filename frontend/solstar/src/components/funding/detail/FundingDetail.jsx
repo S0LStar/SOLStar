@@ -2,13 +2,19 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import WideButton from '../../common/WideButton';
 import './FundingDetail.css';
+import FundingPlan from './FundingPlan';
+import FundingNoti from './FundingNotiList';
 
 import Sol from '../../../assets/character/Sol.png'; // temp Image
 import Certification from '../../../assets/common/Certification.png';
+import Success from '../../../assets/funding/Success.png';
+import Fail from '../../../assets/funding/Fail.png';
+import Closed from '../../../assets/funding/Closed.png';
 
 function FundingDetail() {
   const location = useLocation();
   const [funding, setFunding] = useState(null);
+  const [activeTab, setActiveTab] = useState('plan');
 
   useEffect(() => {
     // TODO : API 연결
@@ -27,7 +33,7 @@ function FundingDetail() {
       totalJoin: 1,
       type: 'VERIFIED',
       status: 'PROCESSING', // PROCESSING, SUCCESS, FAIL, CLOSED
-      joinable: true, // true: 참여 가능 (펀딩 진행 중 && 펀딩 참여 전 && 주최자 x), false: 참여 불가능 (그 외의 모든 경우) => 여러번 참여 가능하다면 상태값 처리 수정
+      joinStatus: 0, // 0: 참여 가능 대상 (펀딩 진행 중 && 펀딩 참여 전 && 주최자 x), 1: 참여자, 2: 주최자 => 여러번 참여 가능하다면 상태값 수정 필요
     };
 
     setFunding(tempData);
@@ -66,6 +72,45 @@ function FundingDetail() {
           <img src={Certification} alt="" />
           <div>{funding.artistName}</div>
         </div>
+        {funding.status !== 'PROCESSING' && (
+          <div
+            className={`funding-detail-status ${
+              funding.status === 'SUCCESS'
+                ? 'success'
+                : funding.status === 'CLOSED'
+                  ? 'closed'
+                  : funding.status === 'FAIL'
+                    ? 'fail'
+                    : ''
+            }`}
+          >
+            {funding.status === 'SUCCESS' ? (
+              <img src={Success} alt="" className="funding-status-icon" />
+            ) : funding.status === 'FAIL' ? (
+              <img src={Fail} alt="" className="funding-status-icon" />
+            ) : (
+              <img src={Closed} alt="" className="funding-status-icon" />
+            )}
+            <div className="funding-detail-status-content">
+              {funding.status === 'SUCCESS' ? (
+                <div>
+                  <div>펀딩 성공 !</div>
+                  <div>축하해요 펀딩에 성공했어요</div>
+                </div>
+              ) : funding.status === 'FAIL' ? (
+                <div>
+                  <div>펀딩 무산</div>
+                  <div>펀딩이 무산되었습니다</div>
+                </div>
+              ) : (
+                <div>
+                  <div>펀딩 종료</div>
+                  <div>펀딩이 종료되었습니다</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         <div
           className={`funding-detail-info ${
             funding.status === 'PROCESSING'
@@ -123,11 +168,35 @@ function FundingDetail() {
       </div>
 
       <div className="funding-content-container">
-        <div className="funding-content-tab"></div>
-        <div className="funding-content-detail"></div>
+        <div className="funding-content-tab">
+          <button
+            onClick={() => setActiveTab('plan')}
+            className={`funding-content-tab-button ${activeTab === 'plan' && 'active'}`}
+          >
+            프로젝트 계획
+          </button>
+          <button
+            onClick={() => setActiveTab('noti')}
+            className={`funding-content-tab-button ${activeTab === 'noti' && 'active'}`}
+          >
+            공지사항
+          </button>
+          {funding.joinStatus !== 0 && (
+            <button onClick={() => setActiveTab('payment')}>정산</button>
+          )}
+        </div>
+        <div className="funding-content-detail">
+          {activeTab === 'plan' ? (
+            <FundingPlan />
+          ) : activeTab === 'noti' ? (
+            <FundingNoti />
+          ) : (
+            funding.joinStatus !== 0 && <div>정산</div>
+          )}
+        </div>
       </div>
 
-      {funding.joinable && (
+      {funding.joinStatus === 0 && (
         <div className="wide-button-fix">
           <WideButton onClick={handleJoin} isActive={true}>
             펀딩 참여하기
