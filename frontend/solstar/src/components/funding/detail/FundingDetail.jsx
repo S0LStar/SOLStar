@@ -210,7 +210,9 @@ function FundingDetail() {
         </div>
       )}
 
-      <FundingJoinModal isOpen={joinModalOpen} closeModal={closeModal} />
+      {joinModalOpen && (
+        <FundingJoinModal isOpen={joinModalOpen} closeModal={closeModal} />
+      )}
     </div>
   );
 }

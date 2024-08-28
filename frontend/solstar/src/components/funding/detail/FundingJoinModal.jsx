@@ -18,7 +18,14 @@ const FundingJoinModal = ({ isOpen, closeModal }) => {
     };
   }, [isOpen]);
 
-  if (!isOpen) return null; // 모달이 열려있지 않으면 렌더링하지 않음
+  const handleJoinAmount = (event) => {
+    const value = parseInt(event.target.value, 10);
+    setTotalAmount(isNaN(value) ? 0 : value);
+  };
+
+  const handleAmountButtonClick = (amount) => {
+    setTotalAmount((totalJoinAmount) => totalJoinAmount + amount);
+  };
 
   return (
     <div className="join-modal-overlay" onClick={closeModal}>
@@ -26,12 +33,31 @@ const FundingJoinModal = ({ isOpen, closeModal }) => {
         <div className="join-modal-pull-handle"></div>
         <h2>펀딩 참여 금액</h2>
         <div className="join-modal-amount-buttons">
-          <button className="join-modal-amount-button">+ 5,000 원</button>
-          <button className="join-modal-amount-button">+ 10,000 원</button>
-          <button className="join-modal-amount-button">+ 50,000 원</button>
+          <button
+            className="join-modal-amount-button"
+            onClick={() => handleAmountButtonClick(5000)}
+          >
+            + 5,000 원
+          </button>
+          <button
+            className="join-modal-amount-button"
+            onClick={() => handleAmountButtonClick(10000)}
+          >
+            + 10,000 원
+          </button>
+          <button
+            className="join-modal-amount-button"
+            onClick={() => handleAmountButtonClick(50000)}
+          >
+            + 50,000 원
+          </button>
         </div>
         <div className="join-modal-current-amount">
-          <div>{totalJoinAmount}</div>
+          <input
+            type="number"
+            value={totalJoinAmount}
+            onChange={handleJoinAmount}
+          />
         </div>
         <button className="join-modal-join-button" onClick={closeModal}>
           펀딩 참여하기
@@ -43,7 +69,7 @@ const FundingJoinModal = ({ isOpen, closeModal }) => {
 
 FundingJoinModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  closeModal: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
 };
 
 export default FundingJoinModal;
