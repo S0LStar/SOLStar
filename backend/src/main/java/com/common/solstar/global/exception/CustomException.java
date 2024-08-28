@@ -18,6 +18,12 @@ public enum CustomException {
     DUPLICATED_ID_EXCEPTION(400,"DuplicatedIDException","가입된 아이디가 존재합니다."),
     DUPLICATED_NAME_EXCEPTION(400,"DuplicateNameException","가입된 닉네임 또는 이름이 존재합니다."),
 
+    // 잘못된 API 요청
+    BAD_SSAFY_API_REQUEST(400,"BadSsafypiRequestException","잘못된 API 요청입니다."),
+    EXPIRED_AUTH_CODE(403,"ExpriedAuthCode", "인증시간이 만료되었습니다."),
+    NOT_FOUND_AUTH_CODE(404,"NotFoundAuthCode","인증코드 발급 기록이 없습니다.(이미 인증한 코드입니다)"),
+    MISMATCHED_AUTH_CODE_EXCEPTION(400,"MismatchedAuthCodeException","인증코드가 일치하지 않습니다."),
+
     // 계좌
     NOT_FOUND_ACCOUNT_EXCEPTION(400, "NotFoundAccountException", "계좌가 존재하지 않습니다."),
     NOT_MATCH_ACCOUNT_PASSWORD_EXCEPTION(403, "NotMatchAccountPasswordException", "해당 계좌의 비밀번호가 맞지 않습니다."),
