@@ -22,7 +22,9 @@ public class BoardResponseDto {
 
     private LocalDateTime createDate;
 
-    public static BoardResponseDto createResponseDto(Board board) {
-        return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getContentImage(), board.getCreateDate());
+    private boolean isHost;
+
+    public static BoardResponseDto createResponseDto(Board board, boolean isHost) {
+        return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getContentImage(), board.getCreateDate(), isHost);
     }
 }
