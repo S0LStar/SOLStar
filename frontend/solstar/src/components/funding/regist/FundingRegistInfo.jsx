@@ -5,6 +5,7 @@ import ArtistSearchModal from './ArtistSearchModal';
 import React, { useEffect, useState } from 'react';
 
 import DefaultImage from '../../../assets/funding/DefaultImage.png';
+import SelectIcon from '../../../assets/common/SelectIcon.png';
 
 function FundingRegistInfo({ funding, onChange, onNext }) {
   const [nextActive, setNextActive] = useState(false); // 다음 버튼 활성화 상태
@@ -58,16 +59,19 @@ function FundingRegistInfo({ funding, onChange, onNext }) {
     <form className="funding-regist-section">
       <div className="funding-regist-type">
         <label htmlFor="type">펀딩 종류</label>
-        <select
-          type="select"
-          id="type"
-          value={funding.type || ''}
-          onChange={onChange}
-        >
-          <option value="COMMON">일반 펀딩</option>
-          <option value="VERIFIED">인증 펀딩</option>
-          <option value="ADVERTISE">홍보글</option>
-        </select>
+        <div>
+          <select
+            type="select"
+            id="type"
+            value={funding.type || ''}
+            onChange={onChange}
+          >
+            <option value="COMMON">일반 펀딩</option>
+            <option value="VERIFIED">인증 펀딩</option>
+            <option value="ADVERTISE">홍보글</option>
+          </select>
+          <img src={SelectIcon} alt="" className="funding-type-select-icon" />
+        </div>
       </div>
 
       <div className="funding-regist-image">

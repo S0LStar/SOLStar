@@ -1,7 +1,9 @@
+import { Outlet } from 'react-router-dom';
+
 function FundingPage() {
   return (
     <>
-      <div>fundingPage</div>
+      <Outlet />
     </>
   );
 }
