@@ -1,6 +1,6 @@
 import './WalletContainer.css';
 import WalletItem from './WalletItem.jsx';
-import FunddingWalletItem from './FunddingWalletItem.jsx';
+import FundingWalletItem from './FundingWalletItem.jsx';
 
 function WalletContainer() {
   const walletTempData = {
@@ -9,7 +9,7 @@ function WalletContainer() {
     balance: 10000000,
   };
 
-  const funddingWalletTempData = {
+  const fundingWalletTempData = {
     name: '아무개',
     code: '신한',
     balance: 10000000,
@@ -22,7 +22,7 @@ function WalletContainer() {
         <WalletItem walletData={walletTempData} />
 
         <div className="wallet-header">펀딩 지갑</div>
-        <FunddingWalletItem walletData={funddingWalletTempData} />
+        <FundingWalletItem walletData={fundingWalletTempData} />
       </div>
     </>
   );

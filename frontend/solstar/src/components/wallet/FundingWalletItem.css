@@ -1,19 +1,19 @@
-.funddingwallet-item {
+.fundingwallet-item {
   position: relative;
   margin: 20px auto; /* 가운데 정렬 */
   min-width: 288px;
 }
 
-.funddingwallet-background {
+.fundingwallet-background {
   position: relative;
   width: 100%;
 }
 
-.funddingwallet-bg-image {
+.fundingwallet-bg-image {
   width: 80vw;
 }
 
-.funddingwallet-icon {
+.fundingwallet-icon {
   position: absolute;
   margin-left: 8vw;
   margin-top: 10vw;
@@ -21,7 +21,7 @@
   height: 20px;
 }
 
-.funddingwallet-owner {
+.fundingwallet-owner {
   position: absolute;
   margin-left: 15vw;
   margin-top: 10vw;
@@ -29,7 +29,7 @@
   font-size: 14px;
 }
 
-.funddingwallet-balance {
+.fundingwallet-balance {
   position: absolute;
   margin-left: 15vw;
   margin-top: 19vw;
@@ -40,7 +40,7 @@
   width: auto;
 }
 
-.funddingwallet-buttons {
+.fundingwallet-buttons {
   position: absolute;
   margin-top: 32vw;
   width: 100%;
@@ -48,7 +48,7 @@
   justify-content: flex-end;
 }
 
-.funddingwallet-buttons button {
+.fundingwallet-buttons button {
   background-color: color-mix(in srgb, #f9f9ff 30%, white 70%);
   border: 0px;
   border-radius: 5px;
@@ -57,9 +57,9 @@
   font: 12px;
 }
 
-.funddingwallet-calculatebutton {
+.fundingwallet-calculatebutton {
   margin-right: 2vw;
 }
-.funddingwallet-withdrawbutton {
+.fundingwallet-withdrawbutton {
   margin-right: 14vw;
 }
