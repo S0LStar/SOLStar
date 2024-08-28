@@ -58,6 +58,18 @@ public class JwtUtil {
         return getClaimsFromToken(token).getSubject();
     }
 
+    // Authorization 헤더로 회원 이메일 추출
+    public String getLoginUser(String header){
+        String token = header.substring(7);
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(this.getSecretKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
+    }
+
     // 토큰으로부터 role 추출
     public String roleFromToken(String token) throws ExpiredJwtException, JwtException {
         return getClaimsFromToken(token).get("role", String.class);

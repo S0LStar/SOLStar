@@ -32,6 +32,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -55,6 +56,8 @@ public class AuthService {
 
     @Value("${ssafy.api.key}")
     private String apiKey;
+
+    private final PasswordEncoder passwordEncoder;
 
 
     // 회원가입
@@ -107,39 +110,43 @@ public class AuthService {
         String password = loginRequest.getPassword();
         String role = loginRequest.getRole();
 
-        // 입력한 email을 가지고 있는 user 정보 가져오기
+        // role에 따라 적절한 repository를 통해 사용자 정보 로드
         UserDetails userDetails = customUserDetailsService.loadUserByEmailAndRole(email, role);
-        try {
 
-            // 인증절차
+        try {
+            // 인증 절차
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userDetails.getUsername(), password)
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // 통과했으면 토큰 발급해주기
+            // 토큰 발급
             String accessToken = jwtUtil.generateAccessToken(email, role);
             String refreshToken = jwtUtil.generateRefreshToken(email, role);
 
             // 일반 유저일 경우
-            if(role.equals("USER")) {
+            if ("USER".equals(role)) {
                 User user = userRepository.findByEmail(email).orElse(null);
-                user.updateRefreshToken(refreshToken);
+                if (user != null) {
+                    user.updateRefreshToken(refreshToken);
+                }
             }
 
             // 소속사 유저일 경우
-            else if(role.equals("AGENCY")) {
+            else if ("AGENCY".equals(role)) {
                 Agency agency = agencyRepository.findByEmail(email).orElse(null);
-                agency.updateRefreshToken(refreshToken);
+                if (agency != null) {
+                    agency.updateRefreshToken(refreshToken);
+                }
             }
 
             return new LoginResponse(accessToken, refreshToken);
-        }
-        catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
+            // 예외 메시지 출력
             throw new ExceptionResponse(CustomException.PASSWORD_INPUT_EXCEPTION);
         }
-
     }
+
 
     // 토큰 재발급
     public RefreshResponse refresh(String refreshToken) {
@@ -324,5 +331,26 @@ public class AuthService {
             // 기타 예외 처리
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
+    }
+
+    // 소속사 회원가입
+    @Transactional
+    public void agencySignup(AgencySignupRequest request) {
+
+        String email = request.getEmail();
+        // 이미 가입된 이메일이라면 가입 불가능
+        if(userRepository.existsByEmail(email) || agencyRepository.existsByEmail(email)) {
+            throw new ExceptionResponse(CustomException.DUPLICATED_ID_EXCEPTION);
+        }
+
+        Agency agency = Agency.builder()
+                .email(email)
+                .password(bCryptPasswordEncoder.encode(request.getPassword()))
+                .phone(request.getPhone())
+                .name(request.getName())
+                .build();
+
+        agencyRepository.save(agency);
+
     }
 }

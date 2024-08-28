@@ -2,6 +2,7 @@ package com.common.solstar.domain.agency.controller;
 
 import com.common.solstar.domain.agency.model.service.AgencyService;
 import com.common.solstar.domain.funding.dto.response.FundingAgencyResponseDto;
+import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,12 +20,14 @@ import java.util.List;
 public class AgencyController {
 
     private final AgencyService agencyService;
+    private final JwtUtil jwtUtil;
 
     // 펀딩 인증 요청 조회
     @GetMapping("/funding")
     @Operation(summary = "펀딩 인증 요청 조회")
-    public ResponseEntity<?> getFundingList() {
-        List<FundingAgencyResponseDto> fundingList = agencyService.getFundingList();
+    public ResponseEntity<?> getFundingList(@RequestHeader(value = "Authorization", required = false) String header) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        List<FundingAgencyResponseDto> fundingList = agencyService.getFundingList(authEmail);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())

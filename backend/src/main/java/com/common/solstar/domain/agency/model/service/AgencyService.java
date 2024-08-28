@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AgencyService {
 
-    List<FundingAgencyResponseDto> getFundingList();
+    List<FundingAgencyResponseDto> getFundingList(String authEmail);
 
     void acceptFunding(int fundingId);
 

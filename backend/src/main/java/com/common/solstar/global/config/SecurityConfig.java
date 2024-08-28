@@ -1,5 +1,6 @@
 package com.common.solstar.global.config;
 
+import com.common.solstar.global.auth.CustomUserDetailsService;
 import com.common.solstar.global.auth.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {

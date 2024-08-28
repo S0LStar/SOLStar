@@ -30,7 +30,8 @@ public class UserController {
     @Operation(summary = "로그인 유저 정보 조회")
     @GetMapping("/me")
     public ResponseEntity<ResponseDto<UserDetailResponse>> getLoginUserDetail(@RequestHeader(value = "Authorization", required = false) String header) {
-        String authEmail = jwtUtil.getEmailFromToken(header);
+        String authEmail = jwtUtil.getLoginUser(header);
+        System.out.println(authEmail);
         UserDetailResponse result = userService.getLoginUserDetail(authEmail);
         ResponseDto<UserDetailResponse> responseDto = ResponseDto.<UserDetailResponse>builder()
                 .status(HttpStatus.OK.value())
@@ -43,7 +44,7 @@ public class UserController {
     @Operation(summary = "나의 참여 펀딩 조회")
     @GetMapping("/join-funding")
     public ResponseEntity<ResponseDto<List<UserJoinFundingReponse>>> getUserJoinFunding(@RequestHeader(value = "Authorization", required = false) String header) {
-        String authEmail = jwtUtil.getEmailFromToken(header);
+        String authEmail = jwtUtil.getLoginUser(header);
         List<UserJoinFundingReponse> result = userService.getUserJoinFunding(authEmail);
         ResponseDto<List<UserJoinFundingReponse>> responseDto = ResponseDto.<List<UserJoinFundingReponse>>builder()
                 .status(HttpStatus.OK.value())
@@ -56,7 +57,7 @@ public class UserController {
     @Operation(summary = "나의 주최 펀딩 조회")
     @GetMapping("/host-funding")
     public ResponseEntity<ResponseDto<List<HostFundingResponse>>> getHostFunding(@RequestHeader(value = "Authorization", required = false) String header){
-        String authEmail = jwtUtil.getEmailFromToken(header);
+        String authEmail = jwtUtil.getLoginUser(header);
         List<HostFundingResponse> result = userService.getHostFunding(authEmail);
         ResponseDto<List<HostFundingResponse>> responseDto = ResponseDto.<List<HostFundingResponse>>builder()
                 .status(HttpStatus.OK.value())
@@ -70,7 +71,7 @@ public class UserController {
     @PatchMapping("/introduction")
     public ResponseEntity<ResponseDto<String>> updateIntroduction(@RequestHeader(value = "Authorization", required = false) String header,
                                                                   @RequestBody UpdateIntroductionRequest request) {
-        String authEmail = jwtUtil.getEmailFromToken(header);
+        String authEmail = jwtUtil.getLoginUser(header);
         userService.updateIntroduction(authEmail, request);
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.OK.value())

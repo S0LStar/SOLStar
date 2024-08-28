@@ -36,7 +36,7 @@ public class Agency implements UserDetails {
     @Column(name = "phone", nullable = false, length = 45)
     private String phone;
 
-    @Column(name = "refresh_token", nullable = false, length = 255)
+    @Column(name = "refresh_token", nullable = true, length = 255)
     private String refreshToken;
 
     @Column(name = "is_delete", nullable = false)
@@ -53,12 +53,12 @@ public class Agency implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return this.email;
     }
 
     @Override
