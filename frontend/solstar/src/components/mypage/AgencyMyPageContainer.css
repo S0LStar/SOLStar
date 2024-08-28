@@ -1,4 +1,4 @@
-.my-container {
+.agencymy-container {
   padding: 16px;
   margin: 0 auto;
   text-align: center;
@@ -6,43 +6,43 @@
   /* width: 360px; */
 }
 
-.my-profile {
+.agencymy-profile {
   width: 120px;
   height: 120px;
   padding: 50px;
 }
 
-.my-nickname {
+.agencymy-nickname {
   font-size: 22px;
 }
 
-.my-container div {
+.agencymy-container div {
   margin-bottom: 10px;
 }
 
-.my-intro {
-  font-size: 14px; /* 자기소개 텍스트 크기 */
+.agencymy-intro {
+  font-size: 14px;
   padding: 16px 20%;
 }
 
-.my-intro-text {
+.agencymy-intro-text {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.my-intro-text img {
+.agencymy-intro-text img {
   margin-left: 10px;
 }
 
-.my-container .my-edit-button {
+.agencymy-container .agencymy-edit-button {
   display: flex;
   justify-content: center;
   gap: 8px;
   padding: 16px;
 }
 
-.my-container .wide-button {
+.agencymy-container .wide-button {
   min-width: 125px;
   width: 40%;
   height: 30px;
@@ -53,27 +53,27 @@
   font-size: 14px;
 }
 
-.my-container .wide-button.inactive {
+.agencymy-container .wide-button.inactive {
   color: #303030;
 }
 
-.my-funding {
+.agencymy-funding {
   text-align: left;
   background-color: color-mix(in srgb, #9ed0f2 10%, white 90%);
   border-radius: 10px;
   padding: 16px;
 }
 
-.my-funding-label {
+.agencymy-funding-label {
   color: #6c7072;
   font-size: 12px;
 }
 
-.my-funding-container {
+.agencymy-funding-container {
   padding-top: 10px;
 }
 
-.my-funding-context {
+.agencymy-funding-context {
   display: flex;
   justify-content: space-between;
   height: 10px;

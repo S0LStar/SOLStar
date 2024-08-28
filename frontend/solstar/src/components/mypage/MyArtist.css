@@ -1,14 +1,14 @@
-.zzim-container {
+.myartist-container {
   padding: 16px;
   margin-bottom: 80px;
 }
 
-.zzim-header {
+.myartist-header {
   font-weight: bold;
   font-size: 16px;
 }
 
-.zzim-container .artist-list {
+.myartist-container .artist-list {
   display: block;
   overflow-x: auto;
   width: 95vw;
@@ -16,7 +16,7 @@
   margin-top: 30px;
 }
 
-.zzim-container .artist-item {
+.myartist-container .artist-item {
   position: relative;
   display: flex;
   flex-direction: row;
@@ -26,21 +26,21 @@
   align-items: center;
 }
 
-.zzim-container .artist-image {
+.myartist-container .artist-image {
   width: 84px;
   height: 84px;
   border: 0.5px solid #6c707230;
   border-radius: 50%;
 }
 
-.zzim-container .artist-item-zzim {
+.myartist-container .artist-item-zzim {
   position: absolute;
   left: 60px;
   bottom: 5px;
   width: 30px;
 }
 
-.zzim-container .artist-text {
+.myartist-container .artist-text {
   display: flex;
   flex-direction: column;
   margin-left: 30px;
@@ -48,8 +48,15 @@
   font-size: 12px;
 }
 
-.zzim-container .artist-name {
+.myartist-container .artist-name {
   font-size: 14px;
   color: #0046ff;
   font-weight: bold;
+}
+
+.myartist-container .wide-button {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

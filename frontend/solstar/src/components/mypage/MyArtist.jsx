@@ -1,11 +1,15 @@
-import './ZzimContainer.css';
+import './MyArtist.css';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import temp from '../../assets/character/Sol.png'; // Placeholder image
 import Zzim from '../../assets/artist/Zzim.png';
 import NoZzim from '../../assets/artist/NoZzim.png';
+import WideButton from '../common/WideButton';
+import { Navigate } from 'react-router-dom';
 
-function ZzimContainer() {
+function MyArtist() {
   const [zzimArtist, setZzimArtist] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const artistData = [
@@ -70,8 +74,8 @@ function ZzimContainer() {
 
   return (
     <>
-      <div className="zzim-container">
-        <div className="zzim-header">찜 아티스트</div>
+      <div className="myartist-container">
+        <div className="myartist-header">소속 아티스트</div>
         <div className="artist-list">
           {zzimArtist.map((artist) => (
             <div key={artist.artistId} className="artist-item">
@@ -104,9 +108,16 @@ function ZzimContainer() {
             </div>
           ))}
         </div>
+        <WideButton
+          // onClick={() => navigate('/agencymy/createartist')}
+          onClick={() => {}}
+          isActive={true}
+        >
+          추가
+        </WideButton>
       </div>
     </>
   );
 }
 
-export default ZzimContainer;
+export default MyArtist;
