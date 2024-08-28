@@ -54,7 +54,7 @@ public class FundingDetailResponseDto {
                 .deadlineDate(funding.getDeadlineDate())
                 .totalJoin(funding.getTotalJoin())
                 .type(funding.getType().name())
-                .status(funding.getStatus().getMessage())
+                .status(funding.getStatus().name())
                 .joinStatus(0)
                 .build();
     }

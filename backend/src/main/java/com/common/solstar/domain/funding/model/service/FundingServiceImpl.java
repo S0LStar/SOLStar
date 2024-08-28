@@ -91,7 +91,7 @@ public class FundingServiceImpl implements FundingService {
     public FundingDetailResponseDto getFundingById(int fundingId) {
 
         // 로그인한 유저 찾기
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findById(2);
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
@@ -127,6 +127,7 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
+    @Transactional
     public void joinFunding(FundingJoinCreateRequestDto joinFundingDto) {
 
         // 로그인한 유저 찾기
@@ -153,6 +154,16 @@ public class FundingServiceImpl implements FundingService {
         FundingJoin fundingJoin = new FundingJoin(joinFundingDto.getFundingId(), loginUser, funding, joinFundingDto.getAmount(), LocalDateTime.now());
 
         fundingJoinRepository.save(fundingJoin);
+
+        // totalAmount와 totalJoin 업데이트
+        funding.updateByJoin(fundingJoin.getAmount());
+
+        // 목표 금액 달성 시 상태를 SUCCESS 로 변경
+        if (funding.getTotalAmount() >= funding.getGoalAmount()) {
+            funding.setStatus(FundingStatus.SUCCESS);
+        }
+
+        fundingRepository.save(funding);
     }
 
     @Override

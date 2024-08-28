@@ -95,6 +95,11 @@ public class Funding extends BaseTimeEntity {
         }
     }
 
+    public void updateByJoin(int amount) {
+        this.totalAmount += amount;
+        this.totalJoin += 1;
+    }
+
     public void deleteFunding() {
         this.isDelete = true;
     }
