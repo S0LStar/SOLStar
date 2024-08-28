@@ -8,6 +8,16 @@
   margin-bottom: 15px;
 }
 
+.funding-detail-image-container {
+  position: relative;
+}
+
+.funding-detail-image-container .go-back {
+  position: absolute;
+  left: 10px;
+  top: 20px;
+}
+
 .funding-detail-image {
   width: 100vw;
   margin-left: calc(-50vw + 50%);
@@ -187,7 +197,7 @@
   background: none;
   color: #00000070;
   font-weight: 500;
-  padding: 10px;
+  padding: 10px 15px;
 }
 
 .funding-content-tab-button.active {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import WideButton from '../../common/WideButton';
+import BackButton from '../../common/BackButton';
 import './FundingDetail.css';
 import FundingPlan from './FundingPlan';
 import FundingNoti from './FundingNotiList';
@@ -35,7 +36,7 @@ function FundingDetail() {
       totalJoin: 1,
       type: 'VERIFIED',
       status: 'PROCESSING', // PROCESSING, SUCCESS, FAIL, CLOSED
-      joinStatus: 0, // 0: 참여 가능 대상 (펀딩 진행 중 && 펀딩 참여 전 && 주최자 x), 1: 참여자, 2: 주최자 => 여러번 참여 가능하다면 상태값 수정 필요
+      joinStatus: 2, // 0: 참여 가능 대상 (펀딩 진행 중 && 펀딩 참여 전 && 주최자 x), 1: 참여자, 2: 주최자 => 여러번 참여 가능하다면 상태값 수정 필요
     };
 
     setFunding(tempData);
@@ -60,7 +61,10 @@ function FundingDetail() {
 
   return (
     <div className="funding-detail-container">
-      <img src={Sol} alt="Funding" className="funding-detail-image" />
+      <div className="funding-detail-image-container">
+        <BackButton />
+        <img src={Sol} alt="Funding" className="funding-detail-image" />
+      </div>
       <div className="funding-detail-header">
         {funding.type === 'VERIFIED' && (
           <div className="certification-header">
@@ -188,14 +192,19 @@ function FundingDetail() {
             공지사항
           </button>
           {funding.joinStatus !== 0 && (
-            <button onClick={() => setActiveTab('payment')}>정산</button>
+            <button
+              onClick={() => setActiveTab('payment')}
+              className={`funding-content-tab-button ${activeTab === 'payment' && 'active'}`}
+            >
+              정산
+            </button>
           )}
         </div>
         <div className="funding-content-detail">
           {activeTab === 'plan' ? (
             <FundingPlan />
           ) : activeTab === 'noti' ? (
-            <FundingNoti />
+            <FundingNoti isHost={funding.joinStatus === 2} />
           ) : (
             funding.joinStatus !== 0 && <div>정산</div>
           )}
@@ -211,7 +220,11 @@ function FundingDetail() {
       )}
 
       {joinModalOpen && (
-        <FundingJoinModal isOpen={joinModalOpen} closeModal={closeModal} />
+        <FundingJoinModal
+          isOpen={joinModalOpen}
+          closeModal={closeModal}
+          title={funding.title}
+        />
       )}
     </div>
   );
