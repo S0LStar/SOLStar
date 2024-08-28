@@ -1,7 +1,6 @@
 package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
-import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
@@ -41,7 +40,6 @@ public class FundingServiceImpl implements FundingService {
     private final UserRepository userRepository;
     private final ArtistRepository artistRepository;
     private final LikeListRepository likeListRepository;
-    private final AccountRepository accountRepository;
     private final FundingJoinRepository fundingJoinRepository;
 
     @Override
@@ -92,6 +90,9 @@ public class FundingServiceImpl implements FundingService {
     @Override
     public FundingDetailResponseDto getFundingById(int fundingId) {
 
+        // 로그인한 유저 찾기
+        User loginUser = userRepository.findById(2);
+
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
 
@@ -103,7 +104,17 @@ public class FundingServiceImpl implements FundingService {
             fundingRepository.save(funding);
         }
 
-        return FundingDetailResponseDto.createResponseDto(funding);
+        FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
+
+        if (funding.getHost().equals(loginUser)) {
+            // 로그인한 유저가 주최자인 경우
+            responseDto.setJoinStatus(2);
+        } else if (fundingJoinRepository.existsByUserAndFunding(loginUser, funding)) {
+            // 로그인한 유저가 참여자인 경우
+            responseDto.setJoinStatus(1);
+        }
+
+        return responseDto;
     }
 
     @Override
@@ -116,6 +127,7 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
+    @Transactional
     public void joinFunding(FundingJoinCreateRequestDto joinFundingDto) {
 
         // 로그인한 유저 찾기
@@ -142,6 +154,16 @@ public class FundingServiceImpl implements FundingService {
         FundingJoin fundingJoin = new FundingJoin(joinFundingDto.getFundingId(), loginUser, funding, joinFundingDto.getAmount(), LocalDateTime.now());
 
         fundingJoinRepository.save(fundingJoin);
+
+        // totalAmount와 totalJoin 업데이트
+        funding.updateByJoin(fundingJoin.getAmount());
+
+        // 목표 금액 달성 시 상태를 SUCCESS 로 변경
+        if (funding.getTotalAmount() >= funding.getGoalAmount()) {
+            funding.setStatus(FundingStatus.SUCCESS);
+        }
+
+        fundingRepository.save(funding);
     }
 
     @Override

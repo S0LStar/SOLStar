@@ -41,16 +41,25 @@ public class BoardService {
             throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
         }
 
-        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent());
+        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent(), boardDto.getContentImage());
 
         boardRepository.save(createdBoard);
     }
 
     public List<BoardResponseDto> getBoardList(int fundingId) {
+        // 로그인한 유저 불러오기
+        User loginUser = userRepository.findById(1);
+
+        Funding funding = fundingRepository.findById(fundingId)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        // 펀딩의 주최자인지 여부 판단
+        boolean isHost = funding.getHost().equals(loginUser);
+
         List<Board> boardEntities = boardRepository.findByFunding_Id(fundingId);
 
         List<BoardResponseDto> responseDtos = boardEntities.stream()
-                .map(board -> BoardResponseDto.createResponseDto(board))
+                .map(board -> BoardResponseDto.createResponseDto(board, isHost))
                 .collect(Collectors.toList());
 
         Collections.reverse(responseDtos);

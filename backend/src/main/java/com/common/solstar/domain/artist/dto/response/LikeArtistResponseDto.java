@@ -5,9 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class LikeArtistResponseDto {
 
-    private int id;
+    private int artistId;
 
     private String type;
 
@@ -17,18 +18,9 @@ public class LikeArtistResponseDto {
 
     private String profileImage;
 
-    @Builder
-    private LikeArtistResponseDto(int id, String type, String name, String group, String profileImage) {
-        this.id = id;
-        this.type = type;
-        this.name = name;
-        this.group = group;
-        this.profileImage = profileImage;
-    }
-
     public static LikeArtistResponseDto createResponseDto(Artist artist) {
         return LikeArtistResponseDto.builder()
-                .id(artist.getId())
+                .artistId(artist.getId())
                 .type(artist.getType().name())
                 .name(artist.getName())
                 .group(artist.getGroup())

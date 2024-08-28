@@ -12,15 +12,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BoardResponseDto {
 
-    private int id;
+    private int boardId;
 
     private String title;
 
     private String content;
 
+    private String contentImage;
+
     private LocalDateTime createDate;
 
-    public static BoardResponseDto createResponseDto(Board board) {
-        return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getCreateDate());
+    private boolean isHost;
+
+    public static BoardResponseDto createResponseDto(Board board, boolean isHost) {
+        return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getContentImage(), board.getCreateDate(), isHost);
     }
 }
