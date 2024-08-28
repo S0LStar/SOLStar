@@ -73,10 +73,10 @@ function MyContainer() {
             </div>
           </div>
         </div>
+        <button onClick={() => navigate('/login')}>
+          <span>로그인</span>
+        </button>
       </div>
-      <button onClick={() => navigate('/login')}>
-        <span>로그인</span>
-      </button>
     </>
   );
 }
