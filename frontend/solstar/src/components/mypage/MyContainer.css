@@ -57,23 +57,23 @@
   color: #303030;
 }
 
-.my-fundding {
+.my-funding {
   text-align: left;
   background-color: color-mix(in srgb, #9ed0f2 10%, white 90%);
   border-radius: 10px;
   padding: 16px;
 }
 
-.my-fundding-label {
+.my-funding-label {
   color: #6c7072;
   font-size: 12px;
 }
 
-.my-fundding-container {
+.my-funding-container {
   padding-top: 10px;
 }
 
-.my-fundding-context {
+.my-funding-context {
   display: flex;
   justify-content: space-between;
   height: 10px;

@@ -42,21 +42,21 @@ function AgencyMyPageContainer() {
           </WideButton>
         </div>
 
-        <div className="agencymy-fundding">
-          <div className="agencymy-fundding-label">소속사</div>
+        <div className="agencymy-funding">
+          <div className="agencymy-funding-label">소속사</div>
           <hr />
           <div
-            className="agencymy-fundding-container"
+            className="agencymy-funding-container"
             onClick={() => {
               navigate(`/agencymy/request`);
             }}
           >
-            <div className="agencymy-fundding-context">
+            <div className="agencymy-funding-context">
               인증 펀딩 요청
               <img src={RightVector} alt="" />
             </div>
             <div
-              className="agencymy-fundding-context"
+              className="agencymy-funding-context"
               onClick={() => {
                 navigate(`/agencymy/myartist`);
               }}
@@ -64,9 +64,9 @@ function AgencyMyPageContainer() {
               소속 아티스트 <img src={RightVector} alt="" />
             </div>
             <div
-              className="agencymy-fundding-context"
+              className="agencymy-funding-context"
               onClick={() => {
-                navigate(`/agencymy/myartistfundding`);
+                navigate(`/agencymy/myartistfunding`);
               }}
             >
               소속 아티스트 펀딩 <img src={RightVector} alt="" />
