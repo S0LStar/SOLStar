@@ -17,8 +17,11 @@ import ZzimPage from '../pages/ZzimPage';
 import ZzimContainer from '../components/zzim/ZzimContainer';
 import MyPage from '../pages/MyPage';
 import MyPageContainer from '../components/mypage/MyContainer';
-import AgencyMyPageContainer from '../components/mypage/AgencyMyPageContainer';
 import EditProfileContainer from '../components/mypage/EditProfileContainer';
+import AgencyMyPageContainer from '../components/mypage/AgencyMyPageContainer';
+import RequestFunding from '../components/mypage/RequestFunding';
+import MyArtist from '../components/mypage/MyArtist';
+import MyArtistFunding from '../components/mypage/MyArtistFunding';
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer';
 import MainSearch from '../components/main/MainSearch';
@@ -60,6 +63,9 @@ function AppRoutes() {
       </Route>
       <Route path="/agencymy" element={<MyPage />}>
         <Route index element={<AgencyMyPageContainer />}></Route>
+        <Route path="request" element={<RequestFunding />} />
+        <Route path="myartist" element={<MyArtist />} />
+        <Route path="myartistfunding" element={<MyArtistFunding />} />
       </Route>
       <Route path="/login" element={<LoginPage />}>
         <Route index element={<LoginContainer />}></Route>
