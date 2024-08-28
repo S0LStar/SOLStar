@@ -39,6 +39,19 @@ public class AuthController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @Operation(summary = "소속사 회원가입")
+    @PostMapping("/signup-agency")
+    public ResponseEntity<ResponseDto<String>> signupAgency (@RequestBody AgencySignupRequest request) {
+        authService.agencySignup(request);
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("회원가입 성공")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
     @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<ResponseDto<LoginResponse>> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {

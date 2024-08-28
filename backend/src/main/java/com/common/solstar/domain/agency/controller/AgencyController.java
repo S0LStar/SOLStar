@@ -2,6 +2,7 @@ package com.common.solstar.domain.agency.controller;
 
 import com.common.solstar.domain.agency.model.service.AgencyService;
 import com.common.solstar.domain.funding.dto.response.FundingAgencyResponseDto;
+import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.util.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,13 @@ import java.util.List;
 public class AgencyController {
 
     private final AgencyService agencyService;
+    private final JwtUtil jwtUtil;
 
     // 펀딩 인증 요청 조회
     @GetMapping("/funding")
-    public ResponseEntity<?> getFundingList() {
-        List<FundingAgencyResponseDto> fundingList = agencyService.getFundingList();
+    public ResponseEntity<?> getFundingList(@RequestHeader(value = "Authorization", required = false) String header) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        List<FundingAgencyResponseDto> fundingList = agencyService.getFundingList(authEmail);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())

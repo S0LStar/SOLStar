@@ -12,6 +12,7 @@ import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -70,6 +71,7 @@ public class UserService {
     }
 
     // 자기소개 수정
+    @Transactional
     public void updateIntroduction(String authEmail, UpdateIntroductionRequest request) {
         if(authEmail == null) {
             throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
@@ -84,5 +86,7 @@ public class UserService {
         else {
             user.updateIntroduction(request.getIntroduction());
         }
+
+        userRepository.save(user);
     }
 }

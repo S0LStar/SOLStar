@@ -25,10 +25,10 @@ public class AgencyServiceImpl implements AgencyService {
     private final AgencyRepository agencyRepository;
 
     @Override
-    public List<FundingAgencyResponseDto> getFundingList() {
+    public List<FundingAgencyResponseDto> getFundingList(String authEmail) {
 
         // 로그인한 소속사 정보 불러오기
-        Agency agency = agencyRepository.findById(1)
+        Agency agency = agencyRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
 
         // status가 false(승인 대기중)인 펀딩 - 소속사 연결관계만 추출
