@@ -12,6 +12,9 @@ import FundingDetail from '../components/funding/detail/FundingDetail';
 import FundingRegist from '../components/funding/regist/FundingRegist';
 import FundingSearchResult from '../components/funding/search/FundingSearchResult';
 
+// Notice
+import FundingNoticeRegist from '../components/funding/detail/FundingNoticeRegist';
+
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
 import ZzimPage from '../pages/ZzimPage';
@@ -43,7 +46,8 @@ function AppRoutes() {
       </Route>
 
       <Route path="/funding" element={<FundingPage />}>
-        <Route path=":id" element={<FundingDetail />} />
+        <Route path=":fundingId" element={<FundingDetail />} />
+        <Route path=":fundingId/notice" element={<FundingNoticeRegist />} />
         <Route path="regist" element={<FundingRegist />} />
         <Route path="search" element={<FundingSearchResult />}></Route>
       </Route>

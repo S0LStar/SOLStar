@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import WideButton from '../../common/WideButton';
 import BackButton from '../../common/BackButton';
 import './FundingDetail.css';
@@ -14,12 +14,14 @@ import Fail from '../../../assets/funding/Fail.png';
 import Closed from '../../../assets/funding/Closed.png';
 
 function FundingDetail() {
-  const location = useLocation();
+  const { fundingId } = useParams();
   const [funding, setFunding] = useState(null);
   const [activeTab, setActiveTab] = useState('plan'); // 활성화 탭 상태관리
   const [joinModalOpen, setJoinModalOpen] = useState(false); // 펀딩 참여 모달 상태 관리
 
   useEffect(() => {
+    console.log(parseInt(fundingId));
+
     // TODO : API 연결
     // 펀딩 상세 조회 Data
     const tempData = {
@@ -204,7 +206,10 @@ function FundingDetail() {
           {activeTab === 'plan' ? (
             <FundingPlan />
           ) : activeTab === 'noti' ? (
-            <FundingNoti isHost={funding.joinStatus === 2} />
+            <FundingNoti
+              fundingId={parseInt(fundingId)}
+              isHost={funding.joinStatus === 2}
+            />
           ) : (
             funding.joinStatus !== 0 && <div>정산</div>
           )}

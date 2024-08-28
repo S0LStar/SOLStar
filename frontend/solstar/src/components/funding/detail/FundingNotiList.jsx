@@ -1,7 +1,12 @@
 import './FundingNotiList.css';
 import PropTypes from 'prop-types';
 
-function FundingNotiList({ isHost }) {
+import Notice from '../../../assets/funding/Notice.png';
+import { useNavigate } from 'react-router-dom';
+
+function FundingNotiList({ fundingId, isHost }) {
+  const navigate = useNavigate();
+
   const tempData = [
     {
       id: 2,
@@ -39,7 +44,19 @@ function FundingNotiList({ isHost }) {
 
   return (
     <div>
-      {isHost && <button>공지글 작성하기</button>}
+      {isHost && (
+        <div
+          className="regist-notice-button"
+          onClick={() => {
+            navigate(`notice`);
+          }}
+        >
+          <div className="regist-notice-button-description">
+            공지글 작성하기
+          </div>
+          <img src={Notice} alt="" />
+        </div>
+      )}
       {tempData.map((notice) => (
         <div key={notice.id} className="notice-item">
           <div className="notice-profile-info">
@@ -65,6 +82,7 @@ function FundingNotiList({ isHost }) {
 
 FundingNotiList.propTypes = {
   isHost: PropTypes.bool.isRequired,
+  fundingId: PropTypes.number.isRequired,
 };
 
 export default FundingNotiList;
