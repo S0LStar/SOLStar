@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/funding")
@@ -130,7 +131,7 @@ public class FundingController {
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
                 .message("펀딩 공지사항 조회 완료")
-                .data(boardList)
+                .data(Map.of("noticeList", boardList))
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -194,7 +195,7 @@ public class FundingController {
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
                 .message("나의 선호 아티스트 펀딩 조회 완료")
-                .data(fundingList)
+                .data(Map.of("fundingList", fundingList))
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -209,7 +210,7 @@ public class FundingController {
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
                 .message("최근 인기 펀딩 조회 완료")
-                .data(fundingList)
+                .data(Map.of("fundingList", fundingList))
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -224,7 +225,7 @@ public class FundingController {
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
                 .message("펀딩 검색 조회 완료")
-                .data(searchFundings)
+                .data(Map.of("fundingList", searchFundings))
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

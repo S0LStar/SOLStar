@@ -41,7 +41,7 @@ public class BoardService {
             throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
         }
 
-        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent());
+        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent(), boardDto.getContentImage());
 
         boardRepository.save(createdBoard);
     }

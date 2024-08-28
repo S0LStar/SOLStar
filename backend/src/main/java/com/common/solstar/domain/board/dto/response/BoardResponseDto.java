@@ -18,9 +18,11 @@ public class BoardResponseDto {
 
     private String content;
 
+    private String contentImage;
+
     private LocalDateTime createDate;
 
     public static BoardResponseDto createResponseDto(Board board) {
-        return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getCreateDate());
+        return new BoardResponseDto(board.getId(), board.getTitle(), board.getContent(), board.getContentImage(), board.getCreateDate());
     }
 }
