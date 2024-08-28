@@ -5,6 +5,8 @@ import com.common.solstar.domain.artist.dto.response.ArtistSearchResponseDto;
 import com.common.solstar.domain.artist.dto.response.LikeArtistResponseDto;
 import com.common.solstar.domain.artist.model.service.ArtistService;
 import com.common.solstar.global.util.ResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +18,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/artist")
 @RequiredArgsConstructor
+@Tag(name = "ArtistController")
 public class ArtistController {
 
     private final ArtistService artistService;
 
     // 검색어로 아티스트 조회
     @GetMapping
+    @Operation(summary = "아티스트 검색 조회")
     public ResponseEntity<?> searchArtists(@RequestParam("keyword") String keyword) {
         List<ArtistSearchResponseDto> artistList = artistService.searchArtists(keyword);
 
@@ -36,6 +40,7 @@ public class ArtistController {
 
     // 특정 아티스트 상세 조회
     @GetMapping("/{artistId}")
+    @Operation(summary = "특정 아티스트 상세 조회")
     public ResponseEntity<?> getArtistById(@PathVariable("artistId") int artistId) {
         ArtistResponseDto artist = artistService.getArtistById(artistId);
 
@@ -50,6 +55,7 @@ public class ArtistController {
 
     // 찜한 아티스트 리스트 조회
     @GetMapping("/like")
+    @Operation(summary = "찜한 아티스트 전체 조회")
     public ResponseEntity<?> getLikeArtist() {
         List<LikeArtistResponseDto> likeArtistList = artistService.getLikeArtistList();
 
@@ -64,6 +70,7 @@ public class ArtistController {
 
     // 찜한 아티스트 조회
     @GetMapping("/like/{artistId}")
+    @Operation(summary = "찜한 아티스트 조회")
     public ResponseEntity<?> likeArtist(@PathVariable("artistId") int artistId) {
         Map<String, Object> isLike = artistService.getLikeArtist(artistId);
 
@@ -78,6 +85,7 @@ public class ArtistController {
 
     // 아티스트 찜하기 버튼
     @PostMapping("/like/{artistId}")
+    @Operation(summary = "아티스트 찜하기 / 취소하기")
     public ResponseEntity<?> like(@PathVariable("artistId") int artistId) {
         artistService.like(artistId);
 
