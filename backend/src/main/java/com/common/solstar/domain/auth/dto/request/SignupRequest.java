@@ -35,4 +35,6 @@ public class SignupRequest {
 
     private String accountPassword;
 
+    private String userKey;
+
 }

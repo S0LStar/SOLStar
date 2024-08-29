@@ -5,9 +5,8 @@ import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
-import com.common.solstar.domain.funding.dto.response.FundingContentResponseDto;
-import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
-import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
+import com.common.solstar.domain.funding.dto.request.TransferJoinRequest;
+import com.common.solstar.domain.funding.dto.response.*;
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.entity.FundingStatus;
 import com.common.solstar.domain.funding.entity.FundingType;
@@ -21,11 +20,20 @@ import com.common.solstar.domain.likeList.entity.LikeList;
 import com.common.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
+import com.common.solstar.global.api.request.CommonHeader;
+import com.common.solstar.global.api.request.TransferApiRequest;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +49,17 @@ public class FundingServiceImpl implements FundingService {
     private final ArtistRepository artistRepository;
     private final LikeListRepository likeListRepository;
     private final FundingJoinRepository fundingJoinRepository;
+
+    private final WebClient webClient = WebClient.builder()
+            .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
+            .build();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Value("${ssafy.api.key}")
+    private String apiKey;
+
+    @Value("${system.account.no}")
+    private String systemAccountNo;
 
     @Override
     public void createFunding(FundingCreateRequestDto fundingDto) {
@@ -96,14 +115,6 @@ public class FundingServiceImpl implements FundingService {
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
 
-        // 펀딩 성공 시 상태 변경 및 펀딩 계좌 생성
-        // 필요에 따라 기능 분리 (펀딩 참여 시 수정되도록  구현)
-        if (funding.getGoalAmount() <= funding.getTotalAmount()) {
-            funding.setStatus(FundingStatus.SUCCESS);
-
-            fundingRepository.save(funding);
-        }
-
         FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
 
         if (funding.getHost().equals(loginUser)) {
@@ -153,15 +164,20 @@ public class FundingServiceImpl implements FundingService {
         // FundingJoin 객체 만들어서 저장
         FundingJoin fundingJoin = new FundingJoin(joinFundingDto.getFundingId(), loginUser, funding, joinFundingDto.getAmount(), LocalDateTime.now());
 
+        // 펀딩 참여 금액 이체를 위한 request 생성
+        TransferJoinRequest joinRequest = TransferJoinRequest.builder()
+                .userKey(loginUser.getUserKey())
+                .fundingJoin(fundingJoin)
+                .build();
+
+        // 펀딩 계좌 이체 가능한지 확인
+        if(!transferFunding(joinRequest).isSuccess())
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_JOIN_EXCEPTION);
+        
         fundingJoinRepository.save(fundingJoin);
 
         // totalAmount와 totalJoin 업데이트
         funding.updateByJoin(fundingJoin.getAmount());
-
-        // 목표 금액 달성 시 상태를 SUCCESS 로 변경
-        if (funding.getTotalAmount() >= funding.getGoalAmount()) {
-            funding.setStatus(FundingStatus.SUCCESS);
-        }
 
         fundingRepository.save(funding);
     }
@@ -215,6 +231,87 @@ public class FundingServiceImpl implements FundingService {
         return searchFundings.stream()
                 .map(FundingResponseDto::createResponseDto)
                 .collect(Collectors.toList());
+    }
+    
+    // 펀딩 참여 시 시스템 계좌에 이체
+    public TransferJoinResponse transferFunding(TransferJoinRequest request) {
+
+        String url = "/edu/demandDeposit/createDemandDepositAccount";
+
+        CommonHeader header = CommonHeader.builder()
+                .apiName("createDemandDepositAccount")
+                .apiServiceCode("createDemandDepositAccount")
+                .userKey(request.getUserKey())
+                .apiKey(apiKey)
+                .build();
+        header.setCommonHeader();
+
+        User participant = request.getFundingJoin().getUser();
+        int amount = request.getFundingJoin().getAmount();
+
+        // 시스템 계좌에 참여자의 펀딩 참여 금액 입금
+        TransferApiRequest apiRequest = TransferApiRequest.builder()
+                .header(header)
+                .depositAccountNo(systemAccountNo)
+                .depositTransactionSummary("펀딩 참여 입금 : " + participant.getName())
+                .transactionBalance(Integer.toString(amount))
+                .withdrawalAccountNo(participant.getAccount().getAccountNumber())
+                .withdrawalTransactionSummary("펀딩 참여 출금")
+                .build();
+
+        try {
+
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
+
+            String response = responseMono.block();
+
+            JsonNode root = objectMapper.readTree(response);
+
+            // 성공 상태면 true 반환
+            if (root.has("REC")) {
+                return TransferJoinResponse.builder()
+                        .isSuccess(true)
+                        .build();
+            }
+
+        } catch (WebClientResponseException e) {
+          // WebClient 오류 응답 처리
+          String errorBody = e.getResponseBodyAsString();
+
+          try {
+              // 오류 응답 JSON 파싱
+              JsonNode root = objectMapper.readTree(errorBody);
+
+              if (root.has("responseCode")) {
+                  String responseCode = root.get("responseCode").asText();
+
+                  // responseCode에 따른 커스텀 예외 처리
+                  switch (responseCode) {
+                      case "A1003":
+                          throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                      default:
+                          throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                  }
+              } else {
+                  throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+              }
+          } catch (JsonProcessingException jsonParseException) {
+              // JSON 파싱 오류 시 기본 예외 처리
+              throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+          }
+        } catch (Exception e) {
+            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+        }
+
+        return TransferJoinResponse.builder()
+                .isSuccess(false)
+                .build();
     }
 
 }

@@ -23,6 +23,7 @@ public enum CustomException {
     EXPIRED_AUTH_CODE(403,"ExpriedAuthCode", "인증시간이 만료되었습니다."),
     NOT_FOUND_AUTH_CODE(404,"NotFoundAuthCode","인증코드 발급 기록이 없습니다.(이미 인증한 코드입니다)"),
     MISMATCHED_AUTH_CODE_EXCEPTION(400,"MismatchedAuthCodeException","인증코드가 일치하지 않습니다."),
+    INVALID_ACCOUNT_NUMBER_EXCEPTION(400, "InvalidAccountNumberException", "계좌번호가 유효하지 않습니다."),
 
     // 계좌
     NOT_FOUND_ACCOUNT_EXCEPTION(400, "NotFoundAccountException", "계좌가 존재하지 않습니다."),
@@ -31,6 +32,7 @@ public enum CustomException {
     // 펀딩
     NOT_FOUND_FUNDING_EXCEPTION(400, "NotFoundFundingException", "펀딩이 존재하지 않습니다"),
     NOT_PROCESSING_FUNDING_EXCEPTION(400, "NotProcessingFundingException", "현재 진행중인 펀딩이 아닙니다."),
+    INVALID_FUNDING_JOIN_EXCEPTION(400, "InvalidFundingJoinException", "올바르지 않은 펀딩 참여 형식입니다."),
 
     // 펀딩 공지사항
     NOT_FOUND_BOARD_EXCEPTION(400, "NotFoundBoardException", "펀딩 공지사항이 존재하지 않습니다."),
