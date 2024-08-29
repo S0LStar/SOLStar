@@ -9,7 +9,7 @@ function FundingRegistContainer() {
   const [funding, setFunding] = useState({
     // 펀딩 정보를 관리할 state
     type: 'COMMON',
-    profileImage: '',
+    fundingImage: '',
     title: '',
     deadlineDate: '',
     goalAmount: 0,

@@ -20,7 +20,7 @@ function FundingRegistInfo({ funding, onChange, onNext }) {
         funding.title &&
         funding.deadlineDate &&
         funding.goalAmount &&
-        funding.profileImage &&
+        funding.fundingImage &&
         funding.artistId
     );
 
