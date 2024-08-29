@@ -112,8 +112,8 @@ function FundingNoticeRegist() {
               />
               <div className="funding-regist-image-description">
                 <div>이런 사진을 등록해보세요 !</div>
-                <div>- 아티스트 사진</div>
-                <div>- 홍보 대상 사진</div>
+                <div>- 공지 내용을 요약한 사진</div>
+                <div>- 정산 후 내역 사진</div>
               </div>
             </div>
           </div>
