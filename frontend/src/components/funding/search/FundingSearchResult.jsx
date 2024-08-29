@@ -111,7 +111,15 @@ function FundingSearchResult() {
   };
 
   const toggleZzim = (artistId) => {
-    // TODO: 찜/찜 해제 API 요청
+    // 찜/찜 해제 API 요청
+    const postLike = async () => {
+      const response = await axiosInstance.post(`/artist/like/${artistId}`);
+
+      console.log(response);
+    };
+
+    postLike();
+
     setData((prevData) => {
       const updatedArtistList = prevData.artistList.map((artist) => {
         if (artist.artistId === artistId) {
