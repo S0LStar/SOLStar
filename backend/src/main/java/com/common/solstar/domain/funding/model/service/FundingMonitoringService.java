@@ -1,7 +1,6 @@
 package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
-import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.funding.dto.request.CreateDemandDepositAccountRequest;
 import com.common.solstar.domain.funding.dto.request.TransferRefundRequest;
 import com.common.solstar.domain.funding.dto.response.DemandDepositAccountResponse;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.servlet.View;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -44,8 +42,6 @@ public class FundingMonitoringService {
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final AccountRepository accountRepository;
-    private final View error;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -88,7 +84,7 @@ public class FundingMonitoringService {
             } else {
                 funding.setStatus(FundingStatus.CLOSED);
 
-                // 환불해줘야 함 => 2시에 처리
+                // 환불해줘야 함 => 3시에 처리
             }
         }
 
@@ -191,11 +187,11 @@ public class FundingMonitoringService {
     // 계좌 이체
     public TransferRefundResponse transferRefund(TransferRefundRequest request) {
 
-        String url = "/edu/demandDeposit/createDemandDepositAccount";
+        String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
 
         CommonHeader header = CommonHeader.builder()
-                .apiName("createDemandDepositAccount")
-                .apiServiceCode("createDemandDepositAccount")
+                .apiName("updateDemandDepositAccountTransfer")
+                .apiServiceCode("updateDemandDepositAccountTransfer")
                 .userKey(request.getUserKey())
                 .apiKey(apiKey)
                 .build();

@@ -62,13 +62,14 @@ public class FundingServiceImpl implements FundingService {
     private String systemAccountNo;
 
     @Override
-    public void createFunding(FundingCreateRequestDto fundingDto) {
+    public void createFunding(FundingCreateRequestDto fundingDto, String authEmail) {
 
         Artist artist = artistRepository.findById(fundingDto.getArtistId())
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
-        // 임시로 User 생성하여 host 찾기
-        // Security 구현 시 로그인한 유저를 가져오는 것으로 구현
-        User host = userRepository.findById(1);
+
+        // User 생성하여 host 찾기
+        User host = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
         // String 타입의 입력값을 FundingType으로 변환
         FundingType fundingType = FundingType.fromString(fundingDto.getType());
@@ -87,30 +88,43 @@ public class FundingServiceImpl implements FundingService {
 
     @Override
     @Transactional
-    public void updateFunding(int fundingId, FundingUpdateRequestDto fundingDto) {
+    public void updateFunding(int fundingId, FundingUpdateRequestDto fundingDto, String authEmail) {
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        User host = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        if (funding.getHost().equals(host))
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         funding.updateFundingDetails(fundingDto);
     }
 
     @Override
     @Transactional
-    public void deleteFunding(int fundingId) {
+    public void deleteFunding(int fundingId, String authEmail) {
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        User host = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        if (funding.getHost().equals(host))
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         funding.deleteFunding();
         fundingRepository.save(funding);
     }
 
     @Override
-    public FundingDetailResponseDto getFundingById(int fundingId) {
+    public FundingDetailResponseDto getFundingById(int fundingId, String authEmail) {
 
         // 로그인한 유저 찾기
-        User loginUser = userRepository.findById(2);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
@@ -129,7 +143,7 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
-    public FundingContentResponseDto getFundingContent(int fundingId) {
+    public FundingContentResponseDto getFundingContent(int fundingId, String authEmail) {
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
@@ -139,10 +153,11 @@ public class FundingServiceImpl implements FundingService {
 
     @Override
     @Transactional
-    public void joinFunding(FundingJoinCreateRequestDto joinFundingDto) {
+    public void joinFunding(FundingJoinCreateRequestDto joinFundingDto, String authEmail) {
 
         // 로그인한 유저 찾기
-        User loginUser = userRepository.findById(2);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
         // 해당 유저가 소유한 계좌가 있는지 확인
         Account account = loginUser.getAccount();
@@ -183,10 +198,12 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
-    public List<FundingResponseDto> getMyLikeArtistFunding() {
+    public List<FundingResponseDto> getMyLikeArtistFunding(String authEmail) {
 
         // 로그인한 유저 찾기
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
 
         List<LikeList> likeListEntities = likeListRepository.findByUser_Id(loginUser.getId());
 
@@ -205,10 +222,12 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
-    public List<FundingResponseDto> getPopularFunding() {
+    public List<FundingResponseDto> getPopularFunding(String authEmail) {
 
         // 로그인한 유저 찾기
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
 
         // totalJoin 기준으로 내림차순 정렬된 펀딩 목록을 가져옴
         List<Funding> popularFundings = fundingRepository.findPopularFundings();
@@ -220,10 +239,11 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
-    public List<FundingResponseDto> getSearchFunding(String keyword) {
+    public List<FundingResponseDto> getSearchFunding(String keyword, String authEmail) {
 
         // 로그인한 유저 불러오기
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
         // 검색어로 펀딩 리스트 불러오기
         List<Funding> searchFundings = fundingRepository.findByTitleContainingIgnoreCase(keyword);
@@ -236,11 +256,11 @@ public class FundingServiceImpl implements FundingService {
     // 펀딩 참여 시 시스템 계좌에 이체
     public TransferJoinResponse transferFunding(TransferJoinRequest request) {
 
-        String url = "/edu/demandDeposit/createDemandDepositAccount";
+        String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
 
         CommonHeader header = CommonHeader.builder()
-                .apiName("createDemandDepositAccount")
-                .apiServiceCode("createDemandDepositAccount")
+                .apiName("updateDemandDepositAccountTransfer")
+                .apiServiceCode("updateDemandDepositAccountTransfer")
                 .userKey(request.getUserKey())
                 .apiKey(apiKey)
                 .build();
