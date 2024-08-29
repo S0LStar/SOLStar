@@ -56,9 +56,43 @@ function FundingNoticeRegist() {
   };
 
   // 공지 작성
-  const handleRegist = () => {
-    // TODO : 공지 작성 API 연결 (/api/funding/notice/{fundingId})
-    //
+  const handleRegist = async () => {
+    try {
+      const noticeData = new FormData();
+      noticeData.append(
+        'notice',
+        new Blob(
+          [JSON.stringify({ title: notice.title, content: notice.content })],
+          {
+            type: 'application/json',
+          }
+        )
+      );
+
+      if (notice.contentImage) {
+        const fileBlob = new Blob([notice.contentImage], { type: 'image/png' });
+        const fileData = new File([fileBlob], 'image.png');
+        noticeData.append('contentImage', fileData);
+      }
+
+      // const response = await axios.post(
+      //   `/api/funding/notice/${fundingId}`,
+      //   noticeData,
+      //   {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //   }
+      // );
+
+      // if (response.status === 200) {
+      //   alert('공지글이 성공적으로 등록되었습니다.');
+      //   // 성공 후 필요한 작업 (예: 페이지 이동)
+      // }
+    } catch (error) {
+      console.error('공지 작성 오류:', error);
+      alert('공지글 등록 중 오류가 발생했습니다.');
+    }
   };
 
   return (

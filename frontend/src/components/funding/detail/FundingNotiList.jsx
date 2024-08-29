@@ -2,10 +2,13 @@ import './FundingNotiList.css';
 import PropTypes from 'prop-types';
 
 import Notice from '../../../assets/funding/Notice.png';
+import More from '../../../assets/funding/More.png';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 function FundingNotiList({ fundingId, isHost }) {
   const navigate = useNavigate();
+  const [selectedMore, setSelectedMore] = useState(null);
 
   const tempData = [
     {
@@ -42,6 +45,24 @@ function FundingNotiList({ fundingId, isHost }) {
     }
   }
 
+  const handleMoreClick = (noticeId) => {
+    if (selectedMore === noticeId) {
+      setSelectedMore(null);
+    } else {
+      setSelectedMore(noticeId); // 모달을 열고자 하는 공지의 ID를 설정
+    }
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMore(null); // 모달 닫기
+  };
+
+  const handleDeleteNotice = () => {
+    // TODO : 삭제하기 로직 구현
+    alert('공지 삭제하기');
+    handleCloseModal();
+  };
+
   return (
     <div>
       {isHost && (
@@ -71,6 +92,14 @@ function FundingNotiList({ fundingId, isHost }) {
                 {formatTimeDifference(notice.createDate)}
               </p>
             </div>
+            {isHost && (
+              <img
+                src={More}
+                alt=""
+                className="more"
+                onClick={() => handleMoreClick(notice.id)}
+              />
+            )}
           </div>
           <h3>{notice.title}</h3>
           <div className="notice-content">{notice.content}</div>
@@ -79,6 +108,16 @@ function FundingNotiList({ fundingId, isHost }) {
               src={notice.contentImage}
               className="notice-content-image"
             ></img>
+          )}
+
+          {selectedMore === notice.id && (
+            <div className="more-modal">
+              <div className="more-modal-content">
+                <div className="more-modal-item" onClick={handleDeleteNotice}>
+                  글 삭제하기
+                </div>
+              </div>
+            </div>
           )}
         </div>
       ))}
