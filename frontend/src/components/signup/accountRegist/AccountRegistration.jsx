@@ -1,6 +1,6 @@
 import './AccountRegistration.css';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
@@ -9,24 +9,35 @@ import DownVector from '../../../assets/common/DownVector.png';
 
 // Dummy icons for banks
 const bankIcons = {
-  국민은행: 'path/to/kookmin-icon.png',
-  신한은행: 'path/to/shinhan-icon.png',
-  우리은행: 'path/to/woori-icon.png',
-  하나은행: 'path/to/hana-icon.png',
-  카카오뱅크: 'path/to/kakao-icon.png',
-  기업은행: 'path/to/ibk-icon.png',
-  농협: 'path/to/nh-icon.png',
-  케이뱅크: 'path/to/kbank-icon.png',
-  한국시티: 'path/to/citi-icon.png',
-  SC제일: 'path/to/sc-icon.png',
-  경남: 'path/to/kyongnam-icon.png',
-  광주: 'path/to/gwangju-icon.png',
+  신한은행: '/src/assets/signup/신한.png',
+  국민은행: '/src/assets/signup/국민.png',
+  우리은행: '/src/assets/signup/우리.png',
+  하나은행: '/src/assets/signup/하나.png',
+  카카오뱅크: '/src/assets/signup/카카오뱅크.png',
+  토스: '/src/assets/signup/토스뱅크.png',
+  기업은행: '/src/assets/signup/IBK기업.png',
+  농협: '/src/assets/signup/NH농협.png',
+  케이뱅크: '/src/assets/signup/케이뱅크.png',
+  한국시티: '/src/assets/signup/씨티.png',
+  SC제일: '/src/assets/signup/SC제일.png',
+  경남: '/src/assets/signup/경남.png',
+  광주: '/src/assets/signup/광주.png',
+  전북: '/src/assets/signup/전북.png',
+  부산: '/src/assets/signup/부산.png',
+  대구: '/src/assets/signup/대구.png',
+  우체국: '/src/assets/signup/우체국.png',
+  새마을: '/src/assets/signup/새마을.png',
+  수협: '/src/assets/signup/수협.png',
+  신협: '/src/assets/signup/신협.png',
+  KDB산업: '/src/assets/signup/KDB산업.png',
 };
 
 function AccountRegistration() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [currentStep] = useState(3);
   const [account, setAccount] = useState({
+    ...location.state?.account,
     accountNumber: '',
     bankName: '',
     accountHolder: '',
@@ -52,12 +63,11 @@ function AccountRegistration() {
     }));
   };
 
-  // Clear account number
   const handleClearAccountNumber = () => {
     setAccount((prevAccount) => ({
       ...prevAccount,
       accountNumber: '',
-      accountHolder: '', // Clear account holder as well, if account number changes
+      accountHolder: '',
     }));
   };
 
@@ -71,19 +81,17 @@ function AccountRegistration() {
     setAccount((prevAccount) => ({
       ...prevAccount,
       bankName,
-      accountHolder: '', // Clear account holder to trigger re-verification
+      accountHolder: '',
     }));
     setShowModal(false);
   };
 
-  // Fetch account holder name on button click
   const handleConfirm = () => {
     if (account.accountNumber && account.bankName) {
-      // Simulating an API call
       setTimeout(() => {
         setAccount((prevAccount) => ({
           ...prevAccount,
-          accountHolder: '홍길동', // Example account holder name
+          accountHolder: '홍길동',
         }));
       }, 1000);
     } else {
@@ -173,10 +181,17 @@ function AccountRegistration() {
         {showModal && (
           <div className="bank-modal">
             <div className="bank-modal-content">
-              <h3>은행 선택</h3>
-              <span className="close-modal" onClick={() => setShowModal(false)}>
-                닫기
-              </span>
+              <div className="bank-modal-header">
+                <span>
+                  <h3>은행 선택</h3>
+                </span>
+                <span
+                  className="close-modal"
+                  onClick={() => setShowModal(false)}
+                >
+                  닫기
+                </span>
+              </div>
               <div className="bank-grid">
                 {Object.keys(bankIcons).map((bankName) => (
                   <div
