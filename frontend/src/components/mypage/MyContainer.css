@@ -21,8 +21,8 @@
 }
 
 .my-intro {
-  font-size: 14px; /* 자기소개 텍스트 크기 */
-  padding: 16px 20%;
+  font-size: 14px;
+  padding: 16px 10%;
 }
 
 .my-intro-text {
@@ -33,6 +33,23 @@
 
 .my-intro-text img {
   margin-left: 10px;
+}
+
+.my-intro-text input {
+  border: 0px;
+  width: 60%;
+  max-width: 100%;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+.my-intro-text span {
+  display: inline-block;
+  max-width: 80%;
+  word-wrap: break-word;
+  font-size: 14px;
+  text-align: center;
+  overflow-wrap: break-word;
 }
 
 .my-container .my-edit-button {
