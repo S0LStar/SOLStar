@@ -7,7 +7,7 @@ import WideButton from '../../common/WideButton';
 import CircleX from '../../../assets/signup/CircleX.png';
 import DownVector from '../../../assets/common/DownVector.png';
 
-// Dummy icons for banks
+// 은행별 modal 아이콘
 const bankIcons = {
   신한은행: '/src/assets/signup/신한.png',
   국민은행: '/src/assets/signup/국민.png',
@@ -37,7 +37,7 @@ function AccountRegistration() {
   const location = useLocation();
   const [currentStep] = useState(3);
   const [account, setAccount] = useState({
-    ...location.state?.account,
+    ...location.state.account,
     accountNumber: '',
     bankName: '',
     accountHolder: '',
@@ -45,7 +45,7 @@ function AccountRegistration() {
   const [nextActive, setNextActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  // Check if all fields are filled
+  // 값 다 채워졌는지 확인
   useEffect(() => {
     const isFormComplete = Boolean(
       account.accountNumber && account.bankName && account.accountHolder
@@ -54,7 +54,7 @@ function AccountRegistration() {
     setNextActive(isFormComplete);
   }, [account]);
 
-  // Input change handler
+  // 값 변경 시 입력
   const handleChange = (e) => {
     const { id, value } = e.target;
     setAccount((prevAccount) => ({
@@ -71,12 +71,12 @@ function AccountRegistration() {
     }));
   };
 
-  // Show bank selection modal
+  // 모달
   const handleShowModal = () => {
     setShowModal(true);
   };
 
-  // Select bank from modal
+  // 모달에서 은행 선택
   const handleSelectBank = (bankName) => {
     setAccount((prevAccount) => ({
       ...prevAccount,
