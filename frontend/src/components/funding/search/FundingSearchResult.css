@@ -56,8 +56,8 @@
 }
 
 .artist-image {
-  width: 84px;
-  height: 84px;
+  width: 80px;
+  height: 80px;
   border: 0.5px solid #6c707230;
   border-radius: 50%;
 }
@@ -69,14 +69,14 @@
 .artist-item {
   position: relative;
   display: flex;
-  width: 110px;
+  width: 90px;
   flex-direction: column;
-  margin: 0 5px;
+  margin: 0 3px;
 }
 
 .artist-item-zzim {
   position: absolute;
-  right: 5px;
-  bottom: 20px;
-  width: 30px;
+  right: 7px;
+  bottom: 22px;
+  width: 28px;
 }

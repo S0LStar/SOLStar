@@ -17,19 +17,20 @@ function FundingPayment({ artistName, artistProfileImage }) {
     // TODO : 펀딩 계좌 상세 조회 API 연결 (/api/wallet/funding-detail)
     // request body : fundingId
     const fetchFundingPaymnet = {
-      accountBalance: 1500000,
       transactionHistory: [
         {
           transactionDate: '20240401',
           transactionTime: '102447',
           transactionBalance: 1000000,
           transactionSummary: '(주) 삼성전자',
+          transactionAfterBalance: 2000000,
           transactionTypeName: '입금',
         },
         {
           transactionDate: '20240401',
           transactionTime: '102447',
           transactionBalance: 1000000,
+          transactionAfterBalance: 1000000,
           transactionSummary: '(주) 삼성전자',
           transactionTypeName: '입금',
         },
@@ -38,7 +39,8 @@ function FundingPayment({ artistName, artistProfileImage }) {
 
     // 날짜와 시간을 처리해 새로운 transactionDateTime으로 변환
     const filteredFundingPayment = {
-      accountBalance: fetchFundingPaymnet.accountBalance,
+      accountBalance:
+        fetchFundingPaymnet.transactionHistory[0].transactionAfterBalance,
       transactionHistory: fetchFundingPaymnet.transactionHistory.map(
         (history) => {
           const formattedDate = `${history.transactionDate.slice(2, 4)}/${history.transactionDate.slice(4, 6)}/${history.transactionDate.slice(6, 8)}`;
