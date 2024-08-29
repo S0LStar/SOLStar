@@ -19,7 +19,11 @@ function FundingRegistContainer() {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFunding({ ...funding, [id]: value });
+    if (id === 'goalAmount') {
+      setFunding({ ...funding, goalAmount: parseInt(value) || 0 }); // 입력이 숫자가 아닐 경우 0으로 처리
+    } else {
+      setFunding({ ...funding, [id]: value });
+    }
   };
 
   const handleRegist = () => {
