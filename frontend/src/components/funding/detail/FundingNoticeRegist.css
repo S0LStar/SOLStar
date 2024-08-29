@@ -1,0 +1,17 @@
+.funding-notice-regist-container {
+  padding: 16px;
+}
+
+.funding-notice-regist-container header {
+  display: flex;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.funding-notice-header-title {
+  margin: auto;
+}
+
+.funding-notice-form-container {
+  margin-left: 10px;
+}

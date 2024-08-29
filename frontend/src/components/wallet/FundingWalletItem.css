@@ -1,0 +1,65 @@
+.fundingwallet-item {
+  position: relative;
+  margin: 20px auto; /* 가운데 정렬 */
+  min-width: 288px;
+}
+
+.fundingwallet-background {
+  position: relative;
+  width: 100%;
+}
+
+.fundingwallet-bg-image {
+  width: 80vw;
+}
+
+.fundingwallet-icon {
+  position: absolute;
+  margin-left: 8vw;
+  margin-top: 10vw;
+  width: 20px;
+  height: 20px;
+}
+
+.fundingwallet-owner {
+  position: absolute;
+  margin-left: 15vw;
+  margin-top: 10vw;
+  color: white;
+  font-size: 14px;
+}
+
+.fundingwallet-balance {
+  position: absolute;
+  margin-left: 15vw;
+  margin-top: 19vw;
+  color: white;
+  font-size: 20px;
+  font-weight: bolder;
+  text-align: right;
+  width: auto;
+}
+
+.fundingwallet-buttons {
+  position: absolute;
+  margin-top: 32vw;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fundingwallet-buttons button {
+  background-color: color-mix(in srgb, #f9f9ff 30%, white 70%);
+  border: 0px;
+  border-radius: 5px;
+  width: 72px;
+  height: 24px;
+  font: 12px;
+}
+
+.fundingwallet-calculatebutton {
+  margin-right: 2vw;
+}
+.fundingwallet-withdrawbutton {
+  margin-right: 8vw;
+}

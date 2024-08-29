@@ -1,0 +1,97 @@
+.regist-notice-button {
+  position: relative;
+  display: flex;
+  border: 1px solid #9ed0f2;
+  padding: 10px 20px;
+  margin: 20px auto 10px auto;
+  background-color: white;
+  height: 33px;
+  border-radius: 20px;
+  width: 80%;
+  align-items: center;
+  box-shadow: 5px 5px 15px #9ed0f255;
+}
+
+.regist-notice-button img {
+  position: absolute;
+  top: 17px;
+  left: 25px;
+  width: 16px;
+}
+
+.regist-notice-button-description {
+  position: absolute;
+  top: 16px;
+  left: 55px;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.notice-item {
+  position: relative;
+  padding: 20px 10px;
+  border-bottom: 0.5px solid #ddd;
+}
+
+.notice-item:last-child {
+  border: none;
+}
+
+.notice-profile-info {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 0.5px solid #6c707230;
+}
+
+.notice-user-info > div {
+  font-size: 14px;
+}
+
+.time-difference {
+  color: #888;
+  font-size: 12px;
+}
+
+.more {
+  height: 28px;
+  margin-left: auto;
+}
+
+.notice-item h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.notice-content {
+  font-size: 14px;
+}
+
+.more-modal {
+  position: absolute;
+  top: 50px; /* 적절한 위치로 설정 */
+  right: 15px; /* 적절한 위치로 설정 */
+  background-color: white;
+  box-shadow: 5px 5px 20px rgba(93, 93, 93, 0.171);
+  border-radius: 12px;
+  z-index: 1000;
+  width: 180px;
+}
+
+.more-modal-content {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.more-modal-item {
+  padding: 10px;
+  cursor: pointer;
+}

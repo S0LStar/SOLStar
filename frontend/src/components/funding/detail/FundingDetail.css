@@ -1,0 +1,219 @@
+.funding-detail-container {
+  padding: 0 16px;
+  margin-bottom: 170px;
+}
+
+.no-button.funding-detail-container {
+  margin-bottom: 100px;
+}
+
+.funding-detail-header {
+  padding: 10px 5px;
+  margin-bottom: 15px;
+}
+
+.funding-detail-image-container {
+  position: relative;
+}
+
+.funding-detail-image-container .go-back {
+  position: absolute;
+  left: 10px;
+  top: 20px;
+}
+
+.funding-detail-image {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  height: 230px;
+  border-bottom: 0.5px solid #6c707230;
+}
+
+.certification-header {
+  display: flex;
+  align-items: center;
+  color: #0046ff;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.funding-certification-mark {
+  width: 20px;
+  margin-right: 6px;
+}
+
+.funding-detail-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.funding-detail-artist-info {
+  width: 100;
+  display: flex;
+  align-items: center;
+}
+
+.funding-detail-artist-info img {
+  margin-left: auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 5px;
+  border: 0.5px solid #6c707230;
+}
+
+.success.funding-detail-status {
+  display: flex;
+  height: 40px;
+  width: 290px;
+  padding: 15px;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%230046FFFF' stroke-width='3' stroke-dasharray='6%2c 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 12px;
+  margin: 15px 0;
+}
+
+.fail.funding-detail-status,
+.closed.funding-detail-status {
+  display: flex;
+  height: 40px;
+  width: 290px;
+  padding: 15px;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%236C7072FF' stroke-width='3' stroke-dasharray='6%2c 10' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 12px;
+  margin: 15px 0;
+}
+
+.funding-status-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.funding-detail-status-content > div > div:first-child {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.funding-detail-status-content > div > div:nth-child(2) {
+  font-size: 12px;
+  color: #30303090;
+}
+
+.funding-detail-info {
+  margin-top: 10px;
+}
+
+.funding-detail-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.funding-detail-progress > div {
+  display: flex;
+  align-items: end;
+}
+
+.funding-detail-progress > div:nth-child(2) {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.funding-detail-amount > div:first-child {
+  font-size: 12px;
+}
+
+.funding-detail-amount > div:nth-child(2) {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.funding-detail-join-count {
+  color: #f44237;
+  background-color: #feefeec0;
+  font-size: 12px;
+  padding: 3px 5px;
+  border-radius: 5px;
+  margin-left: 15px;
+}
+
+.funding-detail-info .funding-card-achievement-bar {
+  margin-bottom: 20px;
+}
+
+.funding-detail-deadline {
+  padding: 5px;
+}
+.funding-detail-deadline > div {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.funding-detail-deadline > div > div:first-child {
+  margin-right: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.funding-detail-deadline > div > div:nth-child(2) {
+  font-size: 14px;
+}
+
+.funding-detail-host {
+  border: 1px solid #a4a7a930;
+  border-radius: 16px;
+  padding: 15px;
+}
+
+.funding-detail-host > div {
+  display: flex;
+}
+
+.funding-detail-host-title {
+  font-size: 14px;
+  color: #303030dd;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.funding-detail-host-profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0.5px solid #6c707230;
+  margin-right: 10px;
+}
+
+.funding-detail-host-name {
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+.funding-detail-host-description {
+  font-size: 14px;
+  color: #303030b9;
+}
+
+.funding-content-tab-button {
+  font-size: 14px;
+  border: none;
+  background: none;
+  color: #00000070;
+  font-weight: 500;
+  padding: 10px 15px;
+}
+
+.funding-content-tab-button.active {
+  color: #303030;
+  font-weight: 800;
+  border-bottom: 3px solid #303030;
+}
+
+.wide-button-fix {
+  display: flex;
+  position: fixed;
+  bottom: 100px;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
