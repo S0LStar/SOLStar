@@ -5,18 +5,18 @@ import WideButton from '../common/WideButton';
 import temp from '../../assets/character/Shoo.png';
 import LeftVector from '../../assets/common/LeftVector.png';
 
-function EditProfile() {
+function EditProfile({ profileData }) {
   const navigate = useNavigate();
 
-  const [profileData, setProfileData] = useState({
-    img: temp,
-    name: '최승탁',
-    introduction: '',
-    email: 'user@example.com',
-    nickname: 'nickname',
-    birthdate: '2000.01.01',
-    phone: '010-1234-5678',
-  });
+  // const [profileData, setProfileData] = useState({
+  //   img: temp,
+  //   name: '최승탁',
+  //   introduction: '',
+  //   email: 'user@example.com',
+  //   nickname: 'nickname',
+  //   birthdate: '2000.01.01',
+  //   phone: '010-1234-5678',
+  // });
 
   const [birthdateError, setBirthdateError] = useState('');
 
