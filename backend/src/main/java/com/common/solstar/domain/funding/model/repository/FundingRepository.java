@@ -23,4 +23,6 @@ public interface FundingRepository extends JpaRepository<Funding, Integer> {
 
     @Query("SELECT f FROM Funding f WHERE f.isDelete = false ORDER BY f.totalJoin DESC")
     List<Funding> findPopularFundings();
+
+    List<Funding> findByHostId(int hostId);
 }

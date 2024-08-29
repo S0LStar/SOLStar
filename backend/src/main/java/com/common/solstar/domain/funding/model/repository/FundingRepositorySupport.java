@@ -18,6 +18,7 @@ public class FundingRepositorySupport {
 
     private JPAQueryFactory jpaQueryFactory;
 
+    // 유저 아이디로 주최 펀딩 리스트 조회
     public List<HostFundingResponse> findFundingByHostId(int hostId) {
         QFunding funding = QFunding.funding;
 
@@ -31,10 +32,23 @@ public class FundingRepositorySupport {
                         funding.goalAmount,
                         funding.type,
                         funding.fundingImage))
-                .from(fundingJoin)
-                .join(fundingJoin.funding, funding)
-                .where(fundingJoin.user.id.eq(hostId))
+                .from(funding)
+                .where(funding.host.id.eq(hostId))
                 .fetch();
     }
+
+    // 유저 아이디로 주최 펀딩의 계좌 정보 조회
+    public List<String> findFundingAccountByHostId(int hostId) {
+        QFunding funding = QFunding.funding;
+        return (List<String>) jpaQueryFactory
+                .select(
+                        funding.account
+                )
+                .from(funding)
+                .where(funding.host.id.eq(hostId))
+                .fetch();
+
+    }
+
 
 }
