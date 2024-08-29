@@ -29,7 +29,7 @@
 
 .notice-item {
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 0.5px solid #ddd;
 }
 
 .notice-profile-info {
