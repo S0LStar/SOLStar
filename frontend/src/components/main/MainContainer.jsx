@@ -7,38 +7,45 @@ import Go from '../../assets/main/Go.png';
 import ArtistFundingCard from './ArtistFundingCard';
 import RecentPopularFundingCard from './RecentPopularFundingCard';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../util/AxiosInstance';
+import { useEffect, useState } from 'react';
 
 function MainContainer() {
   const navigate = useNavigate();
+  const [zzimArtistFundingTempData, setZzimArtistFundingTempData] = useState(
+    []
+  );
 
-  // TODO : 선호 아티스트 펀딩 임시 데이터
-  // status : 0: 펀딩 진행 중, 1: 펀딩 성공, -1: 펀딩 실패
-  // type : 펀딩 타입 (0:일반 펀딩, 1:인증 펀딩)
-  const zzimArtistFundingTempData = [
-    {
-      fundingId: 1,
-      fundingImage: '../../assets/character/Sol.png',
-      artistName: '장원영',
-      title: '원영이 생일 기념 지하철 광고 부착',
-      successRate: 347,
-      type: 'COMMON',
-    },
-    {
-      fundingId: 2,
-      fundingImage: '../../assets/character/Sol.png',
-      artistName: 'CIX',
-      title: 'CIX 데뷔 5주년 기념',
-      successRate: 110,
-      type: 'VERIFIED',
-    },
-    {
-      fundingId: 3,
-      fundingImage: '../../assets/character/Sol.png',
-      artistName: '공유',
-      title: '우리 배우님 커피차 같이 쏠 사람 !!',
-      type: 'ADVERTISE',
-    },
-  ];
+  useEffect(() => {
+    // 나의 선호 아티스트 펀딩 조회 API 요청
+    const fetchArtistFunding = async () => {
+      try {
+        const response = await axiosInstance.get('/funding/my-like-artist');
+        console.log(response);
+
+        const updatedFundingList = response.data.data.fundingList.map(
+          (funding) => {
+            // successRate 계산: totalAmount / goalAmount * 100
+            const successRate = Math.floor(
+              (funding.totalAmount / funding.goalAmount) * 100
+            );
+
+            // successRate를 포함한 새로운 객체 반환
+            return {
+              ...funding,
+              successRate: successRate,
+            };
+          }
+        );
+
+        setZzimArtistFundingTempData(updatedFundingList);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchArtistFunding();
+  }, []);
 
   // TODO : 최근 인기 펀딩 임시 데이터
   // status : 0: 펀딩 진행 중, 1: 펀딩 성공, -1: 펀딩 실패
