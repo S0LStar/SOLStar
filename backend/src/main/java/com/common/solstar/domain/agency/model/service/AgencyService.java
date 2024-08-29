@@ -8,7 +8,7 @@ public interface AgencyService {
 
     List<FundingAgencyResponseDto> getFundingList(String authEmail);
 
-    void acceptFunding(int fundingId);
+    void acceptFunding(int fundingId, String authEmail);
 
-    void rejectFunding(int fundingId);
+    void rejectFunding(int fundingId, String authEmail);
 }

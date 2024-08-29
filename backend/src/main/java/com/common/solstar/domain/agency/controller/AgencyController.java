@@ -41,8 +41,10 @@ public class AgencyController {
     // 펀딩 인증 요청 승인
     @PatchMapping("/funding-accept/{fundingId}")
     @Operation(summary = "펀딩 인증 요청 승인")
-    public ResponseEntity<?> acceptFunding(@PathVariable("fundingId") int fundingId) {
-        agencyService.acceptFunding(fundingId);
+    public ResponseEntity<?> acceptFunding(@PathVariable("fundingId") int fundingId,
+                                           @RequestHeader(value = "Authorization", required = false) String header) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        agencyService.acceptFunding(fundingId, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
@@ -56,8 +58,10 @@ public class AgencyController {
     // 펀딩 인증 요청 거절
     @PatchMapping("/funding-reject/{fundingId}")
     @Operation(summary = "펀딩 인증 요청 거절")
-    public ResponseEntity<?> rejectFunding(@PathVariable("fundingId") int fundinId) {
-        agencyService.rejectFunding(fundinId);
+    public ResponseEntity<?> rejectFunding(@PathVariable("fundingId") int fundinId,
+                                           @RequestHeader(value = "Authorization", required = false) String header) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        agencyService.rejectFunding(fundinId, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
