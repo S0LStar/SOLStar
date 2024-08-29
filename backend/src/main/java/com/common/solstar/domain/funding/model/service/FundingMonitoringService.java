@@ -3,16 +3,21 @@ package com.common.solstar.domain.funding.model.service;
 import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.funding.dto.request.CreateDemandDepositAccountRequest;
+import com.common.solstar.domain.funding.dto.request.TransferRequest;
 import com.common.solstar.domain.funding.dto.response.DemandDepositAccountResponse;
+import com.common.solstar.domain.funding.dto.response.TransferResponse;
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.entity.FundingStatus;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
 import com.common.solstar.domain.fundingJoin.entity.FundingJoin;
 import com.common.solstar.domain.fundingJoin.model.repository.FundingJoinRepository;
+import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.global.api.request.CommonHeader;
 import com.common.solstar.global.api.request.CreateDemandDepositAccountApiRequest;
+import com.common.solstar.global.api.request.TransferApiRequest;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +26,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.servlet.View;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -38,12 +45,16 @@ public class FundingMonitoringService {
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AccountRepository accountRepository;
+    private final View error;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
 
     @Value("${account.type.unique.no}")
     private String accountTypeUniqueNo;
+
+    @Value("${system.account.no}")
+    private String systemAccountNo;
 
     // 매일 자정에 실행되도록 설정
     @Scheduled(cron = "0 0 0 * * *")
@@ -112,9 +123,18 @@ public class FundingMonitoringService {
             List<FundingJoin> fundingJoinList = fundingJoinRepository.findByFunding(funding);
 
             // fundingJoin 하나하나 User를 꺼내서 user의 계좌에 amount 만큼 입금해줘야 함
+            for (FundingJoin fundingJoin : fundingJoinList) {
+                TransferRequest request = TransferRequest.builder()
+                        .userKey(funding.getHost().getUserKey())
+                        .fundingJoin(fundingJoin)
+                        .build();
+
+                // 시스템 계좌에서 사용자 계좌로 환불
+                if (!transferRefund(request).isSuccess())
+                    throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+            }
         }
     }
-
 
 
     // 계좌 생성
@@ -166,6 +186,88 @@ public class FundingMonitoringService {
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
         return null;
+    }
+
+    // 계좌 이체
+    public TransferResponse transferRefund(TransferRequest request) {
+
+        String url = "/edu/demandDeposit/createDemandDepositAccount";
+
+        CommonHeader header = CommonHeader.builder()
+                .apiName("createDemandDepositAccount")
+                .apiServiceCode("createDemandDepositAccount")
+                .userKey(request.getUserKey())
+                .apiKey(apiKey)
+                .build();
+        header.setCommonHeader();
+
+        FundingJoin fundingJoin = request.getFundingJoin();
+
+        User participant = fundingJoin.getUser();
+
+        TransferApiRequest apiRequest = TransferApiRequest.builder()
+                .header(header)
+                .depositAccountNo(participant.getAccount().getAccountNumber())
+                .depositTransactionSummary("펀딩 취소 환불 입금")
+                .transactionBalance(Integer.toString(fundingJoin.getAmount()))
+                .withdrawalAccountNo(systemAccountNo)
+                .withdrawalTransactionSummary("펀딩 취소 환불 입금")
+                .build();
+
+        try {
+
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
+
+            String response = responseMono.block();
+
+            JsonNode root = objectMapper.readTree(response);
+
+            // 성공 상태면 true 반환
+            if (root.has("REC")) {
+                return TransferResponse.builder()
+                        .isSuccess(true)
+                        .build();
+            }
+
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+
+            try {
+                // 오류 응답 JSON 파싱
+                JsonNode root = objectMapper.readTree(errorBody);
+
+                if (root.has("responseCode")) {
+                    String responseCode = root.get("responseCode").asText();
+
+                    // responseCode에 따른 커스텀 예외 처리
+                    switch (responseCode) {
+                        case "A1003":
+                            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                        default:
+                            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    }
+                } else {
+                    throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                }
+
+            } catch (JsonProcessingException jsonParseException) {
+                // JSON 파싱 오류 시 기본 예외 처리
+                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+            }
+        } catch (Exception e) {
+            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+        }
+
+        return TransferResponse.builder()
+                .isSuccess(false)
+                .build();
     }
 
 }
