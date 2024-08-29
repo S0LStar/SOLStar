@@ -1,0 +1,35 @@
+.underbar {
+  position: fixed;
+  height: 80px;
+  bottom: 0;
+  width: 100%;
+  background-color: white;
+  border-top: 1px solid #ebebeb;
+  display: flex;
+  justify-content: center;
+  padding: 0px 0;
+  z-index: 10;
+}
+
+.underbar-button {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #6c7072;
+  font-size: 14px;
+  font-weight: 200;
+  transition: color 0.3s;
+  margin: 10px 20px 0 20px;
+}
+
+.underbar-icon {
+  height: 16px;
+  margin-top: 3px;
+  margin-bottom: 6px;
+}
+
+.underbar-button.active {
+  color: #0046ff;
+}

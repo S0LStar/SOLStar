@@ -1,0 +1,84 @@
+.my-container {
+  padding: 16px;
+  margin: 0 auto;
+  text-align: center;
+  margin-bottom: 80px;
+  /* width: 360px; */
+}
+
+.my-profile {
+  width: 120px;
+  height: 120px;
+  padding: 50px;
+}
+
+.my-nickname {
+  font-size: 22px;
+}
+
+.my-container div {
+  margin-bottom: 10px;
+}
+
+.my-intro {
+  font-size: 14px; /* 자기소개 텍스트 크기 */
+  padding: 16px 20%;
+}
+
+.my-intro-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-intro-text img {
+  margin-left: 10px;
+}
+
+.my-container .my-edit-button {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+}
+
+.my-container .wide-button {
+  min-width: 125px;
+  width: 40%;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.my-container .wide-button.inactive {
+  color: #303030;
+}
+
+.my-funding {
+  text-align: left;
+  background-color: color-mix(in srgb, #9ed0f2 10%, white 90%);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.my-funding-label {
+  color: #6c7072;
+  font-size: 12px;
+}
+
+.my-funding-container {
+  padding-top: 10px;
+}
+
+.my-funding-context {
+  display: flex;
+  justify-content: space-between;
+  height: 10px;
+  padding-top: 10px;
+  font-size: 16px;
+  align-items: center;
+  color: #303030;
+}

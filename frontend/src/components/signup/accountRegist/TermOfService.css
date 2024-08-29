@@ -1,0 +1,63 @@
+.term-container {
+  padding: 16px;
+  margin-bottom: 80px;
+  /* width: 360px; */
+  /* margin: 0 auto; */
+}
+
+.term-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.term-header img {
+  margin-right: 10px;
+  height: 14px;
+}
+
+.term-header-backInfo {
+  min-width: 120px;
+  font-size: 16px;
+}
+
+.term-main {
+  padding: 16px;
+  margin-top: 100px;
+}
+
+.term-main .wide-button {
+  width: 100%;
+}
+
+.agree-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.agree-item div {
+  display: flex;
+  align-items: center;
+}
+
+.agree-item img {
+  margin-right: 8px;
+}
+
+.agree-item img.none {
+  color: #0046ff;
+}
+
+span.checked {
+  font-weight: bold;
+}
+
+.agree-item .보기 {
+  margin-left: auto;
+  color: #666;
+  cursor: pointer;
+}

@@ -1,0 +1,46 @@
+.request-container {
+  padding: 16px;
+  margin: 0 auto;
+  margin-bottom: 80px;
+  /* width: 360px; */
+}
+
+.request-funding {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.request-container .request-funding-item {
+  margin-bottom: 20px;
+}
+
+.request-container .funding-card-item {
+  margin-bottom: 0px;
+}
+
+.request-container .funding-card-detail {
+  display: none;
+}
+
+.request-container .funding-card-achievement-bar {
+  display: none;
+}
+
+.request-container .request-funding-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.request-container .wide-button {
+  width: 100%;
+  height: 30px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0px 20px;
+}
