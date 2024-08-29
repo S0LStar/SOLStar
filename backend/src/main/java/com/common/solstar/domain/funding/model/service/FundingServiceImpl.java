@@ -180,26 +180,6 @@ public class FundingServiceImpl implements FundingService {
         // totalAmount와 totalJoin 업데이트
         funding.updateByJoin(fundingJoin.getAmount());
 
-        // 목표 금액 달성 시 상태를 SUCCESS 로 변경
-        if (funding.getTotalAmount() >= funding.getGoalAmount() && funding.getStatus().equals(FundingStatus.PROCESSING)) {
-            funding.setStatus(FundingStatus.SUCCESS);
-
-            CreateDemandDepositAccountRequest request = CreateDemandDepositAccountRequest.builder()
-                    .userKey(loginUser.getUserKey())
-                    .build();
-
-            DemandDepositAccountResponse accountResponse = createFundingAccount(request);
-
-            Account fundingAccount = Account.builder()
-                    .accountNumber(accountResponse.getAccountNo())
-                    .password(loginUser.getAccount().getPassword())
-                    .bankCode(accountResponse.getBankCode())
-                    .build();
-
-            // 현재는 계좌번호만을 저장하는 방식
-            funding.createAccount(fundingAccount.getAccountNumber());
-        }
-
         fundingRepository.save(funding);
     }
 
@@ -252,57 +232,6 @@ public class FundingServiceImpl implements FundingService {
         return searchFundings.stream()
                 .map(FundingResponseDto::createResponseDto)
                 .collect(Collectors.toList());
-    }
-
-    // 계좌 생성
-    private DemandDepositAccountResponse createFundingAccount(CreateDemandDepositAccountRequest request) {
-
-        String url = "/edu/demandDeposit/createDemandDepositAccount";
-
-        CommonHeader header = CommonHeader.builder()
-                .apiName("createDemandDepositAccount")
-                .apiServiceCode("createDemandDepositAccount")
-                .userKey(request.getUserKey())
-                .apiKey(apiKey)
-                .build();
-        header.setCommonHeader();
-
-        CreateDemandDepositAccountApiRequest apiRequest = CreateDemandDepositAccountApiRequest.builder()
-                .header(header)
-                .accountTypeUniqueNo(accountTypeUniqueNo)
-                .build();
-
-        try {
-
-            // API 요청 보내기
-            Mono<String> responseMono = webClient.post()
-                    .uri(url)
-                    .header("Content-Type", "application/json")
-                    .bodyValue(apiRequest)
-                    .retrieve()
-                    .bodyToMono(String.class);
-
-            String response = responseMono.block();
-
-            JsonNode root = objectMapper.readTree(response);
-            if (root.has("responseCode")) {
-                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-            }
-
-            // response에서 계좌번호 저장하기
-            if (root.has("REC")) {
-                DemandDepositAccountResponse accountResponse = DemandDepositAccountResponse.builder()
-                        .bankCode(root.get("REC").get("bankCode").asText())
-                        .accountNo(root.get("REC").get("accountNo").asText())
-                        .build();
-
-                return accountResponse;
-            }
-
-        } catch (Exception e) {
-            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-        }
-        return null;
     }
 
 }
