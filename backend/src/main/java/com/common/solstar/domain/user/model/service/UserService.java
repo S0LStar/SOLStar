@@ -125,4 +125,24 @@ public class UserService {
         user.deleteRefreshToken();
         userRepository.save(user);
     }
+
+    // 특정 유저가 주최한 펀딩 조회
+    public List<FundingResponseDto> getHostFundingById(String authEmail, int userId) {
+
+        if(authEmail == null) {
+            throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
+        }
+
+        User user = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        List<Funding> fundingList = fundingRepository.findByHostId(userId);
+
+        List<FundingResponseDto> responseList = fundingList.stream()
+                .map(funding -> FundingResponseDto.createResponseDto(funding))
+                .collect(Collectors.toList());
+
+        return responseList;
+
+    }
 }
