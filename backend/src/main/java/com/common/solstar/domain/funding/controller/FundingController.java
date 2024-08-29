@@ -188,8 +188,6 @@ public class FundingController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 펀딩 정산 - 결제내역 불러오기
-
     // 펀딩 참여하기
     @PostMapping("/join")
     @Operation(summary = "펀딩 참여")
@@ -207,7 +205,22 @@ public class FundingController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    // 쏠 스코어 남기기
+    // 펀딩 정산 완료
+    @PostMapping("/done/{fundingId}")
+    @Operation(summary = "펀딩 정산 완료")
+    public ResponseEntity<?> doneFunding(@RequestHeader(value = "Authorization", required = false) String header,
+                                         @PathVariable("fundingId") int fundingId) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        fundingService.doneFunding(fundingId, authEmail);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("펀딩 정산 완료 성공")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
 
     // 메인화면 - 나의 선호 아티스트 펀딩 조회
     @GetMapping("/my-like-artist")

@@ -1,6 +1,7 @@
 package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
+import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
@@ -22,6 +23,7 @@ import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.api.request.CommonHeader;
 import com.common.solstar.global.api.request.TransferApiRequest;
+import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,6 +56,8 @@ public class FundingServiceImpl implements FundingService {
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final JwtUtil jwtUtil;
+    private final AccountRepository accountRepository;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -188,7 +192,7 @@ public class FundingServiceImpl implements FundingService {
         // 펀딩 계좌 이체 가능한지 확인
         if(!transferFunding(joinRequest).isSuccess())
             throw new ExceptionResponse(CustomException.INVALID_FUNDING_JOIN_EXCEPTION);
-        
+
         fundingJoinRepository.save(fundingJoin);
 
         // totalAmount와 totalJoin 업데이트
@@ -196,6 +200,38 @@ public class FundingServiceImpl implements FundingService {
 
         fundingRepository.save(funding);
     }
+
+    @Override
+    @Transactional
+    public void doneFunding(int fundingId, String authEmail) {
+        // 로그인한 유저가 funding의 host인지 확인
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        Funding funding = fundingRepository.findById(fundingId)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        if (!loginUser.equals(funding.getHost()))
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
+
+        // 펀딩이 완료된 상태인지 확인
+        if (!funding.getStatus().equals(FundingStatus.SUCCESS))
+            throw new ExceptionResponse(CustomException.NOT_SUCCESS_FUNDING_EXCEPTION);
+
+        // 펀딩 계좌에서 총 금액 찾아서 만약 남아있다면 "기부" 메시지로 이체 후 계좌 연결관계 제거
+        // 만약 남아있지 않다면 바로 계좌 연결관계 제거
+        Account fundingAccount = accountRepository.findByAccountNumber(funding.getAccount())
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ACCOUNT_EXCEPTION));
+
+
+
+
+        // 모든 기능 실행 후 펀딩 상태 CLOSED로 변경
+
+
+
+    }
+
 
     @Override
     public List<FundingResponseDto> getMyLikeArtistFunding(String authEmail) {
@@ -227,7 +263,6 @@ public class FundingServiceImpl implements FundingService {
         // 로그인한 유저 찾기
         User loginUser = userRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
-
 
         // totalJoin 기준으로 내림차순 정렬된 펀딩 목록을 가져옴
         List<Funding> popularFundings = fundingRepository.findPopularFundings();
