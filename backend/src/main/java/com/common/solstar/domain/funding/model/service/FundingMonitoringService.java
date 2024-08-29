@@ -3,9 +3,9 @@ package com.common.solstar.domain.funding.model.service;
 import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.funding.dto.request.CreateDemandDepositAccountRequest;
-import com.common.solstar.domain.funding.dto.request.TransferRequest;
+import com.common.solstar.domain.funding.dto.request.TransferRefundRequest;
 import com.common.solstar.domain.funding.dto.response.DemandDepositAccountResponse;
-import com.common.solstar.domain.funding.dto.response.TransferResponse;
+import com.common.solstar.domain.funding.dto.response.TransferRefundResponse;
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.entity.FundingStatus;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
@@ -124,7 +124,7 @@ public class FundingMonitoringService {
 
             // fundingJoin 하나하나 User를 꺼내서 user의 계좌에 amount 만큼 입금해줘야 함
             for (FundingJoin fundingJoin : fundingJoinList) {
-                TransferRequest request = TransferRequest.builder()
+                TransferRefundRequest request = TransferRefundRequest.builder()
                         .userKey(funding.getHost().getUserKey())
                         .fundingJoin(fundingJoin)
                         .build();
@@ -189,7 +189,7 @@ public class FundingMonitoringService {
     }
 
     // 계좌 이체
-    public TransferResponse transferRefund(TransferRequest request) {
+    public TransferRefundResponse transferRefund(TransferRefundRequest request) {
 
         String url = "/edu/demandDeposit/createDemandDepositAccount";
 
@@ -230,7 +230,7 @@ public class FundingMonitoringService {
 
             // 성공 상태면 true 반환
             if (root.has("REC")) {
-                return TransferResponse.builder()
+                return TransferRefundResponse.builder()
                         .isSuccess(true)
                         .build();
             }
@@ -265,7 +265,7 @@ public class FundingMonitoringService {
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
 
-        return TransferResponse.builder()
+        return TransferRefundResponse.builder()
                 .isSuccess(false)
                 .build();
     }

@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class TransferRequest {
+@NoArgsConstructor
+public class TransferJoinRequest {
 
     private String userKey;
     private FundingJoin fundingJoin;

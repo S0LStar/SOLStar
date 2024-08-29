@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransferResponse {
+public class TransferRefundResponse {
 
     private boolean isSuccess;
 }
