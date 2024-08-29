@@ -1,10 +1,13 @@
 package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
+import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
+import com.common.solstar.domain.funding.dto.request.CreateDemandDepositAccountRequest;
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
+import com.common.solstar.domain.funding.dto.response.DemandDepositAccountResponse;
 import com.common.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
@@ -21,11 +24,18 @@ import com.common.solstar.domain.likeList.entity.LikeList;
 import com.common.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
+import com.common.solstar.global.api.request.CommonHeader;
+import com.common.solstar.global.api.request.CreateDemandDepositAccountApiRequest;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +51,18 @@ public class FundingServiceImpl implements FundingService {
     private final ArtistRepository artistRepository;
     private final LikeListRepository likeListRepository;
     private final FundingJoinRepository fundingJoinRepository;
+
+    private final WebClient webClient = WebClient.builder()
+            .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
+            .build();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final AccountRepository accountRepository;
+
+    @Value("${ssafy.api.key}")
+    private String apiKey;
+
+    @Value("${account.type.unique.no}")
+    private String accountTypeUniqueNo;
 
     @Override
     public void createFunding(FundingCreateRequestDto fundingDto) {
@@ -98,7 +120,7 @@ public class FundingServiceImpl implements FundingService {
 
         // 펀딩 성공 시 상태 변경 및 펀딩 계좌 생성
         // 필요에 따라 기능 분리 (펀딩 참여 시 수정되도록  구현)
-        if (funding.getGoalAmount() <= funding.getTotalAmount()) {
+        if (funding.getGoalAmount() <= funding.getTotalAmount() && funding.getStatus().equals(FundingStatus.PROCESSING)) {
             funding.setStatus(FundingStatus.SUCCESS);
 
             fundingRepository.save(funding);
@@ -159,8 +181,23 @@ public class FundingServiceImpl implements FundingService {
         funding.updateByJoin(fundingJoin.getAmount());
 
         // 목표 금액 달성 시 상태를 SUCCESS 로 변경
-        if (funding.getTotalAmount() >= funding.getGoalAmount()) {
+        if (funding.getTotalAmount() >= funding.getGoalAmount() && funding.getStatus().equals(FundingStatus.PROCESSING)) {
             funding.setStatus(FundingStatus.SUCCESS);
+
+            CreateDemandDepositAccountRequest request = CreateDemandDepositAccountRequest.builder()
+                    .userKey(loginUser.getUserKey())
+                    .build();
+
+            DemandDepositAccountResponse accountResponse = createFundingAccount(request);
+
+            Account fundingAccount = Account.builder()
+                    .accountNumber(accountResponse.getAccountNo())
+                    .password(loginUser.getAccount().getPassword())
+                    .bankCode(accountResponse.getBankCode())
+                    .build();
+
+            // 현재는 계좌번호만을 저장하는 방식
+            funding.createAccount(fundingAccount.getAccountNumber());
         }
 
         fundingRepository.save(funding);
@@ -215,6 +252,57 @@ public class FundingServiceImpl implements FundingService {
         return searchFundings.stream()
                 .map(FundingResponseDto::createResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    // 계좌 생성
+    private DemandDepositAccountResponse createFundingAccount(CreateDemandDepositAccountRequest request) {
+
+        String url = "/edu/demandDeposit/createDemandDepositAccount";
+
+        CommonHeader header = CommonHeader.builder()
+                .apiName("createDemandDepositAccount")
+                .apiServiceCode("createDemandDepositAccount")
+                .userKey(request.getUserKey())
+                .apiKey(apiKey)
+                .build();
+        header.setCommonHeader();
+
+        CreateDemandDepositAccountApiRequest apiRequest = CreateDemandDepositAccountApiRequest.builder()
+                .header(header)
+                .accountTypeUniqueNo(accountTypeUniqueNo)
+                .build();
+
+        try {
+
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
+
+            String response = responseMono.block();
+
+            JsonNode root = objectMapper.readTree(response);
+            if (root.has("responseCode")) {
+                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+            }
+
+            // response에서 계좌번호 저장하기
+            if (root.has("REC")) {
+                DemandDepositAccountResponse accountResponse = DemandDepositAccountResponse.builder()
+                        .bankCode(root.get("REC").get("bankCode").asText())
+                        .accountNo(root.get("REC").get("accountNo").asText())
+                        .build();
+
+                return accountResponse;
+            }
+
+        } catch (Exception e) {
+            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+        }
+        return null;
     }
 
 }
