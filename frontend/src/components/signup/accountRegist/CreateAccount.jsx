@@ -16,27 +16,31 @@ function CreateAccount() {
     birthdate: '',
     phone: '',
     profileImage: '',
+    password: '',
+    passwordConfirm: '',
   });
-  const [nextActive, setNextActive] = useState(false); // 다음 버튼 활성화 상태
-  const [previewImage, setPreviewImage] = useState(null); // 이미지 미리보기 상태
+  const [nextActive, setNextActive] = useState(false); // 다음 넘어가기 전 검증
+  const [previewImage, setPreviewImage] = useState(null); // 이미지
 
-  const fileInputRef = useRef(null); // 파일 입력 요소 참조 생성
+  const fileInputRef = useRef(null); //파일 입출력
 
-  // 모든 필드가 채워졌는지 확인 (프로필 이미지는 필수가 아님)
+  // 이미지 빼고 모두 입력시 다음 가능
   useEffect(() => {
     const isFormComplete = Boolean(
       account.email &&
         account.name &&
         account.nickname &&
         account.birthdate &&
-        account.phone
-      // 프로필 이미지를 제외한 필드만 확인
+        account.phone &&
+        account.password &&
+        account.passwordConfirm &&
+        account.password === account.passwordConfirm // 비밀번호 확인
     );
 
     setNextActive(isFormComplete);
   }, [account]);
 
-  // Input change handler
+  // 입력 시 변경
   const handleChange = (e) => {
     const { id, value } = e.target;
     setAccount((prevAccount) => ({
@@ -45,14 +49,14 @@ function CreateAccount() {
     }));
   };
 
-  // 이미지 업로드 클릭 핸들러
+  // 클릭 시 사진 입력
   const handleImageUploadClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  // 이미지 변경 핸들러
+  // 이미지 변경
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -77,7 +81,6 @@ function CreateAccount() {
 
         <form className="create-form">
           <div className="create-form-image">
-            {/* <label>프로필 이미지 (선택 사항)</label> */}
             <div
               onClick={handleImageUploadClick}
               className="create-image-preview"
@@ -103,6 +106,24 @@ function CreateAccount() {
               value={account.email}
               onChange={handleChange}
               placeholder="이메일"
+            />
+          </div>
+          <div className="create-form-field">
+            <input
+              type="password"
+              id="password"
+              value={account.password}
+              onChange={handleChange}
+              placeholder="비밀번호"
+            />
+          </div>
+          <div className="create-form-field">
+            <input
+              type="password"
+              id="passwordConfirm"
+              value={account.passwordConfirm}
+              onChange={handleChange}
+              placeholder="비밀번호 확인"
             />
           </div>
           <div className="create-form-field">
