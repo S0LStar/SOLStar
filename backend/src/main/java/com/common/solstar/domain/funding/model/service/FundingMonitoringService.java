@@ -1,7 +1,6 @@
 package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
-import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.funding.dto.request.CreateDemandDepositAccountRequest;
 import com.common.solstar.domain.funding.dto.request.TransferRefundRequest;
 import com.common.solstar.domain.funding.dto.response.DemandDepositAccountResponse;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.servlet.View;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;

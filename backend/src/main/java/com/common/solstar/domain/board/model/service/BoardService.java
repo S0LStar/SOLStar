@@ -27,15 +27,15 @@ public class BoardService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
 
-    public void createBoard(int fundingId, BoardCreateRequestDto boardDto) {
+    public void createBoard(int fundingId, BoardCreateRequestDto boardDto, String authEmail) {
 
         // 현재 로그인한 유저가 해당 펀딩의 host 인지 확인
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
 
         // 로그인한 유저의 id 가져오기
-        // 현재는 User 구현되어있지 않기 때문에 임시로 id = 1 인 유저 찾기
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
         if (funding.getHost() != loginUser || loginUser == null) {
             throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
@@ -46,9 +46,10 @@ public class BoardService {
         boardRepository.save(createdBoard);
     }
 
-    public List<BoardResponseDto> getBoardList(int fundingId) {
+    public List<BoardResponseDto> getBoardList(int fundingId, String authEmail) {
         // 로그인한 유저 불러오기
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
@@ -67,23 +68,33 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(int boardId, BoardUpdateRequestDto boardDto) {
+    public void updateBoard(int boardId, BoardUpdateRequestDto boardDto, String authEmail) {
 
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_BOARD_EXCEPTION));
 
         // 현재 로그인한 유저가 해당 펀딩의 host 인지 확인
+        User loginUser = userRepository.findByEmail(authEmail)
+                        .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        if (loginUser.equals(board.getFunding().getHost()))
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         board.updateBoardDetails(boardDto);
     }
 
     @Transactional
-    public void deleteBoard(int boardId) {
+    public void deleteBoard(int boardId, String authEmail) {
 
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_BOARD_EXCEPTION));
 
         // 현재 로그인한 유저가 해당 펀딩의 host 인지 확인
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        if (loginUser.equals(board.getFunding().getHost()))
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         board.deleteBoard();
         boardRepository.save(board);
