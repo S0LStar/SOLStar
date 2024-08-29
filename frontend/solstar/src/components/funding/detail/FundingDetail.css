@@ -3,6 +3,10 @@
   margin-bottom: 170px;
 }
 
+.no-button.funding-detail-container {
+  margin-bottom: 100px;
+}
+
 .funding-detail-header {
   padding: 10px 5px;
   margin-bottom: 15px;

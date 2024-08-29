@@ -6,6 +6,7 @@ import './FundingDetail.css';
 import FundingPlan from './FundingPlan';
 import FundingNoti from './FundingNotiList';
 import FundingJoinModal from './FundingJoinModal';
+import FundingPayment from './FundingPayment';
 
 import Sol from '../../../assets/character/Sol.png'; // temp Image
 import Certification from '../../../assets/common/Certification.png';
@@ -62,7 +63,9 @@ function FundingDetail() {
   };
 
   return (
-    <div className="funding-detail-container">
+    <div
+      className={`funding-detail-container ${funding.joinStatus !== 0 && 'no-button'}`}
+    >
       <div className="funding-detail-image-container">
         <BackButton />
         <img src={Sol} alt="Funding" className="funding-detail-image" />
@@ -211,7 +214,7 @@ function FundingDetail() {
               isHost={funding.joinStatus === 2}
             />
           ) : (
-            funding.joinStatus !== 0 && <div>정산</div>
+            funding.joinStatus !== 0 && <FundingPayment />
           )}
         </div>
       </div>
