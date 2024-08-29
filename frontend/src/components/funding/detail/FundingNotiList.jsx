@@ -74,6 +74,12 @@ function FundingNotiList({ fundingId, isHost }) {
           </div>
           <h3>{notice.title}</h3>
           <div className="notice-content">{notice.content}</div>
+          {notice.contentImage && (
+            <img
+              src={notice.contentImage}
+              className="notice-content-image"
+            ></img>
+          )}
         </div>
       ))}
     </div>

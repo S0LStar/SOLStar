@@ -32,6 +32,10 @@
   border-bottom: 0.5px solid #ddd;
 }
 
+.notice-item:last-child {
+  border: none;
+}
+
 .notice-profile-info {
   display: flex;
   margin-bottom: 15px;

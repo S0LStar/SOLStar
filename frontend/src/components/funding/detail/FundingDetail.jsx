@@ -214,7 +214,12 @@ function FundingDetail() {
               isHost={funding.joinStatus === 2}
             />
           ) : (
-            funding.joinStatus !== 0 && <FundingPayment />
+            funding.joinStatus !== 0 && (
+              <FundingPayment
+                artistName={funding.artistName}
+                artistProfileImage={funding.artistProfileImage}
+              />
+            )
           )}
         </div>
       </div>
