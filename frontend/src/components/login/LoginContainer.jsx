@@ -12,6 +12,7 @@ function LoginContainer() {
   const dispatch = useDispatch(); // Redux 디스패치 사용
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isAgency, setIsAgency] = useState(false); // 소속사 체크 상태
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,14 +23,14 @@ function LoginContainer() {
       return;
     }
 
+    const role = isAgency ? 'AGENCY' : 'USER'; // 체크박스 상태에 따라 role 설정
+
     try {
       const response = await AxiosInstance.post('/auth/login', {
-        role: 'USER',
+        role: role,
         email: email,
         password: password,
       });
-
-      console.log('로그인 성공:', response.data);
 
       // 로그인 성공 시 accessToken과 refreshToken을 Redux와 localStorage에 저장
       const { accessToken, refreshToken } = response.data.data;
@@ -52,9 +53,19 @@ function LoginContainer() {
       </div>
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="login-box">
-          <label className="login-label" htmlFor="email">
-            이메일
-          </label>
+          <div className="login-email">
+            <label className="login-label" htmlFor="email">
+              이메일
+            </label>
+            <label className="login-label">
+              <input
+                type="checkbox"
+                checked={isAgency}
+                onChange={(e) => setIsAgency(e.target.checked)}
+              />
+              &nbsp;소속사
+            </label>
+          </div>
           <input
             className="login-input"
             type="email"
@@ -81,6 +92,7 @@ function LoginContainer() {
             minLength="8"
           />
         </div>
+        <div className="login-box"></div>
         <WideButton isActive={true} onClick={handleSubmit}>
           로그인
         </WideButton>
