@@ -48,10 +48,10 @@ public class AgencyServiceImpl implements AgencyService {
 
     @Override
     @Transactional
-    public void acceptFunding(int fundingId) {
+    public void acceptFunding(int fundingId, String authEmail) {
 
         // 로그인한 소속사 정보 불러오기
-        Agency agency = agencyRepository.findById(1)
+        Agency agency = agencyRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
 
         // 펀딩의 아티스트의 소속사가 현재 로그인한 소속사가 맞는지 검증
@@ -74,10 +74,10 @@ public class AgencyServiceImpl implements AgencyService {
 
     @Override
     @Transactional
-    public void rejectFunding(int fundingId) {
+    public void rejectFunding(int fundingId, String authEmail) {
 
         // 로그인한 소속사 정보 불러오기
-        Agency agency = agencyRepository.findById(1)
+        Agency agency = agencyRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
 
         // 펀딩의 아티스트의 소속사가 현재 로그인한 소속사가 맞는지 검증
