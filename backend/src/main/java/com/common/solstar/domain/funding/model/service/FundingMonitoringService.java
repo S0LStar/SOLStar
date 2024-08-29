@@ -7,6 +7,8 @@ import com.common.solstar.domain.funding.dto.response.DemandDepositAccountRespon
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.entity.FundingStatus;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
+import com.common.solstar.domain.fundingJoin.entity.FundingJoin;
+import com.common.solstar.domain.fundingJoin.model.repository.FundingJoinRepository;
 import com.common.solstar.global.api.request.CommonHeader;
 import com.common.solstar.global.api.request.CreateDemandDepositAccountApiRequest;
 import com.common.solstar.global.exception.CustomException;
@@ -29,6 +31,7 @@ import java.util.List;
 public class FundingMonitoringService {
 
     private final FundingRepository fundingRepository;
+    private final FundingJoinRepository fundingJoinRepository;
 
     private final WebClient webClient = WebClient.builder()
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
@@ -94,6 +97,25 @@ public class FundingMonitoringService {
         }
         fundingRepository.saveAll(deletableFundings);
     }
+
+    // 계좌 환불
+    // 매일 오전 3시에 실행되도록 함
+    @Scheduled(cron = "0 0 3 * * *")
+    @Transactional
+    public void refund() {
+        // 진행 중이면서 마감일이 지난 펀딩들 조회
+        List<Funding> closedFundings = fundingRepository.findByStatusAndDeadlineDateBefore(
+                FundingStatus.CLOSED, LocalDate.now().plusDays(1)
+        );
+
+        for (Funding funding : closedFundings) {
+            List<FundingJoin> fundingJoinList = fundingJoinRepository.findByFunding(funding);
+
+            // fundingJoin 하나하나 User를 꺼내서 user의 계좌에 amount 만큼 입금해줘야 함
+        }
+    }
+
+
 
     // 계좌 생성
     private DemandDepositAccountResponse createFundingAccount(CreateDemandDepositAccountRequest request) {

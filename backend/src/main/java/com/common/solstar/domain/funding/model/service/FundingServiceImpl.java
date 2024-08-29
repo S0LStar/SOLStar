@@ -1,10 +1,13 @@
 package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
+import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
+import com.common.solstar.domain.funding.dto.request.CreateDemandDepositAccountRequest;
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
+import com.common.solstar.domain.funding.dto.response.DemandDepositAccountResponse;
 import com.common.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
@@ -21,11 +24,18 @@ import com.common.solstar.domain.likeList.entity.LikeList;
 import com.common.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
+import com.common.solstar.global.api.request.CommonHeader;
+import com.common.solstar.global.api.request.CreateDemandDepositAccountApiRequest;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +51,18 @@ public class FundingServiceImpl implements FundingService {
     private final ArtistRepository artistRepository;
     private final LikeListRepository likeListRepository;
     private final FundingJoinRepository fundingJoinRepository;
+
+    private final WebClient webClient = WebClient.builder()
+            .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
+            .build();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final AccountRepository accountRepository;
+
+    @Value("${ssafy.api.key}")
+    private String apiKey;
+
+    @Value("${account.type.unique.no}")
+    private String accountTypeUniqueNo;
 
     @Override
     public void createFunding(FundingCreateRequestDto fundingDto) {
@@ -203,5 +225,7 @@ public class FundingServiceImpl implements FundingService {
                 .map(FundingResponseDto::createResponseDto)
                 .collect(Collectors.toList());
     }
+    
+    // 펀딩 참여 시 시스템 계좌에 이체
 
 }
