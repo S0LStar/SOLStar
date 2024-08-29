@@ -9,31 +9,52 @@ function ResetPassword() {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep] = useState(4);
-  const account = location.state?.account || {};
 
-  const [password, setPassword] = useState('');
+  // 초기 계정 정보 입력
+  const [account, setAccount] = useState({
+    ...location.state.account,
+    accountpasswordconfirm: '',
+  });
   const [nextActive, setNextActive] = useState(false);
 
-  // Check if password is set to enable the next button
+  // 비밀번호 6자리 확인
   useEffect(() => {
-    setNextActive(password.length === 6); // Enable 'Next' button when 6 characters are entered
-  }, [password]);
+    setNextActive(account.accountpasswordconfirm.length === 6);
+  }, [account.accountpasswordconfirm]);
 
-  // Handle number button clicks
   const handleNumberClick = (num) => {
-    if (password.length < 6) {
-      setPassword(password + num);
+    if (account.accountpasswordconfirm.length < 6) {
+      setAccount((prevAccount) => ({
+        ...prevAccount,
+        accountpasswordconfirm: prevAccount.accountpasswordconfirm + num,
+      }));
     }
   };
 
-  // Handle clear action
+  // 초기화 버튼
   const handleClear = () => {
-    setPassword('');
+    setAccount((prevAccount) => ({
+      ...prevAccount,
+      accountpasswordconfirm: '',
+    }));
   };
 
-  // Handle backspace action
+  // 1글자 지우기 버튼
   const handleBackspace = () => {
-    setPassword(password.slice(0, -1));
+    setAccount((prevAccount) => ({
+      ...prevAccount,
+      accountpasswordconfirm: prevAccount.accountpasswordconfirm.slice(0, -1),
+    }));
+  };
+
+  const handleNext = () => {
+    if (nextActive) {
+      if (account.accountpasswordconfirm === account.accountpassword) {
+        navigate('/signup/created', { state: { account } });
+      } else {
+        alert('비밀번호가 일치하지 않습니다.'); // Show alert if passwords do not match
+      }
+    }
   };
 
   return (
@@ -53,7 +74,9 @@ function ResetPassword() {
           {[...Array(6)].map((_, index) => (
             <div
               key={index}
-              className={`circle ${password.length > index ? 'active' : ''}`}
+              className={`circle ${
+                account.accountpasswordconfirm.length > index ? 'active' : ''
+              }`}
             />
           ))}
         </div>
@@ -84,11 +107,7 @@ function ResetPassword() {
 
         <WideButton
           isActive={nextActive}
-          onClick={() => {
-            if (nextActive) {
-              navigate('/signup/created', { state: { account, password } });
-            }
-          }}
+          onClick={handleNext} // Use handleNext to navigate
           className="resetpass-next-button"
         >
           다음

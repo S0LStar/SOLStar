@@ -1,0 +1,57 @@
+.funding-payment-balance {
+  box-shadow: 5px 5px 15px #cbcbcb55;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  margin: 10px 0;
+}
+
+.funding-payment-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0.5px solid #6c707230;
+  margin-right: 10px
+}
+
+.funding-payment-balance > div > div:first-child {
+  font-size: 14px;
+  color: #6C7072;
+}
+
+.funding-payment-balance > div > div:nth-child(2) {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.funding-payment-item {
+  margin: 5px 0;
+  padding: 15px;
+  border-bottom: 0.5px solid #6c707230;
+}
+
+.funding-payment-item:last-child {
+  border: none;
+}
+
+.funding-payment-main {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6C7072;
+  font-weight: 300;
+  margin-bottom: 5px;
+}
+
+.funding-payment-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.funding-payment-detail > div:nth-child(2) {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 500;
+}
