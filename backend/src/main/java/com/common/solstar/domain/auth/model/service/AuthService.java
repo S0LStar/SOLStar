@@ -77,8 +77,6 @@ public class AuthService {
             throw new ExceptionResponse(CustomException.DUPLICATED_NAME_EXCEPTION);
         }
 
-        String userKey = "userKey"; // 금융 api에서 email로 계좌 정보 조회에서 불러와야함
-
         Account account = Account.builder()
                 .accountNumber(signupRequest.getAccountNumber())
                 .password(signupRequest.getAccountPassword())
@@ -94,7 +92,7 @@ public class AuthService {
                 .phone(signupRequest.getPhone())
                 .profileImage(signupRequest.getProfileImage())
                 .account(account)
-                .userKey(userKey) // userKey 받아오는 로직 수정필요
+                .userKey(signupRequest.getUserKey()) // userKey 받아오는 로직 수정필요
                 .build();
 
         userRepository.save(user);
