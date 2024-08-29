@@ -206,7 +206,7 @@ public class FundingController {
     }
 
     // 펀딩 정산 완료
-    @PostMapping("/done/{fundingId}")
+    @PatchMapping("/done/{fundingId}")
     @Operation(summary = "펀딩 정산 완료")
     public ResponseEntity<?> doneFunding(@RequestHeader(value = "Authorization", required = false) String header,
                                          @PathVariable("fundingId") int fundingId) {

@@ -6,6 +6,7 @@ import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
+import com.common.solstar.domain.funding.dto.request.InquireAccountRequestDto;
 import com.common.solstar.domain.funding.dto.request.TransferJoinRequest;
 import com.common.solstar.domain.funding.dto.response.*;
 import com.common.solstar.domain.funding.entity.Funding;
@@ -22,8 +23,9 @@ import com.common.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.api.request.CommonHeader;
+import com.common.solstar.domain.funding.dto.request.DonateRequest;
+import com.common.solstar.global.api.request.FindAccountApiRequest;
 import com.common.solstar.global.api.request.TransferApiRequest;
-import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,7 +58,6 @@ public class FundingServiceImpl implements FundingService {
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final JwtUtil jwtUtil;
     private final AccountRepository accountRepository;
 
     @Value("${ssafy.api.key}")
@@ -223,13 +224,24 @@ public class FundingServiceImpl implements FundingService {
         Account fundingAccount = accountRepository.findByAccountNumber(funding.getAccount())
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ACCOUNT_EXCEPTION));
 
+        InquireAccountRequestDto inquireRequestDto = InquireAccountRequestDto.builder()
+                .userKey(loginUser.getUserKey())
+                .accountNo(fundingAccount.getAccountNumber())
+                .build();
 
+        String restAmount = getRestAmount(inquireRequestDto);
 
+        if (Integer.parseInt(restAmount) != 0) {
+            DonateRequest donateRequest = DonateRequest.builder()
+                    .accountNo(fundingAccount.getAccountNumber())
+                    .restAmount(restAmount)
+                    .build();
+
+            donateRestAmount(donateRequest);
+        }
 
         // 모든 기능 실행 후 펀딩 상태 CLOSED로 변경
-
-
-
+        funding.setStatus(FundingStatus.CLOSED);
     }
 
 
@@ -367,6 +379,87 @@ public class FundingServiceImpl implements FundingService {
         return TransferJoinResponse.builder()
                 .isSuccess(false)
                 .build();
+    }
+
+    // 펀딩 계좌 잔액 조회
+    public String getRestAmount(InquireAccountRequestDto requestDto) {
+
+        String url = "/edu/demandDeposit/inquireDemandDepositAccountBalance";
+
+        CommonHeader commonHeader = CommonHeader.builder()
+                .apiName("inquireDemandDepositAccountBalance")
+                .apiServiceCode("inquireDemandDepositAccountBalance")
+                .apiKey(apiKey)
+                .userKey(requestDto.getUserKey())
+                .build();
+        commonHeader.setCommonHeader();
+
+        FindAccountApiRequest apiRequest = FindAccountApiRequest.builder()
+                .header(commonHeader)
+                .accountNo(requestDto.getAccountNo())
+                .build();
+
+        try {
+
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
+
+            String response = responseMono.block();
+            JsonNode root = objectMapper.readTree(response);
+
+            if (!root.has("REC"))
+                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+
+            return root.get("REC").get("accountBalance").asText();
+        } catch (WebClientResponseException | JsonProcessingException e) {
+            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+        }
+    }
+
+    // 펀딩 계좌 잔액 기부
+    public void donateRestAmount(DonateRequest request) {
+        String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
+
+        CommonHeader header = CommonHeader.builder()
+                .apiName("updateDemandDepositAccountTransfer")
+                .apiServiceCode("updateDemandDepositAccountTransfer")
+                .userKey(request.getUserKey())
+                .apiKey(apiKey)
+                .build();
+        header.setCommonHeader();
+
+        TransferApiRequest apiRequest = TransferApiRequest.builder()
+                .header(header)
+                .depositAccountNo(systemAccountNo)
+                .depositTransactionSummary("기부")
+                .transactionBalance(request.getRestAmount())
+                .withdrawalAccountNo(request.getAccountNo())
+                .withdrawalTransactionSummary("기부")
+                .build();
+
+        try {
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
+
+            String response = responseMono.block();
+            JsonNode root = objectMapper.readTree(response);
+
+            if (!root.has("REC"))
+                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+
+        } catch (WebClientResponseException | JsonProcessingException e) {
+            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+        }
     }
 
 }
