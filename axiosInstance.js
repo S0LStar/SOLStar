@@ -1,45 +1,47 @@
-import axios from 'axios';
-import store from '../redux/Redux'; // Redux store import 경로 수정
-import { clearToken, setToken } from '../redux/slices/authSlice';
+import axios from "axios";
+import store from "../redux/store";
+import { clearToken, setToken } from "../redux/slices/authSlice";
 
-const API_LINK = 'http://localhost:8080/api';
-// const API_LINK = loca
+const API_LINK = import.meta.env.VITE_API_URL;
 
-//
+//axios 기본 베이스 설정
 const axiosInstance = axios.create({
   baseURL: API_LINK,
-  withCredentials: true, // 쿠키를 포함하여 요청
+  withCredentials: true,
 });
 
-const EXCLUDED_PATHS = ['/auth'];
-
+//인터셉터 설정(요청)
 axiosInstance.interceptors.request.use(
   (config) => {
     const state = store.getState();
     const { accessToken } = state.auth;
-    if (
-      config.url && // 존재 여부를 먼저 확인
-      !EXCLUDED_PATHS.some((path) => config.url.includes(path)) // Non-null assertion 연산자 제거
-    ) {
-      if (accessToken) {
-        config.headers['Authorization'] = `Bearer ${accessToken}`;
-      }
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    // accesstoken 이 없으면 거절
+    return Promise.reject(error);
+  }
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  //응답이 있으면 응답을 보내고.
+  (response) => {
+    return response;
+  },
+  //에러가 발생하면.
   async (error) => {
     const originalRequest = error.config;
     const state = store.getState();
 
+    //권한 없음 & 재시도 상황이 아니라면
     if (error.response.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
-
+      //재발급
       try {
+        //axios 요청
         const response = await axios.post(
           `${API_LINK}/auth/refresh`,
           {},
@@ -52,17 +54,16 @@ axiosInstance.interceptors.response.use(
             refreshToken: state.auth.refreshToken,
           })
         );
-        axiosInstance.defaults.headers.common['Authorization'] =
-          `Bearer ${newAccessToken}`;
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        axiosInstance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         store.dispatch(clearToken());
         return Promise.reject(refreshError);
       }
     }
-
-    return Promise.reject(error);
   }
 );
 

@@ -1,9 +1,10 @@
 import './LoginContainer.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import AxiosInstance from '../../util/AxiosInstance.js';
 import Shoo from '../../assets/character/Shoo.png';
 import WideButton from '../common/WideButton';
+import axios from 'axios';
 
 function LoginContainer() {
   const navigate = useNavigate();
@@ -20,7 +21,9 @@ function LoginContainer() {
     }
 
     try {
-      const response = await axios.post('/api/login', {
+      const response = await AxiosInstance.post('/auth/login', {
+        // const response = await axios.post('/api/login', {
+        role: 'USER',
         email: email,
         password: password,
       });
