@@ -30,7 +30,7 @@ import RequestFunding from '../components/mypage/RequestFunding';
 import MyArtist from '../components/mypage/MyArtist';
 import MyArtistFunding from '../components/mypage/MyArtistFunding';
 import LoginPage from '../pages/LoginPage';
-import LoginContainer from '../components/login/LoginContainer';
+import LoginContainer from '../components/login/LoginContainer.jsx';
 import MainSearch from '../components/main/MainSearch';
 import SignUpPage from '../pages/SignUpPage';
 import SignUpContainer from '../components/signup/SignUpContainer';

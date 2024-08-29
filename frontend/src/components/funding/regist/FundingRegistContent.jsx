@@ -10,6 +10,7 @@ function FundingRegistContent({ funding, onChange, onRegist }) {
   useEffect(() => {
     console.log('isActive', registActive);
   });
+
   return (
     <>
       <form className="funding-regist-content-section">
