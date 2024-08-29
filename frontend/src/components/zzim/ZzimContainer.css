@@ -11,7 +11,7 @@
 .zzim-container .artist-list {
   display: block;
   overflow-x: auto;
-  width: 95vw;
+  width: 100%;
   margin-left: calc(-50vw + 55%);
   margin-top: 30px;
 }
@@ -52,4 +52,11 @@
   font-size: 14px;
   color: #0046ff;
   font-weight: bold;
+}
+
+.zzim-container .no-artist-message {
+  padding-top: 30vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

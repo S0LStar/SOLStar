@@ -10,24 +10,35 @@ function AccountVerification() {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep] = useState(3);
-  const account = location.state?.account || {};
-  const [verificationCode, setVerificationCode] = useState('');
+
+  // 인증번호 설정
+  const [account, setAccount] = useState({
+    ...location.state.account,
+    verificationCode: '',
+  });
   const [nextActive, setNextActive] = useState(false);
 
   useEffect(() => {
-    const isFormComplete = verificationCode.length === 4;
+    const isFormComplete = account.verificationCode.length === 4;
     setNextActive(isFormComplete);
-  }, [verificationCode]);
+  }, [account.verificationCode]);
 
+  // 입력 시 변경
   const handleChange = (e) => {
     const value = e.target.value.replace(/[^0-9]/g, ''); // Only allow numeric input
     if (value.length <= 4) {
-      setVerificationCode(value);
+      setAccount((prevAccount) => ({
+        ...prevAccount,
+        verificationCode: value,
+      }));
     }
   };
 
   const handleClear = () => {
-    setVerificationCode('');
+    setAccount((prevAccount) => ({
+      ...prevAccount,
+      verificationCode: '',
+    }));
   };
 
   return (
@@ -58,7 +69,7 @@ function AccountVerification() {
             <div className="accountverify-digits">
               {[...Array(4)].map((_, index) => (
                 <div key={index} className="digit-box">
-                  1
+                  5
                 </div>
               ))}
             </div>
@@ -76,11 +87,11 @@ function AccountVerification() {
               <input
                 type="text"
                 id="verificationCode"
-                value={verificationCode}
+                value={account.verificationCode} // Use account.verificationCode directly
                 onChange={handleChange}
                 placeholder="SOLSTAR 제외 4자리 숫자"
               />
-              {verificationCode && (
+              {account.verificationCode && (
                 <img
                   src={CircleX}
                   alt="입력 지우기"
@@ -97,7 +108,7 @@ function AccountVerification() {
           isActive={nextActive}
           onClick={() => {
             if (nextActive) {
-              navigate('/signup/set', { state: { account, verificationCode } });
+              navigate('/signup/set', { state: { account } });
             }
           }}
         >
