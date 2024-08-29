@@ -1,14 +1,35 @@
 import './MyContainer.css';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import temp from '../../assets/character/Shoo.png';
 import WideButton from '../common/WideButton';
 import RightVector from '../../assets/common/RightVector.png';
 import Pencil from '../../assets/mypage/Pencil.png';
+import AxiosInstance from '../../util/AxiosInstance';
 
 function MyContainer() {
   const navigate = useNavigate();
+  const [profileData, setProfileData] = useState(null);
+  const [error, setError] = useState(null);
 
-  const myProfileTempData = {
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 API 호출
+    const fetchProfile = async () => {
+      try {
+        const response = await AxiosInstance.get('/user/me');
+        console.log('프로필 데이터:', response.data);
+        setProfileData(response.data);
+      } catch (error) {
+        console.error('프로필 불러오기 실패:', error);
+        setError('프로필 불러오기 실패');
+        alert('로그인 실패');
+      }
+    };
+
+    fetchProfile();
+  }, []); // 빈 배열: 컴포넌트가 마운트될 때만 실행
+
+  const myProfileTempData = profileData || {
     img: temp,
     name: '최승탁',
     introduction: '',
