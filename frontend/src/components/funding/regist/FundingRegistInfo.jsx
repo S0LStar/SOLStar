@@ -20,7 +20,7 @@ function FundingRegistInfo({ funding, onChange, onNext }) {
         funding.title &&
         funding.deadlineDate &&
         funding.goalAmount &&
-        funding.profileImage &&
+        funding.fundingImage &&
         funding.artistId
     );
 
@@ -44,7 +44,7 @@ function FundingRegistInfo({ funding, onChange, onNext }) {
     if (file) {
       // 미리보기 이미지 설정
       setPreviewImage(URL.createObjectURL(file));
-      onChange({ target: { id: 'profileImage', value: file } });
+      onChange({ target: { id: 'fundingImage', value: file } });
     }
   };
 
