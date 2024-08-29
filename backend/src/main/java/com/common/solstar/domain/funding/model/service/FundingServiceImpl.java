@@ -236,11 +236,11 @@ public class FundingServiceImpl implements FundingService {
     // 펀딩 참여 시 시스템 계좌에 이체
     public TransferJoinResponse transferFunding(TransferJoinRequest request) {
 
-        String url = "/edu/demandDeposit/createDemandDepositAccount";
+        String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
 
         CommonHeader header = CommonHeader.builder()
-                .apiName("createDemandDepositAccount")
-                .apiServiceCode("createDemandDepositAccount")
+                .apiName("updateDemandDepositAccountTransfer")
+                .apiServiceCode("updateDemandDepositAccountTransfer")
                 .userKey(request.getUserKey())
                 .apiKey(apiKey)
                 .build();
