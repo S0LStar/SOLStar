@@ -48,11 +48,17 @@ public class WalletController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-//    @Operation(summary = "특정 펀딩의 계좌 거래 내역 조회")
-//    @PostMapping("/funding/{fundingId}")
-//    public ResponseEntity<ResponseDto<List<FundingTransactionHistoryResponse>>> getFundingTransactionHistory(@RequestHeader(value = "Authorization", required = false) String header,
-//                                                                                                             @PathVariable("fundingId") String fundingId){
-//        List<FundingTransactionHistoryResponse> result = walletService.getFundingTransactionHistory(header);
-//    }
+    @Operation(summary = "특정 펀딩의 계좌 거래 내역 조회")
+    @PostMapping("/funding/{fundingId}")
+    public ResponseEntity<ResponseDto<List<FundingTransactionHistoryResponse>>> getFundingTransactionHistory(@RequestHeader(value = "Authorization", required = false) String header,
+                                                                                                             @PathVariable("fundingId") int fundingId){
+        List<FundingTransactionHistoryResponse> result = walletService.getFundingTransactionHistory(header, fundingId);
+        ResponseDto<List<FundingTransactionHistoryResponse>> responseDto = ResponseDto.<List<FundingTransactionHistoryResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .message("해당 펀딩의 계좌 거래 내역 조회")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
 }

@@ -10,6 +10,7 @@ import com.common.solstar.domain.wallet.dto.response.FindMyHostFundingAccountRes
 import com.common.solstar.domain.wallet.dto.response.FundingTransactionHistoryResponse;
 import com.common.solstar.global.api.request.CommonHeader;
 import com.common.solstar.global.api.request.FindAccountApiRequest;
+import com.common.solstar.global.api.request.FundingTransactionHistoryApiRequest;
 import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
@@ -23,6 +24,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +45,6 @@ public class WalletService {
 
     @Value("${ssafy.api.key}")
     private String apiKey;
-
-    @Value("${ssafy.solstar.system.user.key}")
-    private String systemUserKey;
 
     // 나의 연동 계좌 조회
     public FindMyAccountReponse getMyWallet(String header) {
@@ -87,7 +88,7 @@ public class WalletService {
             JsonNode root = objectMapper.readTree(response);
 
             return FindMyAccountReponse.builder()
-                    .accountBalance(root.get("REC").get("accountBalance").asText())
+                    .accountBalance(Integer.parseInt(root.get("REC").get("accountBalance").asText()))
                     .userName(user.getName())
                     .accountNo(user.getAccount().getAccountNumber())
                     .build();
@@ -152,7 +153,7 @@ public class WalletService {
                 responseList.add(FindMyHostFundingAccountResponse.builder()
                         .fundingId(funding.getId())
                         .accountNo(funding.getAccount())
-                        .accountBalance(root.get("REC").get("accountBalance").asText())
+                        .accountBalance(Integer.parseInt(root.get("REC").get("accountBalance").asText()))
                         .artistName(funding.getArtist().getName())
                         .userName(user.getName())
                         .build());
@@ -166,6 +167,84 @@ public class WalletService {
         return responseList;
     }
 
-//    public List<FundingTransactionHistoryResponse> getFundingTransactionHistory(String header) {
-//    }
+    // 특정 펀딩의 계좌 거래 내역
+    public List<FundingTransactionHistoryResponse> getFundingTransactionHistory(String header, int fundingId) {
+        String authEmail = jwtUtil.getLoginUser(header);
+
+        if (authEmail == null) {
+            throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
+        }
+        User user = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        Funding funding = fundingRepository.findById(fundingId)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+        
+        // 로그인 유저가 해당 펀딩 주최자가 아니라면
+        if(user.getId() != funding.getHost().getId()){
+            throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
+        }
+
+        String url = "/edu/demandDeposit/inquireTransactionHistoryList";
+
+        CommonHeader commonHeader = CommonHeader.builder()
+                .apiName("inquireTransactionHistoryList")
+                .apiServiceCode("inquireTransactionHistoryList")
+                .apiKey(apiKey)
+                .userKey(user.getUserKey())
+                .build();
+        commonHeader.setCommonHeader();
+
+        FundingTransactionHistoryApiRequest apiRequest = FundingTransactionHistoryApiRequest.builder()
+                .header(commonHeader)
+                .accountNo(funding.getAccount())
+                .startDate(funding.getDeadlineDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                .endDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+                .transactionType("A")
+                .orderByType("DESC")
+                .build();
+
+        List<FundingTransactionHistoryResponse> responseList = new ArrayList<>();
+        try {
+            // 요청 데이터를 JSON으로 변환
+            String jsonRequestBody = objectMapper.writeValueAsString(apiRequest);
+            System.out.println("Request JSON: " + jsonRequestBody);
+
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
+
+            // API 응답을 블록하여 받음
+            String response = responseMono.block();
+            JsonNode root = objectMapper.readTree(response);
+
+            // "list" 필드를 추출하고 FundingTransactionHistoryResponse 리스트로 변환
+            JsonNode listNode = root.path("REC").path("list");
+            if (listNode.isArray()) {
+                for (JsonNode transactionNode : listNode) {
+                    FundingTransactionHistoryResponse transaction = FundingTransactionHistoryResponse.builder()
+                            .transactionDateTime(LocalDateTime.parse(
+                                    transactionNode.path("transactionDate").asText() + transactionNode.path("transactionTime").asText(),
+                                    DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+                            ).format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")))
+                            .transactionTypeName(transactionNode.path("transactionTypeName").asText())
+                            .transactionBalance(Integer.parseInt(transactionNode.path("transactionBalance").asText()))
+                            .transactionAfterBalance(Integer.parseInt(transactionNode.path("transactionAfterBalance").asText()))
+                            .transactionSummary(transactionNode.path("transactionSummary").asText())
+                            .build();
+                    responseList.add(transaction);
+                }
+            }
+
+        } catch (WebClientResponseException | JsonProcessingException e) {
+            // 예외 발생 시 사용자 정의 예외를 던짐
+            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+        }
+
+        return responseList;
+    }
 }

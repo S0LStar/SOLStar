@@ -13,6 +13,6 @@ public class FindMyAccountReponse {
 
     private String accountNo;
     private String userName;
-    private String accountBalance;
+    private int accountBalance;
 
 }

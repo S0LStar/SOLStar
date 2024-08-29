@@ -10,10 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FundingTransactionHistoryResponse {
-    private String transactionDate;
-    private String transactionTime;
+    private String transactionDateTime;
     private String transactionTypeName;
-    private String transactionBalance;
-    private String transactionAfterBalance;
+    private int transactionBalance;
+    private int transactionAfterBalance;
     private String transactionSummary;
 }

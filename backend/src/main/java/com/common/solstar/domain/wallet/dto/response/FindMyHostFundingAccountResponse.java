@@ -13,7 +13,7 @@ public class FindMyHostFundingAccountResponse {
 
     private int fundingId;
     private String accountNo;
-    private String accountBalance;
+    private int accountBalance;
     private String artistName;
     private String userName;
 
