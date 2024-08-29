@@ -1,0 +1,18 @@
+.wallet-container {
+  padding: 16px;
+  margin-bottom: 80px;
+  /* width: 360px; */
+}
+
+.wallet-header {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.wallet-item {
+  width: 80vw;
+}
+
+.fundingwallet-item {
+  width: 80vw;
+}

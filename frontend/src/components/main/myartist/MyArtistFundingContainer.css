@@ -1,0 +1,17 @@
+.my-artist-funding-container {
+  padding: 16px;
+  margin-bottom: 80px;
+}
+
+.my-artist-funding-header {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.my-artist-funding-header-description {
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
