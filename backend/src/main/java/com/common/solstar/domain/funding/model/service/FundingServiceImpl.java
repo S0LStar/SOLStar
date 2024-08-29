@@ -1,10 +1,8 @@
 package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
-import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
-import com.common.solstar.domain.funding.dto.request.CreateDemandDepositAccountRequest;
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
 import com.common.solstar.domain.funding.dto.request.TransferJoinRequest;
@@ -23,7 +21,6 @@ import com.common.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.api.request.CommonHeader;
-import com.common.solstar.global.api.request.CreateDemandDepositAccountApiRequest;
 import com.common.solstar.global.api.request.TransferApiRequest;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
@@ -57,13 +54,9 @@ public class FundingServiceImpl implements FundingService {
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final AccountRepository accountRepository;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
-
-    @Value("${account.type.unique.no}")
-    private String accountTypeUniqueNo;
 
     @Value("${system.account.no}")
     private String systemAccountNo;
