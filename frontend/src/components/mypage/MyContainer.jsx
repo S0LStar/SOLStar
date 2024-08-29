@@ -6,6 +6,7 @@ import WideButton from '../common/WideButton';
 import RightVector from '../../assets/common/RightVector.png';
 import Pencil from '../../assets/mypage/Pencil.png';
 import AxiosInstance from '../../util/AxiosInstance';
+import DefaultArtist from '../../assets/common/DefaultArtist.png';
 
 function MyContainer() {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ function MyContainer() {
     const fetchProfile = async () => {
       try {
         const response = await AxiosInstance.get('/user/me');
-        console.log('프로필 데이터:', response.data);
-        setProfileData(response.data);
+        console.log('프로필 데이터:', response.data.data);
+        setProfileData(response.data.data);
       } catch (error) {
         console.error('프로필 불러오기 실패:', error);
         setError('프로필 불러오기 실패');
@@ -42,7 +43,11 @@ function MyContainer() {
   return (
     <>
       <div className="my-container">
-        <img className="my-profile" src={myProfileTempData.img} alt="" />
+        <img
+          className="my-profile"
+          src={myProfileTempData.img ? myProfileTempData.img : DefaultArtist}
+          alt=""
+        />
         <div className="my-nickname">{myProfileTempData.name}</div>
 
         <div className="my-intro">
@@ -55,7 +60,7 @@ function MyContainer() {
         <div className="my-edit-button">
           <WideButton
             onClick={() => {
-              navigate(`/my/editprofile`);
+              navigate(`/my/editprofile`, { state: { profileData } });
             }}
             isActive={true}
           >
