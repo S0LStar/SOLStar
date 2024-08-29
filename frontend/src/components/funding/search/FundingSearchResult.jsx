@@ -9,6 +9,7 @@ import NoZzim from '../../../assets/artist/NoZzim.png';
 
 import './FundingSearchResult.css';
 import FundingCard from '../common/FundingCard';
+import axiosInstance from '../../../util/AxiosInstance';
 
 function FundingSearchResult() {
   const location = useLocation();
@@ -24,97 +25,79 @@ function FundingSearchResult() {
 
   useEffect(() => {
     console.log(query);
-    // TODO : API 연결
-    // 검색 결과 데이터
-    const fetchedData = {
-      fundingList: [
-        {
-          fundingId: 1,
-          type: 'VERIFIED',
-          artistName: '뉴진스',
-          title: '뉴진스 데뷔 2주년 기념🎉 2호선을 뉴진스로 물들여요!',
-          fundingImage: 'image',
-          successRate: 372,
-          totalAmount: 18600000,
-          status: 'PROCESSING',
-          remainDays: 22,
-        },
-        {
-          fundingId: 2,
-          type: 'COMMON',
-          artistName: '민지 (NewJeans)',
-          title:
-            '뉴진스 민지의 이름으로 따뜻한 마음을 전해요 💙 펀딩이 함께하는 사랑의 기부',
-          fundingImage: '../../../assets/character/Sol.png',
-          successRate: 160,
-          totalAmount: 1600000,
-          status: 'SUCCESS',
-          remainDays: null,
-        },
-        {
-          fundingId: 3,
-          type: 'COMMON',
-          artistName: '뉴진스',
-          title: '뉴진스 한정판 굿즈 💖 팬심으로 만든 특별 아이템',
-          fundingImage: 'funding_image_3_url',
-          successRate: 50,
-          totalAmount: 1230000,
-          status: 'FAIL',
-          remainDays: null,
-        },
-        {
-          fundingId: 4,
-          type: 'COMMON',
-          artistName: '뉴진스',
-          title: '뉴진스 한정판 굿즈 💖 팬심으로 만든 특별 아이템',
-          fundingImage: 'funding_image_3_url',
-          successRate: 50,
-          totalAmount: 1230000,
-          status: 'FAIL',
-          remainDays: null,
-        },
-      ],
-      artistList: [
-        {
-          artistId: 1,
-          type: 'GROUP',
-          name: '뉴진스',
-          group: null,
-          profileImage: 'artist_image_1_url',
-          popularity: 230,
-          isLike: false,
-        },
-        {
-          artistId: 2,
-          type: 'MEMBER',
-          name: '민지',
-          group: '뉴진스',
-          profileImage: 'artist_image_2_url',
-          popularity: 200,
-          isLike: true,
-        },
-        {
-          artistId: 3,
-          type: 'MEMBER',
-          name: '혜린',
-          group: '뉴진스',
-          profileImage: 'artist_image_3_url',
-          popularity: 180,
-          isLike: false,
-        },
-        {
-          artistId: 4,
-          type: 'MEMBER',
-          name: '하니',
-          group: '뉴진스',
-          profileImage: 'artist_image_4_url',
-          popularity: 160,
-          isLike: false,
-        },
-      ],
+
+    //  펀딩 검색 결과 데이터 API 연결
+    const fetchFundingData = async () => {
+      try {
+        const response = await axiosInstance.get('/funding', {
+          params: {
+            keyword: query,
+          },
+        });
+
+        const updatedFundingList = response.data.data.fundingList.map(
+          (funding) => {
+            // successRate 계산: totalAmount / goalAmount * 100
+            const successRate = Math.floor(
+              (funding.totalAmount / funding.goalAmount) * 100
+            );
+
+            // successRate를 포함한 새로운 객체 반환
+            return {
+              ...funding,
+              successRate: successRate,
+            };
+          }
+        );
+
+        console.log(response);
+        setData((prevData) => ({
+          ...prevData,
+          fundingList: updatedFundingList,
+        }));
+      } catch (error) {
+        console.error('검색 결과 funding 데이터', error);
+      }
     };
 
-    setData(fetchedData); // 받아온 데이터를 상태로 설정
+    fetchFundingData();
+
+    //  펀딩 검색 결과 데이터 API 연결
+    const fetchArtistData = async () => {
+      try {
+        const response = await axiosInstance.get('/artist', {
+          params: {
+            keyword: query,
+          },
+        });
+
+        const updatedArtistList = response.data.data.artistList.map(
+          (funding) => {
+            // successRate 계산: totalAmount / goalAmount * 100
+            const successRate = Math.floor(
+              (funding.totalAmount / funding.goalAmount) * 100
+            );
+
+            // successRate를 포함한 새로운 객체 반환
+            return {
+              ...funding,
+              successRate: successRate,
+            };
+          }
+        );
+
+        console.log(response);
+        setData((prevData) => ({
+          ...prevData,
+          artistList: updatedArtistList,
+        }));
+      } catch (error) {
+        console.error('검색 결과 funding 데이터', error);
+      }
+    };
+
+    fetchFundingData();
+    fetchArtistData();
   }, [query]);
 
   const handleChange = (e) => {
