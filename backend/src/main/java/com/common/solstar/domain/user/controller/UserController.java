@@ -71,6 +71,20 @@ public class UserController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @Operation(summary = "특정 유저가 주최한 펀딩 조회")
+    @GetMapping("/host-funding/{userId}")
+    public ResponseEntity<ResponseDto<List<FundingResponseDto>>> getHostFundingByUserId(@RequestHeader(value = "Authorization", required = false) String header,
+                                                                                        @PathVariable("userId") int userId){
+        String authEmail = jwtUtil.getLoginUser(header);
+        List<FundingResponseDto> result = userService.getHostFundingById(authEmail, userId);
+        ResponseDto<List<FundingResponseDto>> responseDto = ResponseDto.<List<FundingResponseDto>>builder()
+                .status(HttpStatus.OK.value())
+                .message("해당 유저의 주최 펀딩 조회 성공")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
     @Operation(summary = "자기소개 수정")
     @PatchMapping("/introduction")
     public ResponseEntity<ResponseDto<String>> updateIntroduction(@RequestHeader(value = "Authorization", required = false) String header,
