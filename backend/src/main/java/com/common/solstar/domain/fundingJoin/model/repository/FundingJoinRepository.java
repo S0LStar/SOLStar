@@ -12,4 +12,5 @@ import java.util.List;
 public interface FundingJoinRepository extends JpaRepository<FundingJoin, Integer> {
     boolean existsByUserAndFunding(User user, Funding funding);
     List<FundingJoin> findByFunding(Funding funding);
+    List<FundingJoin> findByUserId(int userId);
 }
