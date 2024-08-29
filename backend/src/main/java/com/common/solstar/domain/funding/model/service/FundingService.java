@@ -29,6 +29,9 @@ public interface FundingService {
     // 펀딩 참여
     void joinFunding(FundingJoinCreateRequestDto joinFundingDto, String authEmail);
 
+    // 펀딩 정산 완료
+    void doneFunding(int fundingId, String authEmail);
+
     // 내가 선호하는 아티스트 펀딩 조회
     List<FundingResponseDto> getMyLikeArtistFunding(String authEmail);
 
