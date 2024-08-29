@@ -100,6 +100,11 @@ public class Funding extends BaseTimeEntity {
         this.totalJoin += 1;
     }
 
+    // 펀딩 성공 시 계좌번호 업데이트
+    public void createAccount(String account) {
+        this.account = account;
+    }
+
     public void deleteFunding() {
         this.isDelete = true;
     }
