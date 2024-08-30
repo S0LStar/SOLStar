@@ -6,10 +6,9 @@ import './MyEditor.css';
 
 import propTypes from 'prop-types';
 
-const REGION = import.meta.env.REACT_APP_AWS_S3_BUCKET_REGION;
-const ACCESS_KEY = import.meta.env.REACT_APP_AWS_S3_BUCKET_ACCESS_KEY_ID;
-const SECRET_ACCESS_KEY = import.meta.env
-  .REACT_APP_AWS_S3_BUCKET_SECRET_ACCESS_KEY;
+const REGION = import.meta.env.VITE_AWS_S3_BUCKET_REGION;
+const ACCESS_KEY = import.meta.env.VITE_AWS_S3_BUCKET_ACCESS_KEY_ID;
+const SECRET_ACCESS_KEY = import.meta.env.VITE_AWS_S3_BUCKET_SECRET_ACCESS_KEY;
 
 function MyEditor({ funding, onChange, setRegistActive }) {
   const editorRef = useRef(null);
@@ -46,26 +45,29 @@ function MyEditor({ funding, onChange, setRegistActive }) {
       try {
         // 생성한 s3 관련 설정들
         const s3Client = new S3Client({
-          region: REGION,
           credentials: {
-            accessKeyId: ACCESS_KEY,
             secretAccessKey: SECRET_ACCESS_KEY,
+            accessKeyId: ACCESS_KEY,
           },
+          region: REGION,
         });
 
         const params = {
-          Bucket: 'itsmovietime',
-          Key: `upload/${Date.now()}`,
+          Bucket: 'hackerton',
+          Key: `upload/${Date.now()}_${file.name}`, // 파일 이름을 추가하여 고유한 키 생성
           Body: file,
-          ACL: 'public-read',
         };
 
         const command = new PutObjectCommand(params);
-        const { Location } = await s3Client.send(command);
+        const response = await s3Client.send(command);
 
+        // 이미지 URL을 생성 (S3의 URL 형식에 맞게)
+        const imageUrl = `https://${params.Bucket}.s3.${REGION}.amazonaws.com/${params.Key}`;
+
+        // 에디터에 이미지 삽입
         const editor = editorRef.current.getEditor();
         const range = editor.getSelection();
-        editor.insertEmbed(range.index, 'image', Location);
+        editor.insertEmbed(range.index, 'image', imageUrl);
       } catch (error) {
         console.error('Error uploading image: ', error);
       }
