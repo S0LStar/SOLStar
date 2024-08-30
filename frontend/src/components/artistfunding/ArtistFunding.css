@@ -1,0 +1,11 @@
+.artist-funding-detail {
+  padding: 16px;
+}
+
+.artist-funding-header img:nth-child(2) {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  
+
+}

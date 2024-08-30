@@ -16,7 +16,7 @@ const Loading = ({ children }) => {
 };
 
 Loading.propTypes = {
-  children: PropTypes.string,
+  children: PropTypes.array,
 };
 
 export default Loading;

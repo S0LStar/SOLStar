@@ -15,6 +15,9 @@ import FundingSearchResult from '../components/funding/search/FundingSearchResul
 // Notice
 import FundingNoticeRegist from '../components/funding/detail/FundingNoticeRegist';
 
+// Artist
+import ArtistFunding from '../components/artistfunding/ArtistFunding.jsx';
+
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
 import FundingWalletDetail from '../components/wallet/FundingWalletDetail';
@@ -57,6 +60,10 @@ function AppRoutes() {
         <Route path=":fundingId/notice" element={<FundingNoticeRegist />} />
         <Route path="regist" element={<FundingRegist />} />
         <Route path="search" element={<FundingSearchResult />}></Route>
+      </Route>
+
+      <Route path="/artist">
+        <Route path=":artistId" element={<ArtistFunding />}></Route>
       </Route>
 
       <Route path="/wallet" element={<WalletPage />}>

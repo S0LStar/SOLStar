@@ -169,7 +169,13 @@ function FundingSearchResult() {
         </div>
         <div className="artist-list">
           {data.artistList.map((artist) => (
-            <div key={artist.artistId} className="artist-item">
+            <div
+              key={artist.artistId}
+              className="artist-item"
+              onClick={() => {
+                navigate(`/artist/${artist.artistId}`);
+              }}
+            >
               <img src={temp} alt={artist.name} className="artist-image" />
               {artist.liked ? (
                 <img
