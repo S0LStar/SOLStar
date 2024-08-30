@@ -1,7 +1,7 @@
 import './MyContainer.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux'; // Redux 디스패치 사용
+import { useDispatch, useSelector } from 'react-redux'; // Redux 디스패치 및 useSelector 사용
 import { clearToken } from '../../redux/slices/authSlice'; // Redux 액션 import
 import temp from '../../assets/character/Shoo.png';
 import WideButton from '../common/WideButton';
@@ -13,6 +13,7 @@ import DefaultArtist from '../../assets/common/DefaultArtist.png';
 function MyContainer() {
   const navigate = useNavigate();
   const dispatch = useDispatch(); // Redux 디스패치 사용
+  const authState = useSelector((state) => state.auth); // 현재 auth 상태 가져오기
   const [profileData, setProfileData] = useState(null);
   const [introduction, setIntroduction] = useState('');
   const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태 추가
@@ -93,13 +94,10 @@ function MyContainer() {
   const handleLogout = async () => {
     try {
       // 서버에 로그아웃 요청
-      // await AxiosInstance.post('/auth/logout');
+      await AxiosInstance.post('/auth/logout');
 
       // Redux 상태 초기화
       dispatch(clearToken());
-      // 로컬 스토리지에서 토큰 제거
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
 
       // 로그아웃 후 로그인 페이지로 이동
       navigate('/login');

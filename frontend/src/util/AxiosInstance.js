@@ -16,12 +16,11 @@ const axiosInstance = axios.create({
 
 const EXCLUDED_PATHS = ['/auth'];
 
-// 초기화 시 localStorage에서 토큰 가져오기
-const accessToken = localStorage.getItem('accessToken');
-const refreshToken = localStorage.getItem('refreshToken');
+// Redux에서 토큰 가져오기
+const state = store.getState();
+const { accessToken, refreshToken } = state.auth;
 
 if (accessToken && refreshToken) {
-  store.dispatch(setToken({ accessToken, refreshToken }));
   axiosInstance.defaults.headers.common['Authorization'] =
     `Bearer ${accessToken}`;
 }
@@ -67,21 +66,17 @@ axiosInstance.interceptors.response.use(
         store.dispatch(
           setToken({
             accessToken: newAccessToken,
-            refreshToken: state.auth.refreshToken,
+            refreshToken: state.auth.refreshToken, // refreshToken은 redux에 저장된 것을 사용
           })
         );
 
-        // localStorage에 새로운 토큰 저장
-        localStorage.setItem('accessToken', newAccessToken);
-
+        // axios 인스턴스에 새로운 토큰 설정
         axiosInstance.defaults.headers.common['Authorization'] =
           `Bearer ${newAccessToken}`;
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         store.dispatch(clearToken());
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
         return Promise.reject(refreshError);
       }
     }

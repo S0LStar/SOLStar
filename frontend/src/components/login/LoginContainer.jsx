@@ -32,11 +32,9 @@ function LoginContainer() {
         password: password,
       });
 
-      // 로그인 성공 시 accessToken과 refreshToken을 Redux와 localStorage에 저장
+      // 로그인 성공 시 accessToken과 refreshToken을 Redux에 저장
       const { accessToken, refreshToken } = response.data.data;
       dispatch(setToken({ accessToken, refreshToken }));
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
 
       alert('로그인 성공');
       navigate('/');
