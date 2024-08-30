@@ -16,16 +16,29 @@ function UnderBar() {
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
+  const isStart = (paths) =>
+    paths.some((path) => location.pathname.startsWith(path));
 
   return (
     <>
       <div className="underbar">
         <button
           onClick={() => navigate('/')}
-          className={`underbar-button ${isActive('/') ? 'active' : ''}`}
+          className={`underbar-button ${isActive('/') || isStart(['/search', '/popular', 'my-artist', '/funding', '/artist']) ? 'active' : ''}`}
         >
           <img
-            src={isActive('/') ? ActiveMainIcon : MainIcon}
+            src={
+              isActive('/') ||
+              isStart([
+                '/search',
+                '/popular',
+                'my-artist',
+                '/funding',
+                '/artist',
+              ])
+                ? ActiveMainIcon
+                : MainIcon
+            }
             alt="main"
             className="underbar-icon"
           />

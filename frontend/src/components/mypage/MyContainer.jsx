@@ -1,7 +1,7 @@
 import './MyContainer.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux'; // Redux 디스패치 사용
+import { useDispatch, useSelector } from 'react-redux'; // Redux 디스패치 및 useSelector 사용
 import { clearToken } from '../../redux/slices/authSlice'; // Redux 액션 import
 import temp from '../../assets/character/Shoo.png';
 import WideButton from '../common/WideButton';
@@ -13,28 +13,35 @@ import DefaultArtist from '../../assets/common/DefaultArtist.png';
 function MyContainer() {
   const navigate = useNavigate();
   const dispatch = useDispatch(); // Redux 디스패치 사용
+  const authState = useSelector((state) => state.auth); // 현재 auth 상태 가져오기
   const [profileData, setProfileData] = useState(null);
   const [introduction, setIntroduction] = useState('');
-  const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태 추가
+  const [nickname, setNickname] = useState('');
+  const [isEditingIntroduction, setIsEditingIntroduction] = useState(false); // 자기소개 수정 모드 상태 추가
+  const [isEditingNickname, setIsEditingNickname] = useState(false); // 닉네임 수정 모드 상태 추가
   const [error, setError] = useState(null);
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 API 호출
-    const fetchProfile = async () => {
-      try {
-        const response = await AxiosInstance.get('/user/me');
-        console.log('프로필 데이터:', response.data.data);
-        setProfileData(response.data.data);
-        setIntroduction(response.data.data.introduction || '');
-      } catch (error) {
-        console.error('프로필 불러오기 실패:', error);
-        setError('프로필 불러오기 실패');
-        alert('로그인 실패');
-      }
-    };
-
-    fetchProfile();
-  }, []); // 빈 배열: 컴포넌트가 마운트될 때만 실행
+    if (authState.role === 'AGENCY') {
+      // 여기에 소속사일 경우 fetchprofile 해야 함
+    } else {
+      const fetchProfile = async () => {
+        try {
+          const response = await AxiosInstance.get('/user/me');
+          console.log('프로필 데이터:', response.data.data);
+          setProfileData(response.data.data);
+          setIntroduction(response.data.data.introduction || '');
+          setNickname(response.data.data.nickname || '');
+        } catch (error) {
+          console.error('프로필 불러오기 실패:', error);
+          setError('프로필 불러오기 실패');
+          alert('로그인 실패');
+        }
+      };
+      fetchProfile();
+    }
+  }, [authState.role]); // 빈 배열: 컴포넌트가 마운트될 때만 실행
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -73,9 +80,18 @@ function MyContainer() {
     }
   };
 
+  const handleNicknameChange = (e) => {
+    const newNickname = e.target.value;
+    if (newNickname.length > 10) {
+      alert('닉네임은 최대 10자까지 가능합니다.');
+    } else {
+      setNickname(newNickname);
+    }
+  };
+
   const handleIntroductionUpdate = async () => {
-    if (isEditing) {
-      // 현재 수정 모드이면 수정 내용을 저장
+    if (isEditingIntroduction) {
+      // 현재 자기소개 수정 모드이면 수정 내용을 저장
       try {
         const response = await AxiosInstance.patch('/user/introduction', {
           introduction,
@@ -87,19 +103,34 @@ function MyContainer() {
         alert('자기소개 업데이트 실패');
       }
     }
-    setIsEditing(!isEditing); // 수정 모드를 토글
+    setIsEditingIntroduction(!isEditingIntroduction); // 자기소개 수정 모드를 토글
+  };
+
+  const handleNicknameUpdate = async () => {
+    if (isEditingNickname) {
+      // 현재 닉네임 수정 모드이면 수정 내용을 저장
+      try {
+        const response = await AxiosInstance.patch('/user/nickname', {
+          nickname,
+        });
+        console.log('닉네임 업데이트 성공:', response.data);
+        alert('닉네임이 업데이트되었습니다.');
+      } catch (error) {
+        console.error('닉네임 업데이트 실패:', error);
+        alert('닉네임 업데이트 실패');
+      }
+    }
+    setIsEditingNickname(!isEditingNickname); // 닉네임 수정 모드를 토글
   };
 
   const handleLogout = async () => {
     try {
       // 서버에 로그아웃 요청
-      // await AxiosInstance.post('/auth/logout');
+      console.log(1);
+      await AxiosInstance.post('/user/logout');
 
       // Redux 상태 초기화
       dispatch(clearToken());
-      // 로컬 스토리지에서 토큰 제거
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
 
       // 로그아웃 후 로그인 페이지로 이동
       navigate('/login');
@@ -111,7 +142,7 @@ function MyContainer() {
 
   const myProfileTempData = profileData || {
     img: temp,
-    name: '',
+    name: authState.role === 'AGENCY' ? '어도어' : '',
     introduction: '',
     email: '',
     nickname: '',
@@ -134,75 +165,133 @@ function MyContainer() {
           alt=""
           // onClick={() => document.getElementById('profile-image-input').click()}
         />
-        <div className="my-nickname">{myProfileTempData.name}</div>
 
-        <div className="my-intro">
-          <div className="my-intro-text">
-            {isEditing ? (
-              <input
-                type="text"
-                value={introduction}
-                onChange={handleIntroductionChange}
-                placeholder="자기소개를 입력해주세요"
-              />
-            ) : (
-              <span>{introduction || '자기소개를 입력해주세요'}</span>
-            )}
-            <img src={Pencil} alt="Edit" onClick={handleIntroductionUpdate} />
-          </div>
-          <hr />
-        </div>
-        <div className="my-edit-button">
-          <WideButton
-            onClick={() => {
-              navigate(`/my/editprofile`, { state: { profileData } });
-            }}
-            isActive={true}
-          >
-            내 정보 수정
-          </WideButton>
-          <WideButton
-            onClick={() => {
-              navigate(`/my/editpassword`);
-            }}
-            isActive={false}
-          >
-            비밀번호 수정
-          </WideButton>
-        </div>
+        {authState.role === 'AGENCY' ? (
+          // AGENCY의 경우
+          <>
+            <div className="my-name">{myProfileTempData.name}</div>
+            <div className="my-edit-button">
+              <WideButton
+                onClick={() => {
+                  navigate(`/my`);
+                }}
+                isActive={true}
+              >
+                내 정보 보기
+              </WideButton>
+              <WideButton onClick={handleLogout} isActive={true}>
+                로그아웃
+              </WideButton>
+            </div>
+            <div className="my-funding">
+              <div className="my-funding-label">소속사</div>
+              <hr />
+              <div className="my-funding-container">
+                <div
+                  className="my-funding-context"
+                  onClick={() => {
+                    navigate(`/my/request`);
+                  }}
+                >
+                  인증 펀딩 요청
+                  <img src={RightVector} alt="" />
+                </div>
+                <div
+                  className="my-funding-context"
+                  onClick={() => {
+                    navigate(`/my/myartist`);
+                  }}
+                >
+                  소속 아티스트 <img src={RightVector} alt="" />
+                </div>
+                <div
+                  className="my-funding-context"
+                  onClick={() => {
+                    navigate(`/my/myartistfunding`);
+                  }}
+                >
+                  소속 아티스트 펀딩 <img src={RightVector} alt="" />
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          // 일반 USER의 경우
+          <>
+            <div className="my-name">
+              <div className="my-name-text">
+                {isEditingNickname ? (
+                  <input
+                    type="text"
+                    value={nickname}
+                    onChange={handleNicknameChange}
+                    placeholder="닉네임을 입력해주세요"
+                  />
+                ) : (
+                  <span>{nickname || '닉네임을 입력해주세요'}</span>
+                )}
+                <img src={Pencil} alt="Edit" onClick={handleNicknameUpdate} />
+              </div>
+            </div>
+            <div className="my-intro">
+              <div className="my-intro-text">
+                {isEditingIntroduction ? (
+                  <input
+                    type="text"
+                    value={introduction}
+                    onChange={handleIntroductionChange}
+                    placeholder="자기소개를 입력해주세요"
+                  />
+                ) : (
+                  <span>{introduction || '자기소개를 입력해주세요'}</span>
+                )}
+                <img
+                  src={Pencil}
+                  alt="Edit"
+                  onClick={handleIntroductionUpdate}
+                />
+              </div>
+              <hr />
+            </div>
+            <div className="my-edit-button">
+              <WideButton
+                onClick={() => {
+                  navigate(`/my/ViewProfile`, { state: { profileData } });
+                }}
+                isActive={true}
+              >
+                내 정보 보기
+              </WideButton>
+              <WideButton onClick={handleLogout} isActive={true}>
+                로그아웃
+              </WideButton>
+            </div>
 
-        <div className="my-funding">
-          <div className="my-funding-label">내 펀딩</div>
-          <hr />
-          <div className="my-funding-container">
-            <div
-              className="my-funding-context"
-              onClick={() => {
-                navigate(`/my/participantfunding`);
-              }}
-            >
-              내 참여 펀딩
-              <img src={RightVector} alt="" />
+            <div className="my-funding">
+              <div className="my-funding-label">내 펀딩</div>
+              <hr />
+              <div className="my-funding-container">
+                <div
+                  className="my-funding-context"
+                  onClick={() => {
+                    navigate(`/my/participantfunding`);
+                  }}
+                >
+                  내 참여 펀딩
+                  <img src={RightVector} alt="" />
+                </div>
+                <div
+                  className="my-funding-context"
+                  onClick={() => {
+                    navigate(`/my/createdfunding`);
+                  }}
+                >
+                  내 주최 펀딩 <img src={RightVector} alt="" />
+                </div>
+              </div>
             </div>
-            <div
-              className="my-funding-context"
-              onClick={() => {
-                navigate(`/my/createdfunding`);
-              }}
-            >
-              내 주최 펀딩 <img src={RightVector} alt="" />
-            </div>
-          </div>
-        </div>
-        <button onClick={() => navigate('/login')}>
-          <span>로그인</span>
-        </button>
-        <button onClick={() => navigate('/agencymy')}>
-          <span>소속사 마이페이지</span>
-        </button>
-        <button onClick={handleLogout}>
-          <span>로그아웃</span>
-        </button>
+          </>
+        )}
       </div>
     </>
   );
