@@ -3,14 +3,11 @@ package com.common.solstar.domain.user.model.service;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
-import com.common.solstar.domain.funding.model.repository.FundingRepositorySupport;
 import com.common.solstar.domain.fundingJoin.entity.FundingJoin;
 import com.common.solstar.domain.fundingJoin.model.repository.FundingJoinRepository;
 import com.common.solstar.domain.fundingJoin.model.repository.FundingJoinRepositorySupport;
 import com.common.solstar.domain.user.dto.request.UpdateIntroductionRequest;
-import com.common.solstar.domain.user.dto.response.HostFundingResponse;
 import com.common.solstar.domain.user.dto.response.UserDetailResponse;
-import com.common.solstar.domain.user.dto.response.UserJoinFundingReponse;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.exception.CustomException;
@@ -28,8 +25,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FundingJoinRepository fundingJoinRepository;
-    private final FundingJoinRepositorySupport fundingJoinRepositorySupport;
-    private final FundingRepositorySupport fundingRepositorySupport;
     private final FundingRepository fundingRepository;
 
     // 로그인 유저 정보 조회
