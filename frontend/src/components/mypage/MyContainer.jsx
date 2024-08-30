@@ -23,22 +23,25 @@ function MyContainer() {
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 API 호출
-    const fetchProfile = async () => {
-      try {
-        const response = await AxiosInstance.get('/user/me');
-        console.log('프로필 데이터:', response.data.data);
-        setProfileData(response.data.data);
-        setIntroduction(response.data.data.introduction || '');
-        setNickname(response.data.data.nickname || '');
-      } catch (error) {
-        console.error('프로필 불러오기 실패:', error);
-        setError('프로필 불러오기 실패');
-        alert('로그인 실패');
-      }
-    };
-
-    fetchProfile();
-  }, []); // 빈 배열: 컴포넌트가 마운트될 때만 실행
+    if (authState.role === 'AGENCY') {
+      // 여기에 소속사일 경우 fetchprofile 해야 함
+    } else {
+      const fetchProfile = async () => {
+        try {
+          const response = await AxiosInstance.get('/user/me');
+          console.log('프로필 데이터:', response.data.data);
+          setProfileData(response.data.data);
+          setIntroduction(response.data.data.introduction || '');
+          setNickname(response.data.data.nickname || '');
+        } catch (error) {
+          console.error('프로필 불러오기 실패:', error);
+          setError('프로필 불러오기 실패');
+          alert('로그인 실패');
+        }
+      };
+      fetchProfile();
+    }
+  }, [authState.role]); // 빈 배열: 컴포넌트가 마운트될 때만 실행
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -153,38 +156,38 @@ function MyContainer() {
           type="file"
           id="profile-image-input"
           style={{ display: 'none' }}
-          onChange={handleImageUpload}
+          // onChange={handleImageUpload}
         />
         <img
           className="my-profile"
           src={myProfileTempData.img ? myProfileTempData.img : DefaultArtist}
           alt=""
-          onClick={() => document.getElementById('profile-image-input').click()}
+          // onClick={() => document.getElementById('profile-image-input').click()}
         />
 
         {authState.role === 'AGENCY' ? (
           // AGENCY의 경우
           <>
-            <div className="agencymy-nickname">{myProfileTempData.name}</div>
-            <div className="agencymy-edit-button">
+            <div className="my-name">{myProfileTempData.name}</div>
+            <div className="my-edit-button">
               <WideButton
                 onClick={() => {
                   navigate(`/my/editprofile`);
                 }}
                 isActive={true}
               >
-                내 정보 수정
+                내 정보 보기
               </WideButton>
               <WideButton onClick={handleLogout} isActive={false}>
                 로그아웃
               </WideButton>
             </div>
-            <div className="agencymy-funding">
-              <div className="agencymy-funding-label">소속사</div>
+            <div className="my-funding">
+              <div className="my-funding-label">소속사</div>
               <hr />
-              <div className="agencymy-funding-container">
+              <div className="my-funding-container">
                 <div
-                  className="agencymy-funding-context"
+                  className="my-funding-context"
                   onClick={() => {
                     navigate(`/agencymy/request`);
                   }}
@@ -193,7 +196,7 @@ function MyContainer() {
                   <img src={RightVector} alt="" />
                 </div>
                 <div
-                  className="agencymy-funding-context"
+                  className="my-funding-context"
                   onClick={() => {
                     navigate(`/agencymy/myartist`);
                   }}
@@ -201,7 +204,7 @@ function MyContainer() {
                   소속 아티스트 <img src={RightVector} alt="" />
                 </div>
                 <div
-                  className="agencymy-funding-context"
+                  className="my-funding-context"
                   onClick={() => {
                     navigate(`/agencymy/myartistfunding`);
                   }}
@@ -214,18 +217,20 @@ function MyContainer() {
         ) : (
           // 일반 USER의 경우
           <>
-            <div className="my-nickname">
-              {isEditingNickname ? (
-                <input
-                  type="text"
-                  value={nickname}
-                  onChange={handleNicknameChange}
-                  placeholder="닉네임을 입력해주세요"
-                />
-              ) : (
-                <span>{nickname || '닉네임을 입력해주세요'}</span>
-              )}
-              <img src={Pencil} alt="Edit" onClick={handleNicknameUpdate} />
+            <div className="my-name">
+              <div className="my-name-text">
+                {isEditingNickname ? (
+                  <input
+                    type="text"
+                    value={nickname}
+                    onChange={handleNicknameChange}
+                    placeholder="닉네임을 입력해주세요"
+                  />
+                ) : (
+                  <span>{nickname || '닉네임을 입력해주세요'}</span>
+                )}
+                <img src={Pencil} alt="Edit" onClick={handleNicknameUpdate} />
+              </div>
             </div>
             <div className="my-intro">
               <div className="my-intro-text">
@@ -286,10 +291,6 @@ function MyContainer() {
             </div>
           </>
         )}
-
-        <button onClick={handleLogout}>
-          <span>로그아웃</span>
-        </button>
       </div>
     </>
   );
