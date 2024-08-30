@@ -8,6 +8,9 @@ const API_LINK = 'http://localhost:8080/api';
 
 const axiosInstance = axios.create({
   baseURL: API_LINK,
+  headers: {
+    'Content-Type': 'application/json',
+  },
   withCredentials: true, // 쿠키를 포함하여 요청
 });
 

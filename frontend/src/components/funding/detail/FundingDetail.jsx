@@ -13,6 +13,7 @@ import Certification from '../../../assets/common/Certification.png';
 import Success from '../../../assets/funding/Success.png';
 import Fail from '../../../assets/funding/Fail.png';
 import Closed from '../../../assets/funding/Closed.png';
+import axiosInstance from '../../../util/AxiosInstance';
 
 function FundingDetail() {
   const { fundingId } = useParams();
@@ -21,28 +22,15 @@ function FundingDetail() {
   const [joinModalOpen, setJoinModalOpen] = useState(false); // 펀딩 참여 모달 상태 관리
 
   useEffect(() => {
-    console.log(parseInt(fundingId));
-
-    // TODO : API 연결
     // 펀딩 상세 조회 Data
-    const tempData = {
-      title: '🎉 뉴진스 데뷔 2주년 기념 🎉 2호선을 뉴진스로 물들여요!',
-      artistProfileImage: 'image',
-      artistName: '뉴진스',
-      fundingImage: 'image_url2',
-      hostNickname: '뉴진스찐팬',
-      hostIntroduction: '뉴진스 찐팬 2년차입니다.',
-      hostProfileImage: null,
-      totalAmount: 500000,
-      goalAmount: 1000000,
-      deadlineDate: '2024-08-28',
-      totalJoin: 1,
-      type: 'VERIFIED',
-      status: 'PROCESSING', // PROCESSING, SUCCESS, FAIL, CLOSED
-      joinStatus: 2, // 0: 참여 가능 대상 (펀딩 진행 중 && 펀딩 참여 전 && 주최자 x), 1: 참여자, 2: 주최자 => 여러번 참여 가능하다면 상태값 수정 필요
+    const fetchFundingDetail = async () => {
+      const response = await axiosInstance.get(`/funding/${fundingId}`);
+
+      console.log(response);
+      setFunding(response.data.data);
     };
 
-    setFunding(tempData);
+    fetchFundingDetail();
   }, [location]);
 
   if (!funding) {
@@ -62,13 +50,21 @@ function FundingDetail() {
     setJoinModalOpen(false);
   };
 
+  // 정산 종료 요청
   const handleFinish = () => {
-    // TODO: 정산 종료 API 요청
+    // 정산 종료 API 요청
+    const finishFunding = async () => {
+      const response = await axiosInstance.patch(`/funding/done/${fundingId}`);
+
+      console.log(response);
+    };
+
+    finishFunding();
   };
 
   return (
     <div
-      className={`funding-detail-container ${funding.joinStatus !== 0 && 'no-button'}`}
+      className={`funding-detail-container ${funding.joinStatus !== 0 && !(funding.joinStatus === 2 && funding.status === 'SUCCESS') && 'no-button'}`}
     >
       <div className="funding-detail-image-container">
         <BackButton />
@@ -211,11 +207,13 @@ function FundingDetail() {
         </div>
         <div className="funding-content-detail">
           {activeTab === 'plan' ? (
-            <FundingPlan />
+            <FundingPlan fundingId={parseInt(fundingId)} />
           ) : activeTab === 'noti' ? (
             <FundingNoti
               fundingId={parseInt(fundingId)}
               isHost={funding.joinStatus === 2}
+              nickname={funding.hostNickname}
+              profileImage={funding.hostProfileImage}
             />
           ) : (
             funding.joinStatus !== 0 && (

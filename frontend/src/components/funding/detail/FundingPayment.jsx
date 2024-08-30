@@ -4,70 +4,81 @@ import PropTypes from 'prop-types';
 import './FundingPayment.css';
 
 import DefaultImage from '../../../assets/character/Sol.png';
+import axiosInstance from '../../../util/AxiosInstance';
+import Error from '../../common/Error';
+import Loading from '../../common/Loading';
 
 function FundingPayment({ artistName, artistProfileImage }) {
-  const [payment, setPayment] = useState({
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+
+  const [filteredPayment, setFilteredPayment] = useState({
+    accountBalance: '',
+    transactionHistory: [],
+  });
+
+  const [filteredPayment, setFilteredPayment] = useState({
     accountBalance: '',
     transactionHistory: [],
   });
   const { fundingId } = useParams();
 
+  // 데이터 페칭
   useEffect(() => {
-    console.log(artistName);
-    // TODO : 펀딩 계좌 상세 조회 API 연결 (/api/wallet/funding-detail)
-    // request body : fundingId
-    const fetchFundingPaymnet = {
-      transactionHistory: [
-        {
-          transactionDate: '20240401',
-          transactionTime: '102447',
-          transactionBalance: 1000000,
-          transactionSummary: '(주) 삼성전자',
-          transactionAfterBalance: 2000000,
-          transactionTypeName: '입금',
-        },
-        {
-          transactionDate: '20240401',
-          transactionTime: '102447',
-          transactionBalance: 1000000,
-          transactionAfterBalance: 1000000,
-          transactionSummary: '(주) 삼성전자',
-          transactionTypeName: '입금',
-        },
-      ],
-    };
+    const fetchPayment = async () => {
+      setLoading(true);
+      try {
+        const response = await axiosInstance.post(
+          `/wallet/funding/${fundingId}`
+        );
 
-    // 날짜와 시간을 처리해 새로운 transactionDateTime으로 변환
-    const filteredFundingPayment = {
-      accountBalance:
-        fetchFundingPaymnet.transactionHistory[0].transactionAfterBalance,
-      transactionHistory: fetchFundingPaymnet.transactionHistory.map(
-        (history) => {
-          const formattedDate = `${history.transactionDate.slice(2, 4)}/${history.transactionDate.slice(4, 6)}/${history.transactionDate.slice(6, 8)}`;
-          const formattedTime = `${history.transactionTime.slice(0, 2)}:${history.transactionTime.slice(2, 4)}`;
+        const paymentData = response.data.data;
+        console.log(paymentData);
 
-          return {
-            ...history,
-            transactionDateTime: `${formattedDate} ${formattedTime}`,
+        if (paymentData.length > 0) {
+          const filteredFundingPayment = {
+            accountBalance: paymentData[0]?.transactionAfterBalance,
+            transactionHistory: paymentData.map((history) => {
+              const formattedDateTime = `${history.transactionDateTime.slice(2)}`;
+
+              return {
+                ...history,
+                transactionDateTime: formattedDateTime,
+              };
+            }),
           };
+
+          console.log('filteredFunding', filteredFundingPayment);
+          setFilteredPayment(filteredFundingPayment);
+        } else {
+          setFilteredPayment({ accountBalance: 0, transactionHistory: [] });
         }
-      ),
+      } catch (error) {
+        console.error(error);
+        setError(true);
+      } finally {
+        setLoading(false); // 데이터 요청 완료 후 로딩 상태를 false로 설정
+      }
     };
 
-    setPayment(filteredFundingPayment);
-  }, [artistName]);
+    fetchPayment();
+  }, [fundingId]);
+
+  if (loading) {
+    return <Loading />; // 로딩 컴포넌트 또는 텍스트
+  }
 
   return (
     <div className="funding-payment-container">
       <div className="funding-payment-balance">
         <img src={DefaultImage} alt="" className="funding-payment-image" />
         <div>
-          <div>{artistName} 펀딩 계좌</div>
-          <div>₩ {payment.accountBalance}</div>
+          <div>{artistName} 펀딩 계좌 잔액</div>
+          <div>{filteredPayment.accountBalance.toLocaleString()}</div>
         </div>
       </div>
       <div className="funding-payment-list">
-        {payment.transactionHistory.map((history, idx) => (
+        {filteredPayment.transactionHistory.map((history, idx) => (
           <div key={idx} className="funding-payment-item">
             <div className="funding-payment-main">
               <div>{history.transactionTypeName}</div>
@@ -80,13 +91,15 @@ function FundingPayment({ artistName, artistProfileImage }) {
           </div>
         ))}
       </div>
+
+      {error && <Error setError={setError} />}
     </div>
   );
 }
 
 FundingPayment.propTypes = {
   artistName: PropTypes.string.isRequired,
-  artistProfileImage: PropTypes.node.isRequired,
+  artistProfileImage: PropTypes.string.isRequired,
 };
 
 export default FundingPayment;
