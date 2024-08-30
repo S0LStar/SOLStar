@@ -4,10 +4,7 @@ import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
-import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
-import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
-import com.common.solstar.domain.funding.dto.request.InquireAccountRequestDto;
-import com.common.solstar.domain.funding.dto.request.TransferJoinRequest;
+import com.common.solstar.domain.funding.dto.request.*;
 import com.common.solstar.domain.funding.dto.response.*;
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.entity.FundingStatus;
@@ -23,7 +20,6 @@ import com.common.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.api.request.CommonHeader;
-import com.common.solstar.domain.funding.dto.request.DonateRequest;
 import com.common.solstar.global.api.request.FindAccountApiRequest;
 import com.common.solstar.global.api.request.TransferApiRequest;
 import com.common.solstar.global.exception.CustomException;
@@ -65,6 +61,9 @@ public class FundingServiceImpl implements FundingService {
 
     @Value("${system.account.no}")
     private String systemAccountNo;
+
+    @Value("${system.user.key}")
+    private String systemUserKey;
 
     @Override
     @Transactional
@@ -225,8 +224,9 @@ public class FundingServiceImpl implements FundingService {
         Account fundingAccount = accountRepository.findByAccountNumber(funding.getAccount())
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ACCOUNT_EXCEPTION));
 
+        // 시스템 유저 키를 사용하여 펀딩 계좌 생성
         InquireAccountRequestDto inquireRequestDto = InquireAccountRequestDto.builder()
-                .userKey(loginUser.getUserKey())
+                .userKey(systemUserKey)
                 .accountNo(fundingAccount.getAccountNumber())
                 .build();
 
@@ -245,6 +245,11 @@ public class FundingServiceImpl implements FundingService {
         funding.setStatus(FundingStatus.CLOSED);
     }
 
+//    @Override
+//    public void useMoney(String authEmail, UseBudgetRequest useBudgetRequest) {
+//
+//        User loginUser = userRepository
+//    }
 
     @Override
     public List<FundingResponseDto> getMyLikeArtistFunding(String authEmail) {
@@ -362,6 +367,13 @@ public class FundingServiceImpl implements FundingService {
                   // responseCode에 따른 커스텀 예외 처리
                   switch (responseCode) {
                       case "A1003":
+                          System.out.println("계좌번호가 유효하지 않습니다.");
+                          throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                      case "A1011":
+                          System.out.println("거래 금액이 유효하지 않습니다.");
+                          throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                      case "A1014":
+                          System.out.println("계좌 잔액이 부족합니다.");
                           throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
                       default:
                           throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
@@ -413,6 +425,40 @@ public class FundingServiceImpl implements FundingService {
             String response = responseMono.block();
             JsonNode root = objectMapper.readTree(response);
 
+            if (root.has("responseCode")) {
+                String responseCode = root.get("responseCode").asText();
+
+                // responseCode에 따른 커스텀 예외 처리
+                switch (responseCode) {
+                    case "A1003":
+                        System.out.println("계좌번호가 유효하지 않습니다.");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1011":
+                        System.out.println("거래 금액이 유효하지 않습니다.");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1014":
+                        System.out.println("계좌 잔액이 부족합니다.");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1016":
+                        System.out.println("이체 가능 한도 초과");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1017":
+                        System.out.println("이체 가능 한도 초과 (1일)");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1018":
+                        System.out.println("거래 요약 내용 길이 초과");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "Q1000":
+                        System.out.println("이외 에러 메시지");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "Q1001":
+                        System.out.println("요청 본문 형식 잘못됨");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                        default:
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                }
+            }
+
             if (!root.has("REC"))
                 throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
 
@@ -455,8 +501,46 @@ public class FundingServiceImpl implements FundingService {
             String response = responseMono.block();
             JsonNode root = objectMapper.readTree(response);
 
-            if (!root.has("REC"))
+            if (!root.has("REC")) {
                 throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+
+            }
+
+            if (root.has("responseCode")) {
+                String responseCode = root.get("responseCode").asText();
+
+                // responseCode에 따른 커스텀 예외 처리
+                switch (responseCode) {
+                    case "A1003":
+                        System.out.println("계좌번호가 유효하지 않습니다.");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1011":
+                        System.out.println("거래 금액이 유효하지 않습니다.");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1014":
+                        System.out.println("계좌 잔액이 부족합니다.");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1016":
+                        System.out.println("이체 가능 한도 초과");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1017":
+                        System.out.println("이체 가능 한도 초과 (1일)");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "A1018":
+                        System.out.println("거래 요약 내용 길이 초과");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "Q1000":
+                        System.out.println("이외 에러 메시지");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    case "Q1001":
+                        System.out.println("요청 본문 형식 잘못됨");
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    default:
+                        throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                }
+            } else {
+                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+            }
 
         } catch (WebClientResponseException | JsonProcessingException e) {
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
