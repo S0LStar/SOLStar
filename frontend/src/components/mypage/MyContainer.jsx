@@ -94,7 +94,7 @@ function MyContainer() {
   const handleLogout = async () => {
     try {
       // 서버에 로그아웃 요청
-      await AxiosInstance.post('/auth/logout');
+      await AxiosInstance.post('/user/logout');
 
       // Redux 상태 초기화
       dispatch(clearToken());
