@@ -16,6 +16,9 @@ import FundingSearchResult from '../components/funding/search/FundingSearchResul
 // Notice
 import FundingNoticeRegist from '../components/funding/detail/FundingNoticeRegist';
 
+// Artist
+import ArtistFunding from '../components/artistfunding/ArtistFunding.jsx';
+
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
 import FundingWalletDetail from '../components/wallet/FundingWalletDetail';
@@ -23,7 +26,7 @@ import ZzimPage from '../pages/ZzimPage';
 import ZzimContainer from '../components/zzim/ZzimContainer';
 import MyPage from '../pages/MyPage';
 import MyPageContainer from '../components/mypage/MyContainer';
-import EditProfile from '../components/mypage/EditProfile';
+import ViewProfile from '../components/mypage/ViewProfile.jsx';
 import ParticipantFunding from '../components/mypage/ParticipantFunding';
 import CreatedFunding from '../components/mypage/CreatedFunding';
 import AgencyMyPageContainer from '../components/mypage/AgencyMyPageContainer';
@@ -75,7 +78,7 @@ function AppRoutes() {
                 <Route
                   path="my-artist"
                   element={<MyArtistFundingContainer />}
-                />
+                ></Route>
               </Route>
 
               <Route path="/funding" element={<FundingPage />}>
@@ -85,7 +88,11 @@ function AppRoutes() {
                   element={<FundingNoticeRegist />}
                 />
                 <Route path="regist" element={<FundingRegist />} />
-                <Route path="search" element={<FundingSearchResult />} />
+                <Route path="search" element={<FundingSearchResult />}></Route>
+              </Route>
+
+              <Route path="/artist">
+                <Route path=":artistId" element={<ArtistFunding />}></Route>
               </Route>
 
               <Route path="/wallet" element={<WalletPage />}>
@@ -98,7 +105,7 @@ function AppRoutes() {
 
               <Route path="/my" element={<MyPage />}>
                 <Route index element={<MyPageContainer />} />
-                <Route path="editprofile" element={<EditProfile />} />
+                <Route path="viewprofile" element={<ViewProfile />} />
                 <Route
                   path="participantfunding"
                   element={<ParticipantFunding />}

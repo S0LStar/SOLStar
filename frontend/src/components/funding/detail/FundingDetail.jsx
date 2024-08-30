@@ -84,6 +84,7 @@ function FundingDetail() {
         <h1 className="funding-detail-title">{funding.title}</h1>
 
         <div className="funding-detail-artist-info">
+          {/* TODO: 이미지처리 */}
           <img src={Certification} alt="" />
           <div>{funding.artistName}</div>
         </div>
@@ -162,6 +163,8 @@ function FundingDetail() {
           <div className="funding-detail-host">
             <div className="funding-detail-host-title">주최자 소개</div>
             <div>
+              {/* TODO: 이미지처리 */}
+
               <img
                 src={Certification}
                 alt=""

@@ -12,7 +12,25 @@
   padding: 50px;
 }
 
-.my-nickname {
+.my-name {
+  font-size: 22px;
+}
+
+.my-name-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-name-text img {
+  margin-left: 10px;
+}
+
+.my-name-text input {
+  border: 0px;
+  width: 30%;
+  max-width: 100%;
+  word-wrap: break-word;
   font-size: 22px;
 }
 
@@ -61,8 +79,8 @@
 
 .my-container .wide-button {
   min-width: 125px;
-  width: 40%;
-  height: 30px;
+  width: 36%;
+  height: 36px;
   border-radius: 15px;
   display: flex;
   align-items: center;

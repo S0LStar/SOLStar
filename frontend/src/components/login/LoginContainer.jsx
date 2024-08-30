@@ -13,11 +13,9 @@ function LoginContainer() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAgency, setIsAgency] = useState(false); // 소속사 체크 상태
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 이메일과 비밀번호 유효성 검사
     if (email.length < 8 || password.length < 8) {
       alert('이메일과 비밀번호는 최소 8글자 이상이어야 합니다.');
       return;
@@ -32,9 +30,13 @@ function LoginContainer() {
         password: password,
       });
 
-      // 로그인 성공 시 accessToken과 refreshToken을 Redux에 저장
       const { accessToken, refreshToken } = response.data.data;
-      dispatch(setToken({ accessToken, refreshToken }));
+      dispatch(setToken({ accessToken, refreshToken, role }));
+
+      // 로컬 스토리지에 토큰 저장
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('role', role);
 
       alert('로그인 성공');
       navigate('/');
