@@ -129,7 +129,9 @@ public class WalletService {
         for (Funding funding : hostFundingList) {
 
             // 주최한 펀딩 중 account가 없다면 넘기기
-            if(funding.getAccount() == null) continue;
+            if(funding.getAccount().isEmpty()) {
+                continue;
+            }
 
             // API 요청에 필요한 공통 헤더를 설정
             CommonHeader commonHeader = CommonHeader.builder()
