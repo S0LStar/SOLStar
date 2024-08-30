@@ -4,7 +4,7 @@ import axios from 'axios';
 import store from '../redux/Redux'; // Redux store import
 import { clearToken, setToken } from '../redux/slices/authSlice';
 
-const API_LINK = 'http://localhost:8080/api';
+const API_LINK = import.meta.env.VITE_API_URL;
 
 const axiosInstance = axios.create({
   baseURL: API_LINK,
