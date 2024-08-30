@@ -104,6 +104,9 @@ function ZzimContainer() {
                   src={artist.profileImage || temp} // 기본 이미지 설정
                   alt={artist.name}
                   className="artist-image"
+                  onClick={() => {
+                    navigate(`/artist/${artist.artistId}`);
+                  }}
                 />
                 {artist.isLike ? (
                   <img
@@ -121,14 +124,26 @@ function ZzimContainer() {
                   />
                 )}
                 <div className="artist-text">
-                  <span className="artist-type">
+                  <span
+                    className="artist-type"
+                    onClick={() => {
+                      navigate(`/artist/${artist.artistId}`);
+                    }}
+                  >
                     {artist.type === 'MEMBER'
                       ? artist.group
                       : artist.type === 'GROUP'
                         ? '그룹'
                         : 'SOLO'}
                   </span>
-                  <span className="artist-name">{artist.name}</span>
+                  <span
+                    className="artist-name"
+                    onClick={() => {
+                      navigate(`/artist/${artist.artistId}`);
+                    }}
+                  >
+                    {artist.name}
+                  </span>
                 </div>
               </div>
             ))
