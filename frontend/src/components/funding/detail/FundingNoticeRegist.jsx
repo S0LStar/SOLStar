@@ -126,6 +126,7 @@ function FundingNoticeRegist() {
                   className="funding-regist-image-box"
                   onClick={handleImageUploadClick}
                 >
+                  {/* TODO: notice.contentImage ||  */}
                   <img
                     src={DefaultImage}
                     alt=""

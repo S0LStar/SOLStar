@@ -31,8 +31,7 @@ function MyArtistFunding() {
     <div className="artist-funding-detail">
       <div className="artist-funding-header">
         <BackButton />
-        {/* artist.profileImage ||  */}
-
+        {/* TODO: artist.profileImage ||  */}
         <img src={DefaultArtist} alt="" />
         <div className="artist-funding-info">
           {artist.type === 'GROUP' ? (

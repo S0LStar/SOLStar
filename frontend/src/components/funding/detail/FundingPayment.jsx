@@ -66,6 +66,7 @@ function FundingPayment({ artistName, artistProfileImage }) {
   return (
     <div className="funding-payment-container">
       <div className="funding-payment-balance">
+        {/* TODO: 이미지처리 */}
         <img src={DefaultImage} alt="" className="funding-payment-image" />
         <div>
           <div>{artistName} 펀딩 계좌 잔액</div>
