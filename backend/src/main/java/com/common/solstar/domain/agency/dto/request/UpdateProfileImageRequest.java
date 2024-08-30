@@ -1,4 +1,4 @@
-package com.common.solstar.domain.auth.dto.request;
+package com.common.solstar.domain.agency.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,12 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AgencySignupRequest {
+public class UpdateProfileImageRequest {
 
-    private String email;
-    private String password;
-    private String name;
-    private String phone;
     private String profileImage;
 
 }

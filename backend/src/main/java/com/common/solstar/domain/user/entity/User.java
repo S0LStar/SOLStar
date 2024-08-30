@@ -87,6 +87,17 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.introduction = null;
     }
 
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void deleteProfileImage(){
+        this.profileImage = null;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
