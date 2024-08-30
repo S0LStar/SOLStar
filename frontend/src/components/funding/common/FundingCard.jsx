@@ -39,11 +39,11 @@ function FundingCard({ funding }) {
             <span className="funding-card-amount">
               {funding.totalAmount.toLocaleString()}원
             </span>
-            {funding.remainDays ? (
+            {funding.status === 'PROCESSING' ? (
               <span className="funding-card-days-left">
                 {funding.remainDays}일 남음
               </span>
-            ) : funding.status === 'SUCCESS' ? (
+            ) : funding.status === 'SUCCESS' || funding.status === 'CLOSED' ? (
               <span className="funding-card-days-left">펀딩 성공</span>
             ) : (
               <span className="funding-card-days-left">펀딩 무산</span>
