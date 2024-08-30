@@ -6,7 +6,6 @@ import com.common.solstar.domain.board.dto.response.BoardResponseDto;
 import com.common.solstar.domain.board.model.service.BoardService;
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
-import com.common.solstar.domain.funding.dto.request.UseBudgetRequest;
 import com.common.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
@@ -217,23 +216,6 @@ public class FundingController {
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
                 .message("펀딩 정산 완료 성공")
-                .data(null)
-                .build();
-
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
-    }
-
-    // 펀딩 정산 후 주최자가 사용
-    @PostMapping("/use-money")
-    @Operation(summary = "펀딩 정산금 이체 (주최자 사용)")
-    public ResponseEntity<?> useMoney(@RequestHeader(value = "Authorization", required = false) String header,
-                                      @RequestBody UseBudgetRequest useBudgetRequest) {
-        String authEmail = jwtUtil.getLoginUser(header);
-        fundingService.useMoney(authEmail, useBudgetRequest);
-
-        ResponseDto<String> responseDto = ResponseDto.<String>builder()
-                .status(HttpStatus.CREATED.value())
-                .message("펀딩 정산금 이체 성공")
                 .data(null)
                 .build();
 

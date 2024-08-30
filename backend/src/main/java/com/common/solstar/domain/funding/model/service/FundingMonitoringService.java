@@ -54,9 +54,6 @@ public class FundingMonitoringService {
     @Value("${system.account.no}")
     private String systemAccountNo;
 
-    @Value(("${system.user.key}"))
-    private String systemUserKey;
-
     // 매일 자정에 실행되도록 설정
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
@@ -92,6 +89,7 @@ public class FundingMonitoringService {
 
                 // 펀딩의 계좌에 totalAmount 넣어주기 위해 request dto 생성
                 TransferTotalAmountRequest totalAmountRequest = TransferTotalAmountRequest.builder()
+                        .userKey(funding.getHost().getUserKey())
                         .accountNo(fundingAccount.getAccountNumber())
                         .totalAmount(funding.getTotalAmount())
                         .build();
@@ -139,6 +137,7 @@ public class FundingMonitoringService {
             // fundingJoin 하나하나 User를 꺼내서 user의 계좌에 amount 만큼 입금해줘야 함
             for (FundingJoin fundingJoin : fundingJoinList) {
                 TransferRefundRequest request = TransferRefundRequest.builder()
+                        .userKey(funding.getHost().getUserKey())
                         .fundingJoin(fundingJoin)
                         .build();
 
@@ -158,8 +157,8 @@ public class FundingMonitoringService {
         CommonHeader header = CommonHeader.builder()
                 .apiName("createDemandDepositAccount")
                 .apiServiceCode("createDemandDepositAccount")
+                .userKey(request.getUserKey())
                 .apiKey(apiKey)
-                .userKey(systemUserKey)
                 .build();
         header.setCommonHeader();
 
@@ -209,8 +208,8 @@ public class FundingMonitoringService {
         CommonHeader header = CommonHeader.builder()
                 .apiName("updateDemandDepositAccountTransfer")
                 .apiServiceCode("updateDemandDepositAccountTransfer")
+                .userKey(request.getUserKey())
                 .apiKey(apiKey)
-                .userKey(systemUserKey)
                 .build();
         header.setCommonHeader();
 
@@ -286,8 +285,8 @@ public class FundingMonitoringService {
         CommonHeader header = CommonHeader.builder()
                 .apiName("updateDemandDepositAccountTransfer")
                 .apiServiceCode("updateDemandDepositAccountTransfer")
+                .userKey(request.getUserKey())
                 .apiKey(apiKey)
-                .userKey(systemUserKey)
                 .build();
         header.setCommonHeader();
 

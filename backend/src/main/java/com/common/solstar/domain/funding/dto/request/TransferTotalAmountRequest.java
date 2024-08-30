@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransferTotalAmountRequest {
 
+    private String userKey;
     private String accountNo;
     private int totalAmount;
 }
