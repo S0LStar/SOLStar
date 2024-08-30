@@ -8,10 +8,3 @@
 .participantfunding-funding {
   margin-bottom: 20px;
 }
-
-.participantfunding-container .no-funding-message {
-  padding-top: 30vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}

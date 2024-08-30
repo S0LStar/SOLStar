@@ -6,7 +6,6 @@ import './FundingNoticeRegist.css';
 
 import DefaultImage from '../../../assets/funding/DefaultImage.png';
 import { useParams } from 'react-router-dom';
-import axiosInstance from '../../../util/AxiosInstance';
 
 function FundingNoticeRegist() {
   const { fundingId } = useParams();
@@ -21,7 +20,9 @@ function FundingNoticeRegist() {
 
   useEffect(() => {
     console.log(parseInt(fundingId));
-    const isFormComplete = Boolean(notice.title && notice.content);
+    const isFormComplete = Boolean(
+      notice.title && notice.contentImage && notice.content
+    );
 
     setRegistActive(isFormComplete);
 
@@ -54,7 +55,7 @@ function FundingNoticeRegist() {
     }
   };
 
-  // 공지 작성 함수
+  // 공지 작성
   const handleRegist = async () => {
     try {
       const noticeData = new FormData();
@@ -74,18 +75,20 @@ function FundingNoticeRegist() {
         noticeData.append('contentImage', fileData);
       }
 
-      // TODO: 공지 작성 API 연결
-      const response = await axiosInstance.post(
-        `/funding/notice/${fundingId}`,
-        noticeData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      // const response = await axios.post(
+      //   `/api/funding/notice/${fundingId}`,
+      //   noticeData,
+      //   {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //   }
+      // );
 
-      console.log(response);
+      // if (response.status === 200) {
+      //   alert('공지글이 성공적으로 등록되었습니다.');
+      //   // 성공 후 필요한 작업 (예: 페이지 이동)
+      // }
     } catch (error) {
       console.error('공지 작성 오류:', error);
       alert('공지글 등록 중 오류가 발생했습니다.');
