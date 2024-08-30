@@ -172,7 +172,7 @@ function MyContainer() {
             <div className="my-edit-button">
               <WideButton
                 onClick={() => {
-                  navigate(`/my/editprofile`);
+                  navigate(`/my`);
                 }}
                 isActive={true}
               >
