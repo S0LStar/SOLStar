@@ -48,6 +48,9 @@ public class WalletService {
     @Value("${ssafy.api.key}")
     private String apiKey;
 
+    @Value("${system.user.key}")
+    private String systemKey;
+
     // 나의 연동 계좌 조회
     public FindMyAccountReponse getMyWallet(String header) {
         String authEmail = jwtUtil.getLoginUser(header);
@@ -133,7 +136,7 @@ public class WalletService {
                     .apiName("inquireDemandDepositAccountBalance")
                     .apiServiceCode("inquireDemandDepositAccountBalance")
                     .apiKey(apiKey)
-                    .userKey(user.getUserKey())
+                    .userKey(systemKey)
                     .build();
             commonHeader.setCommonHeader();
 
@@ -209,7 +212,7 @@ public class WalletService {
                 .apiName("inquireTransactionHistoryList")
                 .apiServiceCode("inquireTransactionHistoryList")
                 .apiKey(apiKey)
-                .userKey(user.getUserKey())
+                .userKey(systemKey)
                 .build();
         commonHeader.setCommonHeader();
 
