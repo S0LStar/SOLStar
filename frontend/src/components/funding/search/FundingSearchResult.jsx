@@ -123,7 +123,7 @@ function FundingSearchResult() {
     setData((prevData) => {
       const updatedArtistList = prevData.artistList.map((artist) => {
         if (artist.artistId === artistId) {
-          return { ...artist, isLike: !artist.isLike };
+          return { ...artist, liked: !artist.liked };
         }
         return artist;
       });
@@ -171,7 +171,7 @@ function FundingSearchResult() {
           {data.artistList.map((artist) => (
             <div key={artist.artistId} className="artist-item">
               <img src={temp} alt={artist.name} className="artist-image" />
-              {artist.isLike ? (
+              {artist.liked ? (
                 <img
                   src={Zzim}
                   alt=""
