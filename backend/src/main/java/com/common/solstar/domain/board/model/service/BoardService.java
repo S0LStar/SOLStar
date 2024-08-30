@@ -11,9 +11,9 @@ import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +27,7 @@ public class BoardService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public void createBoard(int fundingId, BoardCreateRequestDto boardDto, String authEmail) {
 
         // 현재 로그인한 유저가 해당 펀딩의 host 인지 확인

@@ -67,6 +67,7 @@ public class FundingServiceImpl implements FundingService {
     private String systemAccountNo;
 
     @Override
+    @Transactional
     public void createFunding(FundingCreateRequestDto fundingDto, String authEmail) {
 
         Artist artist = artistRepository.findById(fundingDto.getArtistId())
