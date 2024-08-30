@@ -10,32 +10,34 @@
 }
 
 .wallet-bg-image {
-  width: 80vw;
+  width: 85vw;
+  height: 100px;
+  border-radius: 16px;
 }
 
 .wallet-icon {
   position: absolute;
-  margin-left: 8vw;
-  margin-top: 10vw;
+  margin-left: 20px;
+  margin-top: 20px;
   width: 20px;
   height: 20px;
 }
 
 .wallet-owner {
   position: absolute;
-  margin-left: 15vw;
-  margin-top: 10vw;
+  margin-left: 50px;
+  margin-top: 20px;
   color: white;
   font-size: 14px;
 }
 
 .wallet-balance {
   position: absolute;
-  margin-left: 15vw;
-  margin-top: 19vw;
+  margin-left: 50px;
+  margin-top: 45px;
   color: white;
   font-size: 20px;
-  font-weight: bolder;
+  font-weight: 500;
   text-align: right;
   width: auto;
 }

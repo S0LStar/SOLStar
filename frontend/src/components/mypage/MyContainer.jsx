@@ -127,13 +127,19 @@ function MyContainer() {
     try {
       // 서버에 로그아웃 요청
       console.log(1);
-      await AxiosInstance.post('/user/logout');
+      const response = await AxiosInstance.post('/user/logout');
 
       // Redux 상태 초기화
-      dispatch(clearToken());
+      if (response.status === 200) {
+        dispatch(clearToken());
 
-      // 로그아웃 후 로그인 페이지로 이동
-      navigate('/login');
+        // localStorage에서 accessToken과 role 삭제
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('role');
+
+        // 로그아웃 후 로그인 페이지로 이동
+        navigate('/login');
+      }
     } catch (error) {
       console.error('로그아웃 실패:', error);
       alert('로그아웃 실패');
