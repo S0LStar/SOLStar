@@ -32,9 +32,9 @@ function LoginContainer() {
         password: password,
       });
 
-      // 로그인 성공 시 accessToken과 refreshToken을 Redux에 저장
+      // 로그인 성공 시 accessToken, refreshToken, and role을 Redux에 저장
       const { accessToken, refreshToken } = response.data.data;
-      dispatch(setToken({ accessToken, refreshToken }));
+      dispatch(setToken({ accessToken, refreshToken, role })); // Include role
 
       alert('로그인 성공');
       navigate('/');
