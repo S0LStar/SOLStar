@@ -110,7 +110,9 @@ function FundingSearchResult() {
     }
   };
 
-  const toggleZzim = (artistId) => {
+  const toggleZzim = (artistId, event) => {
+    event.stopPropagation();
+
     // 찜/찜 해제 API 요청
     const postLike = async () => {
       const response = await axiosInstance.post(`/artist/like/${artistId}`);
@@ -169,21 +171,27 @@ function FundingSearchResult() {
         </div>
         <div className="artist-list">
           {data.artistList.map((artist) => (
-            <div key={artist.artistId} className="artist-item">
+            <div
+              key={artist.artistId}
+              className="artist-item"
+              onClick={() => {
+                navigate(`/artist/${artist.artistId}`);
+              }}
+            >
               <img src={temp} alt={artist.name} className="artist-image" />
               {artist.liked ? (
                 <img
                   src={Zzim}
                   alt=""
                   className="artist-item-zzim"
-                  onClick={() => toggleZzim(artist.artistId)}
+                  onClick={(e) => toggleZzim(artist.artistId, e)}
                 />
               ) : (
                 <img
                   src={NoZzim}
                   alt=""
                   className="artist-item-zzim"
-                  onClick={() => toggleZzim(artist.artistId)}
+                  onClick={(e) => toggleZzim(artist.artistId, e)}
                 />
               )}
               <span className="artist-name">{artist.name}</span>
