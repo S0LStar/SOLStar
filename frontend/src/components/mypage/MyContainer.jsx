@@ -126,6 +126,7 @@ function MyContainer() {
   const handleLogout = async () => {
     try {
       // 서버에 로그아웃 요청
+      console.log(1);
       await AxiosInstance.post('/user/logout');
 
       // Redux 상태 초기화
@@ -178,7 +179,7 @@ function MyContainer() {
               >
                 내 정보 보기
               </WideButton>
-              <WideButton onClick={handleLogout} isActive={false}>
+              <WideButton onClick={handleLogout} isActive={true}>
                 로그아웃
               </WideButton>
             </div>
@@ -261,7 +262,7 @@ function MyContainer() {
               >
                 내 정보 보기
               </WideButton>
-              <WideButton onClick={handleLogout} isActive={false}>
+              <WideButton onClick={handleLogout} isActive={true}>
                 로그아웃
               </WideButton>
             </div>
