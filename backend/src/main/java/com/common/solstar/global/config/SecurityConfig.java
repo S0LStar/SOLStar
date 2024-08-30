@@ -44,8 +44,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/**", "/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
-//                        .anyRequest().permitAll()
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
 
                 // 세션 설정
@@ -72,7 +72,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns((List.of("http://localhost:5173")));
+        configuration.setAllowedOriginPatterns((List.of("http://localhost:5173", "http://43.202.244.234:3000", "http://www.solstar.kr")));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));

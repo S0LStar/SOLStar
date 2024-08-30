@@ -42,8 +42,24 @@ public class Agency implements UserDetails {
     @Column(name = "is_delete", nullable = false)
     private boolean isDelete;
 
+    @Column(name = "profile_image", nullable = true)
+    private String profileImage;
+
+
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void deleteProfileImage(){
+        this.profileImage = null;
+    }
+
+    public void updateName(String name){
+        this.name = name;
     }
 
     @Override

@@ -48,6 +48,9 @@ public class WalletService {
     @Value("${ssafy.api.key}")
     private String apiKey;
 
+    @Value("${system.user.key}")
+    private String systemKey;
+
     // 나의 연동 계좌 조회
     public FindMyAccountReponse getMyWallet(String header) {
         String authEmail = jwtUtil.getLoginUser(header);
@@ -124,12 +127,18 @@ public class WalletService {
 
         // 각 펀딩에 대해 API 호출을 통해 계좌 정보를 가져옴
         for (Funding funding : hostFundingList) {
+
+            // 주최한 펀딩 중 account가 없다면 넘기기
+            if(funding.getAccount().isEmpty()) {
+                continue;
+            }
+
             // API 요청에 필요한 공통 헤더를 설정
             CommonHeader commonHeader = CommonHeader.builder()
                     .apiName("inquireDemandDepositAccountBalance")
                     .apiServiceCode("inquireDemandDepositAccountBalance")
                     .apiKey(apiKey)
-                    .userKey(user.getUserKey())
+                    .userKey(systemKey)
                     .build();
             commonHeader.setCommonHeader();
 
@@ -205,7 +214,7 @@ public class WalletService {
                 .apiName("inquireTransactionHistoryList")
                 .apiServiceCode("inquireTransactionHistoryList")
                 .apiKey(apiKey)
-                .userKey(user.getUserKey())
+                .userKey(systemKey)
                 .build();
         commonHeader.setCommonHeader();
 

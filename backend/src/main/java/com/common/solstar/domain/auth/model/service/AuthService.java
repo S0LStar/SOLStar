@@ -4,11 +4,9 @@ import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.agency.entity.Agency;
 import com.common.solstar.domain.agency.model.repository.AgencyRepository;
+import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.auth.dto.request.*;
-import com.common.solstar.domain.auth.dto.response.CheckAuthCodeResponse;
-import com.common.solstar.domain.auth.dto.response.LoginResponse;
-import com.common.solstar.domain.auth.dto.response.RefreshResponse;
-import com.common.solstar.domain.auth.dto.response.UserAccountValidateResponse;
+import com.common.solstar.domain.auth.dto.response.*;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.api.exception.WebClientExceptionHandler;
@@ -55,6 +53,7 @@ public class AuthService {
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final WebClientExceptionHandler webClientExceptionHandler;
+    private final ArtistRepository artistRepository;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -75,7 +74,7 @@ public class AuthService {
         }
 
         // 사용 불가능한 닉네임일 경우 (유저, 소속사에서 겹치는거 제외. 아티스트 이름이랑도 겹치는거 추가 구현 예정)
-        if(userRepository.existsByNickname(nickname) || agencyRepository.existsByName(nickname)){
+        if(userRepository.existsByNickname(nickname) || agencyRepository.existsByName(nickname) || artistRepository.existsByName(nickname)){
             throw new ExceptionResponse(CustomException.DUPLICATED_NAME_EXCEPTION);
         }
 
@@ -94,7 +93,7 @@ public class AuthService {
                 .phone(signupRequest.getPhone())
                 .profileImage(signupRequest.getProfileImage())
                 .account(account)
-                .userKey(signupRequest.getUserKey()) // userKey 받아오는 로직 수정필요
+                .userKey(signupRequest.getUserKey())
                 .build();
 
         userRepository.save(user);
@@ -330,14 +329,42 @@ public class AuthService {
             throw new ExceptionResponse(CustomException.DUPLICATED_ID_EXCEPTION);
         }
 
+        // 이미 가입된 이름이라면 가입 불가능
+        if(agencyRepository.existsByName(request.getName())){
+            throw new ExceptionResponse(CustomException.DUPLICATED_NAME_EXCEPTION);
+        }
+
         Agency agency = Agency.builder()
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone())
                 .name(request.getName())
+                .profileImage(request.getProfileImage())
                 .build();
 
         agencyRepository.save(agency);
 
+    }
+    
+    // 이메일 중복검사
+    public CheckDuplicateResponse checkEmail(String email) {
+        // 이미 가입된 이메일이라면 가입 불가능
+        if(userRepository.existsByEmail(email) || agencyRepository.existsByEmail(email)) {
+            return CheckDuplicateResponse.builder()
+                    .isDuplicate(true)
+                    .build();
+        }
+        return CheckDuplicateResponse.builder().isDuplicate(false).build();
+    }
+
+    // 닉네임 중복검사
+    public CheckDuplicateResponse checkNickname(String nickname) {
+        // 사용 불가능한 닉네임일 경우 (유저, 소속사에서 겹치는거 제외. 아티스트 이름이랑도 겹치는거 추가 구현 예정)
+        if(userRepository.existsByNickname(nickname) || agencyRepository.existsByName(nickname) || artistRepository.existsByName(nickname)){
+            return CheckDuplicateResponse.builder()
+                    .isDuplicate(true)
+                    .build();
+        }
+        return CheckDuplicateResponse.builder().isDuplicate(false).build();
     }
 }

@@ -9,12 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AgencySignupRequest {
+public class EmailCheckDuplicateRequest {
 
     private String email;
-    private String password;
-    private String name;
-    private String phone;
-    private String profileImage;
 
 }
