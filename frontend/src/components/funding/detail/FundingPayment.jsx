@@ -16,6 +16,11 @@ function FundingPayment({ artistName, artistProfileImage }) {
     accountBalance: '',
     transactionHistory: [],
   });
+
+  const [filteredPayment, setFilteredPayment] = useState({
+    accountBalance: '',
+    transactionHistory: [],
+  });
   const { fundingId } = useParams();
 
   // 데이터 페칭

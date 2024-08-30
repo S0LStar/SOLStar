@@ -5,44 +5,28 @@ import com.common.solstar.domain.funding.entity.QFunding;
 import com.common.solstar.domain.fundingJoin.entity.QFundingJoin;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor
 public class FundingJoinRepositorySupport {
 
+    @Autowired
     private JPAQueryFactory jpaQueryFactory;
 
-//    public List<UserJoinFundingReponse> findFundingByUserEmail(int id) {
-//        QFundingJoin fundingJoin = QFundingJoin.fundingJoin;
-//        QFunding funding = QFunding.funding;
-//
-//        return jpaQueryFactory
-//                .select(Projections.constructor(UserJoinFundingReponse.class,
-//                        funding.id,
-//                        funding.artist.name,
-//                        funding.title,
-//                        funding.status,
-//                        funding.totalAmount,
-//                        funding.goalAmount,
-//                        funding.type,
-//                        funding.fundingImage))
-//                .from(fundingJoin)
-//                .join(fundingJoin.funding, funding)
-//                .where(fundingJoin.user.id.eq(id))
-//                .fetch();
-//    }
-
-    public List<Funding> findFundingByUserId(int id){
-        QFunding funding = QFunding.funding;
+    // 유저가 특정 펀딩에 참여자인지 아닌지 확인
+    public boolean isJoinFunding(int fundingId, int userId){
         QFundingJoin fundingJoin = QFundingJoin.fundingJoin;
-        return jpaQueryFactory
-                .select(funding)
+        Integer count = Math.toIntExact(jpaQueryFactory
+                .select(fundingJoin.count())
                 .from(fundingJoin)
-                .where(fundingJoin.user.id.eq(id))
-                .fetch();
+                .where(fundingJoin.funding.id.eq(fundingId)
+                        .and(fundingJoin.user.id.eq(userId)))
+                .fetchOne());
+        if(count==0) return false;
+        return true;
     }
 
 
