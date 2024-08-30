@@ -41,26 +41,24 @@ function MyArtistFunding() {
               <span className="artist-funding-artist-name">{artist.name}</span>
             </div>
           ) : (
-            <div className="artist-funding-artist-name">
+            <div>
               아티스트{' '}
               <span className="artist-funding-artist-name">{artist.name}</span>
             </div>
           )}
-          <div className="artist-funding-agency"></div>
         </div>
-
-        <div className="artist-funding-list">
-          {artist.fundingList && artist.fundingList.length > 0 ? (
-            artist.fundingList.map((funding) => (
-              <FundingCard key={funding.fundingId} funding={funding} />
-            ))
-          ) : (
-            <Loading>
-              <span style={{ color: '#0046ff' }}>아티스트 펀딩 내역</span>을
-              <br /> 가져오는 중이에요
-            </Loading>
-          )}
-        </div>
+      </div>
+      <div className="artist-funding-list">
+        {artist.fundingList && artist.fundingList.length > 0 ? (
+          artist.fundingList.map((funding) => (
+            <FundingCard key={funding.fundingId} funding={funding} />
+          ))
+        ) : (
+          <Loading>
+            <span style={{ color: '#0046ff' }}>아티스트 펀딩 내역</span>을
+            <br /> 가져오는 중이에요
+          </Loading>
+        )}
       </div>
     </div>
   );

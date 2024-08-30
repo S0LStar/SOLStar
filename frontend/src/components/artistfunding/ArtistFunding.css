@@ -2,10 +2,34 @@
   padding: 16px;
 }
 
+.artist-funding-header {
+  display: flex;
+  padding: 15px;
+  align-items: start;
+  border-bottom: 0.5px solid #e6e4e4;
+}
+
+.artist-funding-header img:first-child {
+  margin-top: 10px;
+}
+
 .artist-funding-header img:nth-child(2) {
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  
+  margin-left: 20px;
+}
 
+.artist-funding-info {
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
+.artist-funding-artist-name {
+  color: #0046ff;
+  font-weight: 800;
+}
+
+.artist-funding-list {
+  margin-top: 20px;
 }

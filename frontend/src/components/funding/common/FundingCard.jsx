@@ -33,8 +33,10 @@ function FundingCard({ funding }) {
         )}
       </div>
       <div className="funding-card-info">
-        <span className="funding-card-artist">{funding.artistName}</span>
-        <h3 className="funding-card-title">{funding.title}</h3>
+        <div>
+          <span className="funding-card-artist">{funding.artistName}</span>
+          <h3 className="funding-card-title">{funding.title}</h3>
+        </div>
         <div
           className={`funding-card-details 
             ${
