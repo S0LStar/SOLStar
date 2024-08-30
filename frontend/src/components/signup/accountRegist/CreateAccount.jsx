@@ -15,7 +15,7 @@ function CreateAccount() {
     email: '',
     name: '',
     nickname: '',
-    birthdate: '',
+    birthDate: '',
     phone: '',
     profileImage: '',
     password: '',
@@ -35,7 +35,7 @@ function CreateAccount() {
       account.email &&
         account.name &&
         account.nickname &&
-        account.birthdate &&
+        account.birthDate &&
         account.phone &&
         account.password &&
         account.passwordConfirm &&
@@ -233,8 +233,8 @@ function CreateAccount() {
           <div className="create-form-field">
             <input
               type="date"
-              id="birthdate"
-              value={account.birthdate}
+              id="birthDate"
+              value={account.birthDate}
               onChange={handleChange}
               placeholder="생년월일"
             />

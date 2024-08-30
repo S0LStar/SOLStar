@@ -79,8 +79,8 @@ function ResetPassword() {
           navigate('/signup/created', { state: { account } });
         } else {
           // 실패 시 오류 메시지 표시하고 /login으로 이동
-          alert('비밀번호 재설정에 실패했습니다. 다시 시도해 주세요.');
-          navigate('/login');
+          alert('회원가입에 실패하셨습니다. 다시 시도해 주세요.');
+          navigate('/signup');
         }
       } catch (error) {
         console.error('비밀번호 재설정 요청 실패:', error);
