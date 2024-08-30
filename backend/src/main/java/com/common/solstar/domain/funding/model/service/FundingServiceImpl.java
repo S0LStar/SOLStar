@@ -322,7 +322,7 @@ public class FundingServiceImpl implements FundingService {
     }
     
     // 펀딩 참여 시 시스템 계좌에 이체
-    public TransferJoinResponse transferFunding(TransferJoinRequest request) {
+    private TransferJoinResponse transferFunding(TransferJoinRequest request) {
 
         String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
 
@@ -490,8 +490,8 @@ public class FundingServiceImpl implements FundingService {
         CommonHeader header = CommonHeader.builder()
                 .apiName("updateDemandDepositAccountTransfer")
                 .apiServiceCode("updateDemandDepositAccountTransfer")
-                .userKey(request.getUserKey())
                 .apiKey(apiKey)
+                .userKey(systemUserKey)
                 .build();
         header.setCommonHeader();
 
@@ -562,6 +562,7 @@ public class FundingServiceImpl implements FundingService {
         }
     }
 
+    // 펀딩 사용처에 이체
     public boolean transferToStore(UseBudgetRequest request) {
 
         String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
@@ -569,8 +570,8 @@ public class FundingServiceImpl implements FundingService {
         CommonHeader header = CommonHeader.builder()
                 .apiName("updateDemandDepositAccountTransfer")
                 .apiServiceCode("updateDemandDepositAccountTransfer")
-                .userKey(systemUserKey)
                 .apiKey(apiKey)
+                .userKey(systemUserKey)
                 .build();
         header.setCommonHeader();
 
