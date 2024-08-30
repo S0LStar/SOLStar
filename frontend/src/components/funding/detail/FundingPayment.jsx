@@ -6,10 +6,13 @@ import './FundingPayment.css';
 import DefaultImage from '../../../assets/character/Sol.png';
 import axiosInstance from '../../../util/AxiosInstance';
 import Error from '../../common/Error';
+import Loading from '../../common/Loading';
 
 function FundingPayment({ artistName, artistProfileImage }) {
   const [error, setError] = useState(false);
-  const [payment, setPayment] = useState({
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+
+  const [filteredPayment, setFilteredPayment] = useState({
     accountBalance: '',
     transactionHistory: [],
   });
@@ -23,17 +26,19 @@ function FundingPayment({ artistName, artistProfileImage }) {
   // 데이터 페칭
   useEffect(() => {
     const fetchPayment = async () => {
+      setLoading(true);
       try {
         const response = await axiosInstance.post(
           `/wallet/funding/${fundingId}`
         );
-        setPayment(response.data.data);
-        console.log(response.data);
 
-        if (payment.length > 0) {
+        const paymentData = response.data.data;
+        console.log(paymentData);
+
+        if (paymentData.length > 0) {
           const filteredFundingPayment = {
-            accountBalance: payment[0]?.transactionAfterBalance,
-            transactionHistory: payment.map((history) => {
+            accountBalance: paymentData[0]?.transactionAfterBalance,
+            transactionHistory: paymentData.map((history) => {
               const formattedDateTime = `${history.transactionDateTime.slice(2)}`;
 
               return {
@@ -51,11 +56,17 @@ function FundingPayment({ artistName, artistProfileImage }) {
       } catch (error) {
         console.error(error);
         setError(true);
+      } finally {
+        setLoading(false); // 데이터 요청 완료 후 로딩 상태를 false로 설정
       }
     };
 
     fetchPayment();
   }, [fundingId]);
+
+  if (loading) {
+    return <Loading />; // 로딩 컴포넌트 또는 텍스트
+  }
 
   return (
     <div className="funding-payment-container">

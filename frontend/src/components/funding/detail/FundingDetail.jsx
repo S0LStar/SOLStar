@@ -50,8 +50,16 @@ function FundingDetail() {
     setJoinModalOpen(false);
   };
 
+  // 정산 종료 요청
   const handleFinish = () => {
-    // TODO: 정산 종료 API 요청
+    // 정산 종료 API 요청
+    const finishFunding = async () => {
+      const response = await axiosInstance.patch(`/funding/done/${fundingId}`);
+
+      console.log(response);
+    };
+
+    finishFunding();
   };
 
   return (
