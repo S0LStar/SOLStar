@@ -21,6 +21,7 @@ function AccountVerification() {
   useEffect(() => {
     const isFormComplete = account.verificationCode.length === 4;
     setNextActive(isFormComplete);
+    console.log(account);
   }, [account.verificationCode]);
 
   // 입력 시 변경
@@ -57,7 +58,7 @@ function AccountVerification() {
         </div>
 
         <div className="accountverify-bank-info">
-          {account.bankName} {account.accountNumber}
+          {account.bankName} {account.accountNo}
         </div>
 
         <div className="accountverify-info-box">
