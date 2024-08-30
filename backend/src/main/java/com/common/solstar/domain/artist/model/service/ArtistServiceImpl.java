@@ -16,6 +16,7 @@ import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -106,6 +107,7 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
+    @Transactional
     public void like(int artistId, String authEmail) {
         // 로그인한 유저 불러오기
         User loginUser = userRepository.findByEmail(authEmail)
