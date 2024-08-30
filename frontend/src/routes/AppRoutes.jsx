@@ -4,6 +4,7 @@ import PrivateRoute from './PrivateRoute'; // PrivateRoute import
 // Main
 import MainPage from '../pages/MainPage';
 import MainContainer from '../components/main/MainContainer';
+import MainSearch from '../components/main/MainSearch';
 import PopularFundingContainer from '../components/main/popular/PopularFundingContainer';
 import MyArtistFundingContainer from '../components/main/myartist/MyArtistFundingContainer';
 
@@ -19,25 +20,31 @@ import FundingNoticeRegist from '../components/funding/detail/FundingNoticeRegis
 // Artist
 import ArtistFunding from '../components/artistfunding/ArtistFunding.jsx';
 
+// Wallet
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
 import FundingWalletDetail from '../components/wallet/FundingWalletDetail';
+
+// Zzim
 import ZzimPage from '../pages/ZzimPage';
 import ZzimContainer from '../components/zzim/ZzimContainer';
+
+// MyPage
 import MyPage from '../pages/MyPage';
 import MyPageContainer from '../components/mypage/MyContainer';
 import ViewProfile from '../components/mypage/ViewProfile.jsx';
 import ParticipantFunding from '../components/mypage/ParticipantFunding';
 import CreatedFunding from '../components/mypage/CreatedFunding';
-import AgencyMyPageContainer from '../components/mypage/AgencyMyPageContainer';
 import RequestFunding from '../components/mypage/RequestFunding';
 import MyArtist from '../components/mypage/MyArtist';
 import MyArtistFunding from '../components/mypage/MyArtistFunding';
+
+// LoginPage
 import LoginPage from '../pages/LoginPage';
 import LoginContainer from '../components/login/LoginContainer.jsx';
-import MainSearch from '../components/main/MainSearch';
+
+// SignUp
 import SignUpPage from '../pages/SignUpPage';
-import SignUpContainer from '../components/signup/SignUpContainer';
 import TermOfService from '../components/signup/accountRegist/TermOfService';
 import CreateAccount from '../components/signup/accountRegist/CreateAccount';
 import AccountRegistration from '../components/signup/accountRegist/AccountRegistration';
@@ -111,10 +118,7 @@ function AppRoutes() {
                   element={<ParticipantFunding />}
                 />
                 <Route path="createdfunding" element={<CreatedFunding />} />
-              </Route>
-
-              <Route path="/agencymy" element={<MyPage />}>
-                <Route index element={<AgencyMyPageContainer />} />
+                {/* 아래는 소속사 */}
                 <Route path="request" element={<RequestFunding />} />
                 <Route path="myartist" element={<MyArtist />} />
                 <Route path="myartistfunding" element={<MyArtistFunding />} />

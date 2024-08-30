@@ -126,6 +126,7 @@ function MyContainer() {
   const handleLogout = async () => {
     try {
       // 서버에 로그아웃 요청
+      console.log(1);
       await AxiosInstance.post('/user/logout');
 
       // Redux 상태 초기화
@@ -178,7 +179,7 @@ function MyContainer() {
               >
                 내 정보 보기
               </WideButton>
-              <WideButton onClick={handleLogout} isActive={false}>
+              <WideButton onClick={handleLogout} isActive={true}>
                 로그아웃
               </WideButton>
             </div>
@@ -189,7 +190,7 @@ function MyContainer() {
                 <div
                   className="my-funding-context"
                   onClick={() => {
-                    navigate(`/agencymy/request`);
+                    navigate(`/my/request`);
                   }}
                 >
                   인증 펀딩 요청
@@ -198,7 +199,7 @@ function MyContainer() {
                 <div
                   className="my-funding-context"
                   onClick={() => {
-                    navigate(`/agencymy/myartist`);
+                    navigate(`/my/myartist`);
                   }}
                 >
                   소속 아티스트 <img src={RightVector} alt="" />
@@ -206,7 +207,7 @@ function MyContainer() {
                 <div
                   className="my-funding-context"
                   onClick={() => {
-                    navigate(`/agencymy/myartistfunding`);
+                    navigate(`/my/myartistfunding`);
                   }}
                 >
                   소속 아티스트 펀딩 <img src={RightVector} alt="" />
@@ -261,7 +262,7 @@ function MyContainer() {
               >
                 내 정보 보기
               </WideButton>
-              <WideButton onClick={handleLogout} isActive={false}>
+              <WideButton onClick={handleLogout} isActive={true}>
                 로그아웃
               </WideButton>
             </div>
