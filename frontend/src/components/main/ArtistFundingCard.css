@@ -1,10 +1,10 @@
 .artist-funding-card {
-  width: 120px;
+  width: 110px;
 }
 
 .artist-funding-img-container {
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   position: relative;
   margin-bottom: 5px;
 }
@@ -34,7 +34,7 @@
 }
 
 .artist-funding-title {
-  width: 120px;
+  width: 110px;
   word-wrap: break-word;
   white-space: normal;
   font-size: 14px;
