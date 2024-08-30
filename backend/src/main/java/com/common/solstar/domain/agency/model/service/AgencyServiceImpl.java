@@ -1,5 +1,8 @@
 package com.common.solstar.domain.agency.model.service;
 
+import com.common.solstar.domain.agency.dto.request.UpdateNameRequest;
+import com.common.solstar.domain.agency.dto.request.UpdateProfileImageRequest;
+import com.common.solstar.domain.agency.dto.response.AgencyDetailResponse;
 import com.common.solstar.domain.agency.entity.Agency;
 import com.common.solstar.domain.agency.model.repository.AgencyRepository;
 import com.common.solstar.domain.funding.dto.response.FundingAgencyResponseDto;
@@ -7,6 +10,7 @@ import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
 import com.common.solstar.domain.fundingAgency.entity.FundingAgency;
 import com.common.solstar.domain.fundingAgency.model.repository.FundingAgencyRepository;
+import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
 import jakarta.transaction.Transactional;
@@ -96,6 +100,63 @@ public class AgencyServiceImpl implements AgencyService {
         } else {
             throw new ExceptionResponse(CustomException.ALREADY_ACCEPT_FUNDING_EXCEPTION);
         }
+    }
+    
+    // 프로필 이미지 수정
+    @Override
+    @Transactional
+    public void updateProfileImage(String authEmail, UpdateProfileImageRequest request) {
+        if(authEmail == null) {
+            throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
+        }
+
+        Agency agency = agencyRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
+
+        if(request.getProfileImage() == null) {
+            agency.deleteProfileImage();
+        }
+        else agency.updateProfileImage(request.getProfileImage());
+        agencyRepository.save(agency);
+    }
+
+    // 이름 수정
+    @Override
+    public void updateName(String authEmail, UpdateNameRequest request) {
+
+        if(authEmail == null) {
+            throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
+        }
+
+        Agency agency = agencyRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
+
+        // 이미 가입된 이름이라면 가입 불가능
+        if(agencyRepository.existsByName(request.getName())){
+            throw new ExceptionResponse(CustomException.DUPLICATED_NAME_EXCEPTION);
+        }
+
+        agency.updateName(request.getName());
+        agencyRepository.save(agency);
+
+    }
+
+    // 소속사 정보 조회
+    @Override
+    public AgencyDetailResponse getAgencyDetail(String authEmail) {
+        if(authEmail == null) {
+            throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
+        }
+
+        Agency agency = agencyRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
+
+        return AgencyDetailResponse.builder()
+                .profileImage(agency.getProfileImage())
+                .name(agency.getName())
+                .phone(agency.getPhone())
+                .email(agency.getEmail())
+                .build();
     }
 
 }
