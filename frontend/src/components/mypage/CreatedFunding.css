@@ -8,3 +8,10 @@
 .createdfunding-funding {
   margin-bottom: 20px;
 }
+
+.createdfunding-container .no-funding-message {
+  padding-top: 30vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
