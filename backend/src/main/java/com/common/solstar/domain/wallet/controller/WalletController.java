@@ -49,7 +49,7 @@ public class WalletController {
     }
 
     @Operation(summary = "특정 펀딩의 계좌 거래 내역 조회")
-    @PostMapping("/funding/{fundingId}")
+    @GetMapping("/funding/{fundingId}")
     public ResponseEntity<ResponseDto<List<FundingTransactionHistoryResponse>>> getFundingTransactionHistory(@RequestHeader(value = "Authorization", required = false) String header,
                                                                                                              @PathVariable("fundingId") int fundingId){
         List<FundingTransactionHistoryResponse> result = walletService.getFundingTransactionHistory(header, fundingId);
