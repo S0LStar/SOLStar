@@ -11,6 +11,7 @@ import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.common.solstar.domain.funding.model.service.FundingService;
 import com.common.solstar.domain.fundingJoin.dto.request.FundingJoinCreateRequestDto;
+import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,13 +31,15 @@ public class FundingController {
 
     private final FundingService fundingService;
     private final BoardService boardService;
+    private final JwtUtil jwtUtil;
 
     // 펀딩 생성
     @PostMapping
     @Operation(summary = "펀딩 생성")
-    public ResponseEntity<?> createFunding(@RequestBody FundingCreateRequestDto fundingDto) {
-        System.out.println("컨트롤러 들어옴");
-        fundingService.createFunding(fundingDto);
+    public ResponseEntity<?> createFunding(@RequestHeader(value = "Authorization", required = false) String header,
+                                           @RequestBody FundingCreateRequestDto fundingDto) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        fundingService.createFunding(fundingDto, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
@@ -50,8 +53,10 @@ public class FundingController {
     // 펀딩 수정
     @PatchMapping("/{fundingId}")
     @Operation(summary = "펀딩 수정")
-    public ResponseEntity<?> updateFunding(@PathVariable("fundingId") int fundingId, @RequestBody FundingUpdateRequestDto fundingDto) {
-        fundingService.updateFunding(fundingId, fundingDto);
+    public ResponseEntity<?> updateFunding(@RequestHeader(value = "Authorization", required = false) String header,
+                                           @PathVariable("fundingId") int fundingId, @RequestBody FundingUpdateRequestDto fundingDto) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        fundingService.updateFunding(fundingId, fundingDto, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
@@ -65,8 +70,10 @@ public class FundingController {
     // 펀딩 삭제
     @DeleteMapping("/{fundingId}")
     @Operation(summary = "펀딩 삭제")
-    public ResponseEntity<?> deleteFunding(@PathVariable("fundingId") int fundingId) {
-        fundingService.deleteFunding(fundingId);
+    public ResponseEntity<?> deleteFunding(@RequestHeader(value = "Authorization", required = false) String header,
+                                           @PathVariable("fundingId") int fundingId) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        fundingService.deleteFunding(fundingId, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.OK.value())
@@ -80,8 +87,10 @@ public class FundingController {
     // 펀딩 상세 정보 조회
     @GetMapping("/{fundingId}")
     @Operation(summary = "펀딩 상세 정보 조회")
-    public ResponseEntity<?> getFundingInfo(@PathVariable("fundingId") int fundingId) {
-        FundingDetailResponseDto selectedFunding = fundingService.getFundingById(fundingId);
+    public ResponseEntity<?> getFundingInfo(@RequestHeader(value = "Authorization", required = false) String header,
+                                            @PathVariable("fundingId") int fundingId) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        FundingDetailResponseDto selectedFunding = fundingService.getFundingById(fundingId, authEmail);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
@@ -95,8 +104,10 @@ public class FundingController {
     // 펀딩 내용 조회
     @GetMapping("/content/{fundingId}")
     @Operation(summary = "펀딩 내용 조회")
-    public ResponseEntity<?> getFundingContent(@PathVariable("fundingId") int fundingId) {
-        FundingContentResponseDto selectedFunding = fundingService.getFundingContent(fundingId);
+    public ResponseEntity<?> getFundingContent(@RequestHeader(value = "Authorization", required = false) String header,
+                                               @PathVariable("fundingId") int fundingId) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        FundingContentResponseDto selectedFunding = fundingService.getFundingContent(fundingId, authEmail);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
@@ -110,8 +121,11 @@ public class FundingController {
     // 펀딩 공지 작성하기
     @PostMapping("/notice/{fundingId}")
     @Operation(summary = "펀딩 공지 작성")
-    public ResponseEntity<?> createBoard(@PathVariable("fundingId") int fundingId, @RequestBody BoardCreateRequestDto boardDto) {
-        boardService.createBoard(fundingId, boardDto);
+    public ResponseEntity<?> createBoard(@RequestHeader(value = "Authorization", required = false) String header,
+                                         @PathVariable("fundingId") int fundingId,
+                                         @RequestBody BoardCreateRequestDto boardDto) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        boardService.createBoard(fundingId, boardDto, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
@@ -125,8 +139,10 @@ public class FundingController {
     // 펀딩 공지사항 조회
     @GetMapping("/notice/{fundingId}")
     @Operation(summary = "펀딩 공지사항 조회")
-    public ResponseEntity<?> getBoardList(@PathVariable("fundingId") int fundingId) {
-        List<BoardResponseDto> boardList = boardService.getBoardList(fundingId);
+    public ResponseEntity<?> getBoardList(@RequestHeader(value = "Authorization", required = false) String header,
+                                          @PathVariable("fundingId") int fundingId) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        List<BoardResponseDto> boardList = boardService.getBoardList(fundingId, authEmail);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
@@ -140,8 +156,11 @@ public class FundingController {
     // 펀딩 공지사항 수정
     @PatchMapping("/notice/{boardId}")
     @Operation(summary = "펀딩 공지사항 수정")
-    public ResponseEntity<?> updateBoard(@PathVariable("boardId") int boardId, @RequestBody BoardUpdateRequestDto boardDto) {
-        boardService.updateBoard(boardId, boardDto);
+    public ResponseEntity<?> updateBoard(@RequestHeader(value = "Authorization", required = false) String header,
+                                         @PathVariable("boardId") int boardId,
+                                         @RequestBody BoardUpdateRequestDto boardDto) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        boardService.updateBoard(boardId, boardDto, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
@@ -155,8 +174,10 @@ public class FundingController {
     // 펀딩 공지사항 삭제
     @DeleteMapping("/notice/{boardId}")
     @Operation(summary = "펀딩 공지사항 삭제")
-    public ResponseEntity<?> deleteBoard(@PathVariable("boardId") int boardId) {
-        boardService.deleteBoard(boardId);
+    public ResponseEntity<?> deleteBoard(@RequestHeader(value = "Authorization", required = false) String header,
+                                         @PathVariable("boardId") int boardId) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        boardService.deleteBoard(boardId, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.OK.value())
@@ -167,13 +188,13 @@ public class FundingController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // 펀딩 정산 - 결제내역 불러오기
-
     // 펀딩 참여하기
     @PostMapping("/join")
     @Operation(summary = "펀딩 참여")
-    public ResponseEntity<?> joinFunding(@RequestBody FundingJoinCreateRequestDto joinFundingDto) {
-        fundingService.joinFunding(joinFundingDto);
+    public ResponseEntity<?> joinFunding(@RequestHeader(value = "Authorization", required = false) String header,
+                                         @RequestBody FundingJoinCreateRequestDto joinFundingDto) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        fundingService.joinFunding(joinFundingDto, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
@@ -184,13 +205,29 @@ public class FundingController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    // 쏠 스코어 남기기
+    // 펀딩 정산 완료
+    @PatchMapping("/done/{fundingId}")
+    @Operation(summary = "펀딩 정산 완료")
+    public ResponseEntity<?> doneFunding(@RequestHeader(value = "Authorization", required = false) String header,
+                                         @PathVariable("fundingId") int fundingId) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        fundingService.doneFunding(fundingId, authEmail);
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("펀딩 정산 완료 성공")
+                .data(null)
+                .build();
+
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
 
     // 메인화면 - 나의 선호 아티스트 펀딩 조회
     @GetMapping("/my-like-artist")
     @Operation(summary = "메인화면 - 나의 선호 아티스트 펀딩 조회")
-    public ResponseEntity<?> getMyLikeArtistFunding() {
-        List<FundingResponseDto> fundingList = fundingService.getMyLikeArtistFunding();
+    public ResponseEntity<?> getMyLikeArtistFunding(@RequestHeader(value = "Authorization", required = false) String header) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        List<FundingResponseDto> fundingList = fundingService.getMyLikeArtistFunding(authEmail);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
@@ -204,8 +241,9 @@ public class FundingController {
     // 메인화면 - 최근 인기 펀딩 조회
     @GetMapping("/popular")
     @Operation(summary = "메인화면 - 최근 인기 펀딩 조회")
-    public ResponseEntity<?> getPopularFunding() {
-        List<FundingResponseDto> fundingList = fundingService.getPopularFunding();
+    public ResponseEntity<?> getPopularFunding(@RequestHeader(value = "Authorization", required = false) String header) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        List<FundingResponseDto> fundingList = fundingService.getPopularFunding(authEmail);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
@@ -219,8 +257,10 @@ public class FundingController {
     // 메인화면 - 검색어로 펀딩 조회
     @GetMapping
     @Operation(summary = "메인화면 - 검색 펀딩 조회")
-    public ResponseEntity<?> getSearchFunding(@RequestParam String keyword) {
-        List<FundingResponseDto> searchFundings = fundingService.getSearchFunding(keyword);
+    public ResponseEntity<?> getSearchFunding(@RequestHeader(value = "Authorization", required = false) String header,
+                                              @RequestParam String keyword) {
+        String authEmail = jwtUtil.getLoginUser(header);
+        List<FundingResponseDto> searchFundings = fundingService.getSearchFunding(keyword, authEmail);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())

@@ -1,5 +1,6 @@
 package com.common.solstar.domain.funding.model.repository;
 
+import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.entity.QFunding;
 import com.common.solstar.domain.user.dto.response.HostFundingResponse;
 import com.common.solstar.domain.user.dto.response.UserJoinFundingReponse;
@@ -18,23 +19,27 @@ public class FundingRepositorySupport {
 
     private JPAQueryFactory jpaQueryFactory;
 
-    public List<HostFundingResponse> findFundingByHostId(int hostId) {
-        QFunding funding = QFunding.funding;
+//    // 유저 아이디로 주최 펀딩 리스트 조회
+//    public List<Funding> findFundingByHostId(int hostId) {
+//        QFunding funding = QFunding.funding;
+//
+//        return jpaQueryFactory
+//                .select()
+//                .from(fun)
+//    }
+//
+//    // 유저 아이디로 주최 펀딩의 계좌 정보 조회
+//    public List<String> findFundingAccountByHostId(int hostId) {
+//        QFunding funding = QFunding.funding;
+//        return (List<String>) jpaQueryFactory
+//                .select(
+//                        funding.account
+//                )
+//                .from(funding)
+//                .where(funding.host.id.eq(hostId))
+//                .fetch();
+//
+//    }
 
-        return (List<HostFundingResponse>) jpaQueryFactory
-                .select(Projections.constructor(HostFundingResponse.class,
-                        funding.id,
-                        funding.artist.name,
-                        funding.title,
-                        funding.status,
-                        funding.totalAmount,
-                        funding.goalAmount,
-                        funding.type,
-                        funding.fundingImage))
-                .from(fundingJoin)
-                .join(fundingJoin.funding, funding)
-                .where(fundingJoin.user.id.eq(hostId))
-                .fetch();
-    }
 
 }

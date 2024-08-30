@@ -1,5 +1,6 @@
 package com.common.solstar.domain.user.controller;
 
+import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.common.solstar.domain.user.dto.request.UpdateIntroductionRequest;
 import com.common.solstar.domain.user.dto.response.HostFundingResponse;
 import com.common.solstar.domain.user.dto.response.UserDetailResponse;
@@ -11,8 +12,11 @@ import com.common.solstar.global.exception.ExceptionResponse;
 import com.common.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,10 +47,10 @@ public class UserController {
 
     @Operation(summary = "나의 참여 펀딩 조회")
     @GetMapping("/join-funding")
-    public ResponseEntity<ResponseDto<List<UserJoinFundingReponse>>> getUserJoinFunding(@RequestHeader(value = "Authorization", required = false) String header) {
+    public ResponseEntity<ResponseDto<List<FundingResponseDto>>> getUserJoinFunding(@RequestHeader(value = "Authorization", required = false) String header) {
         String authEmail = jwtUtil.getLoginUser(header);
-        List<UserJoinFundingReponse> result = userService.getUserJoinFunding(authEmail);
-        ResponseDto<List<UserJoinFundingReponse>> responseDto = ResponseDto.<List<UserJoinFundingReponse>>builder()
+        List<FundingResponseDto> result = userService.getUserJoinFunding(authEmail);
+        ResponseDto<List<FundingResponseDto>> responseDto = ResponseDto.<List<FundingResponseDto>>builder()
                 .status(HttpStatus.OK.value())
                 .message("나의 참여 펀딩 조회 성공")
                 .data(result)
@@ -56,12 +60,26 @@ public class UserController {
 
     @Operation(summary = "나의 주최 펀딩 조회")
     @GetMapping("/host-funding")
-    public ResponseEntity<ResponseDto<List<HostFundingResponse>>> getHostFunding(@RequestHeader(value = "Authorization", required = false) String header){
+    public ResponseEntity<ResponseDto<List<FundingResponseDto>>> getHostFunding(@RequestHeader(value = "Authorization", required = false) String header){
         String authEmail = jwtUtil.getLoginUser(header);
-        List<HostFundingResponse> result = userService.getHostFunding(authEmail);
-        ResponseDto<List<HostFundingResponse>> responseDto = ResponseDto.<List<HostFundingResponse>>builder()
+        List<FundingResponseDto> result = userService.getHostFunding(authEmail);
+        ResponseDto<List<FundingResponseDto>> responseDto = ResponseDto.<List<FundingResponseDto>>builder()
                 .status(HttpStatus.OK.value())
                 .message("나의 주최 펀딩 조회 성공")
+                .data(result)
+                .build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "특정 유저가 주최한 펀딩 조회")
+    @GetMapping("/host-funding/{userId}")
+    public ResponseEntity<ResponseDto<List<FundingResponseDto>>> getHostFundingByUserId(@RequestHeader(value = "Authorization", required = false) String header,
+                                                                                        @PathVariable("userId") int userId){
+        String authEmail = jwtUtil.getLoginUser(header);
+        List<FundingResponseDto> result = userService.getHostFundingById(authEmail, userId);
+        ResponseDto<List<FundingResponseDto>> responseDto = ResponseDto.<List<FundingResponseDto>>builder()
+                .status(HttpStatus.OK.value())
+                .message("해당 유저의 주최 펀딩 조회 성공")
                 .data(result)
                 .build();
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -80,6 +98,38 @@ public class UserController {
                 .build();
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
+
+    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    public ResponseEntity<ResponseDto<String>> logout(@RequestHeader(value = "Authorization", required = false) String header,
+                                                      @CookieValue(value = "refreshToken", required = false)Cookie cookie,
+                                                      HttpServletResponse response) {
+
+        String accessToken = header.substring(7);
+        String refreshToken = cookie.getValue();
+        String authEmail = jwtUtil.getLoginUser(header);
+        userService.logout(accessToken, refreshToken, authEmail);
+
+        // refresh token 쿠키 삭제
+        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        response.setHeader("Set-Cookie", deleteCookie.toString());
+
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.OK.value())
+                .message("로그아웃 성공")
+                .data(null)
+                .build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+
 
 
 }

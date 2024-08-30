@@ -27,7 +27,7 @@ public class Funding extends BaseTimeEntity {
     @Column(length = 255)
     private String fundingImage;
 
-    @Column(length = 1500, nullable = false)
+    @Column(nullable = false)
     private String content;
 
     private int goalAmount;
@@ -98,6 +98,11 @@ public class Funding extends BaseTimeEntity {
     public void updateByJoin(int amount) {
         this.totalAmount += amount;
         this.totalJoin += 1;
+    }
+
+    // 펀딩 성공 시 계좌번호 업데이트
+    public void createAccount(String account) {
+        this.account = account;
     }
 
     public void deleteFunding() {

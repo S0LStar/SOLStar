@@ -9,15 +9,7 @@ function CreatedAccount() {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep] = useState(5);
-  const account = location.state?.account || {};
-
-  const [nextActive, setNextActive] = useState(false);
-
-  // Check if all fields are filled
-  useEffect(() => {
-    const isFormComplete = Boolean(account.accountHolder);
-    setNextActive(isFormComplete);
-  }, [account]);
+  const account = location.state.account;
 
   return (
     <>

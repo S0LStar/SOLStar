@@ -62,6 +62,10 @@ function FundingDetail() {
     setJoinModalOpen(false);
   };
 
+  const handleFinish = () => {
+    // TODO: 정산 종료 API 요청
+  };
+
   return (
     <div
       className={`funding-detail-container ${funding.joinStatus !== 0 && 'no-button'}`}
@@ -214,7 +218,12 @@ function FundingDetail() {
               isHost={funding.joinStatus === 2}
             />
           ) : (
-            funding.joinStatus !== 0 && <FundingPayment />
+            funding.joinStatus !== 0 && (
+              <FundingPayment
+                artistName={funding.artistName}
+                artistProfileImage={funding.artistProfileImage}
+              />
+            )
           )}
         </div>
       </div>
@@ -223,6 +232,14 @@ function FundingDetail() {
         <div className="wide-button-fix">
           <WideButton onClick={handleJoin} isActive={true}>
             펀딩 참여하기
+          </WideButton>
+        </div>
+      )}
+
+      {funding.status === 'SUCCESS' && funding.joinStatus === 2 && (
+        <div className="wide-button-fix">
+          <WideButton onClick={handleFinish} isActive={true}>
+            정산 종료하기
           </WideButton>
         </div>
       )}
