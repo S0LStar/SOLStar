@@ -1,10 +1,7 @@
 package com.common.solstar.domain.auth.controller;
 
 import com.common.solstar.domain.auth.dto.request.*;
-import com.common.solstar.domain.auth.dto.response.CheckAuthCodeResponse;
-import com.common.solstar.domain.auth.dto.response.LoginResponse;
-import com.common.solstar.domain.auth.dto.response.RefreshResponse;
-import com.common.solstar.domain.auth.dto.response.UserAccountValidateResponse;
+import com.common.solstar.domain.auth.dto.response.*;
 import com.common.solstar.domain.auth.model.service.AuthService;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
@@ -12,6 +9,7 @@ import com.common.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -28,7 +26,7 @@ public class AuthController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
-    public ResponseEntity<ResponseDto<String>> signup (@RequestBody SignupRequest signupRequest) {
+    public ResponseEntity<ResponseDto<String>> signup (@Valid @RequestBody SignupRequest signupRequest) {
         authService.signup(signupRequest);
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
@@ -129,5 +127,28 @@ public class AuthController {
                 .build();
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
+
+    @Operation(summary = "이메일 중복 검사")
+    @PostMapping("/email/duplicate-check")
+    public ResponseEntity<ResponseDto<CheckDuplicateResponse>> checkEmailDuplicate (@RequestBody EmailCheckDuplicateRequest request){
+        ResponseDto<CheckDuplicateResponse> responseDto = ResponseDto.<CheckDuplicateResponse>builder()
+                .status(HttpStatus.OK.value())
+                .message("이메일 중복 검사 성공")
+                .data(authService.checkEmail(request.getEmail()))
+                .build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "닉네임 중복 검사")
+    @PostMapping("/nickname/duplicate-check")
+    public ResponseEntity<ResponseDto<CheckDuplicateResponse>> checkNicknameDuplicate (@RequestBody NicknameCheckDuplicateRequest request){
+        ResponseDto<CheckDuplicateResponse> responseDto = ResponseDto.<CheckDuplicateResponse>builder()
+                .status(HttpStatus.OK.value())
+                .message("닉네임 중복 검사 성공")
+                .data(authService.checkNickname(request.getNickname()))
+                .build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
 
 }

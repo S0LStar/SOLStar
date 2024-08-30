@@ -1,0 +1,16 @@
+# .env 파일 제외
+.env
+
+# 환경 설정 파일 제외
+config/env.properties
+
+# 빌드 출력 디렉토리 제외
+/build
+/out
+
+# 로그 파일 제외
+*.log
+nohup.out
+
+#java 파일
+*.jar
