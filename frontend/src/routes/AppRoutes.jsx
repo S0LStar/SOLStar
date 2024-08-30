@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import PrivateRoute from './PrivateRoute'; // PrivateRoute import
 
 // Main
 import MainPage from '../pages/MainPage';
@@ -45,45 +46,13 @@ import CreatedAccount from '../components/signup/accountRegist/CreatedAccount';
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<MainPage />}>
-        <Route index element={<MainContainer />} />
-        <Route path="search" element={<MainSearch />} />
-        <Route path="popular" element={<PopularFundingContainer />} />
-        <Route path="my-artist" element={<MyArtistFundingContainer />}></Route>
-      </Route>
-
-      <Route path="/funding" element={<FundingPage />}>
-        <Route path=":fundingId" element={<FundingDetail />} />
-        <Route path=":fundingId/notice" element={<FundingNoticeRegist />} />
-        <Route path="regist" element={<FundingRegist />} />
-        <Route path="search" element={<FundingSearchResult />}></Route>
-      </Route>
-
-      <Route path="/wallet" element={<WalletPage />}>
-        <Route index element={<WalletContainer />}></Route>
-        <Route path=":id" element={<FundingWalletDetail />}></Route>
-      </Route>
-      <Route path="/zzim" element={<ZzimPage />}>
-        <Route index element={<ZzimContainer />}></Route>
-      </Route>
-      <Route path="/my" element={<MyPage />}>
-        <Route index element={<MyPageContainer />}></Route>
-        <Route path="editprofile" element={<EditProfile />} />
-        <Route path="participantfunding" element={<ParticipantFunding />} />
-        <Route path="createdfunding" element={<CreatedFunding />} />
-      </Route>
-      <Route path="/agencymy" element={<MyPage />}>
-        <Route index element={<AgencyMyPageContainer />}></Route>
-        <Route path="request" element={<RequestFunding />} />
-        <Route path="myartist" element={<MyArtist />} />
-        <Route path="myartistfunding" element={<MyArtistFunding />} />
-      </Route>
+      {/* 로그인 및 회원가입 페이지는 보호하지 않음 */}
       <Route path="/login" element={<LoginPage />}>
-        <Route index element={<LoginContainer />}></Route>
+        <Route index element={<LoginContainer />} />
       </Route>
       <Route path="/signup" element={<SignUpPage />}>
-        <Route index element={<TermOfService />}></Route>
-        {/* <Route index element={<SignUpContainer />}></Route> */}
+        <Route index element={<TermOfService />} />
+        {/* <Route index element={<SignUpContainer />} /> */}
         <Route path="term" element={<TermOfService />} />
         <Route path="create" element={<CreateAccount />} />
         <Route path="regist" element={<AccountRegistration />} />
@@ -92,6 +61,61 @@ function AppRoutes() {
         <Route path="reset" element={<ResetPassword />} />
         <Route path="created" element={<CreatedAccount />} />
       </Route>
+
+      {/* 나머지 모든 경로는 PrivateRoute로 보호 */}
+      <Route
+        path="*"
+        element={
+          <PrivateRoute>
+            <Routes>
+              <Route path="/" element={<MainPage />}>
+                <Route index element={<MainContainer />} />
+                <Route path="search" element={<MainSearch />} />
+                <Route path="popular" element={<PopularFundingContainer />} />
+                <Route
+                  path="my-artist"
+                  element={<MyArtistFundingContainer />}
+                />
+              </Route>
+
+              <Route path="/funding" element={<FundingPage />}>
+                <Route path=":fundingId" element={<FundingDetail />} />
+                <Route
+                  path=":fundingId/notice"
+                  element={<FundingNoticeRegist />}
+                />
+                <Route path="regist" element={<FundingRegist />} />
+                <Route path="search" element={<FundingSearchResult />} />
+              </Route>
+
+              <Route path="/wallet" element={<WalletPage />}>
+                <Route index element={<WalletContainer />} />
+                <Route path=":id" element={<FundingWalletDetail />} />
+              </Route>
+              <Route path="/zzim" element={<ZzimPage />}>
+                <Route index element={<ZzimContainer />} />
+              </Route>
+
+              <Route path="/my" element={<MyPage />}>
+                <Route index element={<MyPageContainer />} />
+                <Route path="editprofile" element={<EditProfile />} />
+                <Route
+                  path="participantfunding"
+                  element={<ParticipantFunding />}
+                />
+                <Route path="createdfunding" element={<CreatedFunding />} />
+              </Route>
+
+              <Route path="/agencymy" element={<MyPage />}>
+                <Route index element={<AgencyMyPageContainer />} />
+                <Route path="request" element={<RequestFunding />} />
+                <Route path="myartist" element={<MyArtist />} />
+                <Route path="myartistfunding" element={<MyArtistFunding />} />
+              </Route>
+            </Routes>
+          </PrivateRoute>
+        }
+      />
     </Routes>
   );
 }
