@@ -1,7 +1,7 @@
 // src/util/AxiosInstance.js
 
 import axios from 'axios';
-import store from '../redux/redux'; // Redux store import
+import store from '../redux/Redux'; // Redux store import
 import { clearToken, setToken } from '../redux/slices/authSlice';
 
 const API_LINK = 'http://localhost:8080/api';
