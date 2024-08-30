@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import WideButton from '../common/WideButton';
 import temp from '../../assets/character/Shoo.png';
 import LeftVector from '../../assets/common/LeftVector.png';
+import DefaultArtist from '../../assets/common/DefaultArtist.png';
 
 function ViewProfile() {
   const navigate = useNavigate();
@@ -15,11 +16,11 @@ function ViewProfile() {
       <div className="view-container">
         <div className="view-header">
           <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />내
-          정보 수정
+          정보 보기
         </div>
         <img
           className="view-myprofile-img"
-          src={profileData.img}
+          src={profileData.img ? profileData.img : DefaultArtist}
           alt="프로필 이미지"
         />
         <div className="view-contents">
