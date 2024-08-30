@@ -32,6 +32,7 @@ public enum CustomException {
     // 펀딩
     NOT_FOUND_FUNDING_EXCEPTION(400, "NotFoundFundingException", "펀딩이 존재하지 않습니다"),
     NOT_PROCESSING_FUNDING_EXCEPTION(400, "NotProcessingFundingException", "현재 진행중인 펀딩이 아닙니다."),
+    NOT_SUCCESS_FUNDING_EXCEPTION(400, "NotSuccessFundingException", "현재 완료된 펀딩이 아닙니다."),
     INVALID_FUNDING_JOIN_EXCEPTION(400, "InvalidFundingJoinException", "올바르지 않은 펀딩 참여 형식입니다."),
     INVALID_FUNDING_HOST_EXCEPTION(400, "InvalidFundingHostException", "해당 사용자는 펀딩 주최자가 아닙니다."),
 
