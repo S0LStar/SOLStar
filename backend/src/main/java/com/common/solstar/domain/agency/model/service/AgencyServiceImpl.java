@@ -131,7 +131,7 @@ public class AgencyServiceImpl implements AgencyService {
         Agency agency = agencyRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
 
-        // 이미 가입된 이름이라면 가입 불가능
+        // 이미 가입된 이름이라면 불가능
         if(agencyRepository.existsByName(request.getName())){
             throw new ExceptionResponse(CustomException.DUPLICATED_NAME_EXCEPTION);
         }
