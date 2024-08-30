@@ -3,32 +3,33 @@ import PropTypes from 'prop-types';
 
 import Notice from '../../../assets/funding/Notice.png';
 import More from '../../../assets/funding/More.png';
-import DefaultImage from '../../../assets/common/DefaultArtist.png';
-
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import axiosInstance from '../../../util/AxiosInstance';
+import { useState } from 'react';
 
-function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
+function FundingNotiList({ fundingId, isHost }) {
   const navigate = useNavigate();
   const [selectedMore, setSelectedMore] = useState(null);
-  const [fundingNotice, setFundingNotice] = useState([]);
 
-  useEffect(() => {
-    const fetchFundingNotice = async () => {
-      try {
-        const response = await axiosInstance.get(
-          `/funding/notice/${fundingId}`
-        );
-        console.log(response);
-        setFundingNotice(response.data.data.noticeList);
-      } catch (error) {
-        console.error('펀딩 공지 내용 조회 중 오류 발생', error);
-      }
-    };
-
-    fetchFundingNotice();
-  }, []);
+  const tempData = [
+    {
+      id: 2,
+      nickname: '뉴진스 성덕',
+      title: '두번째 공지입니다',
+      content: '곧 마감될 것 같습니다',
+      contentImage: null,
+      createDate: '2024-08-29T00:51:12.474547',
+      profileImage: 'https://example.com/profile1.png',
+    },
+    {
+      id: 1,
+      nickname: '뉴진스 성덕',
+      title: '공지입니다',
+      content: '벌써 돈이 모였습니다!!!!',
+      contentImage: null,
+      createDate: '2024-08-28T00:50:19.938904',
+      profileImage: 'https://example.com/profile2.png',
+    },
+  ];
 
   function formatTimeDifference(date) {
     const now = new Date();
@@ -77,16 +78,16 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
           <img src={Notice} alt="" />
         </div>
       )}
-      {fundingNotice.map((notice) => (
-        <div key={notice.boardId} className="notice-item">
+      {tempData.map((notice) => (
+        <div key={notice.id} className="notice-item">
           <div className="notice-profile-info">
             <img
-              src={profileImage || DefaultImage}
+              src={notice.profileImage}
               alt="프로필 이미지"
               className="profile-image"
             />
             <div className="notice-user-info">
-              <div>{nickname}</div>
+              <div>{notice.nickname}</div>
               <p className="time-difference">
                 {formatTimeDifference(notice.createDate)}
               </p>
@@ -96,7 +97,7 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
                 src={More}
                 alt=""
                 className="more"
-                onClick={() => handleMoreClick(notice.boardId)}
+                onClick={() => handleMoreClick(notice.id)}
               />
             )}
           </div>
@@ -109,7 +110,7 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
             ></img>
           )}
 
-          {selectedMore === notice.boardId && (
+          {selectedMore === notice.id && (
             <div className="more-modal">
               <div className="more-modal-content">
                 <div className="more-modal-item" onClick={handleDeleteNotice}>
@@ -127,8 +128,6 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
 FundingNotiList.propTypes = {
   isHost: PropTypes.bool.isRequired,
   fundingId: PropTypes.number.isRequired,
-  nickname: PropTypes.string.isRequired,
-  profileImage: PropTypes.string.isRequired,
 };
 
 export default FundingNotiList;

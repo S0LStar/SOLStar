@@ -74,11 +74,6 @@
   font-size: 14px;
 }
 
-.notice-content-image {
-  margin-top: 15px;
-  max-width: 100%;
-}
-
 .more-modal {
   position: absolute;
   top: 50px; /* 적절한 위치로 설정 */
