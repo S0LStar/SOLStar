@@ -3,8 +3,10 @@ package com.common.solstar.domain.funding.model.service;
 import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.funding.dto.request.CreateDemandDepositAccountRequest;
 import com.common.solstar.domain.funding.dto.request.TransferRefundRequest;
+import com.common.solstar.domain.funding.dto.request.TransferTotalAmountRequest;
 import com.common.solstar.domain.funding.dto.response.DemandDepositAccountResponse;
 import com.common.solstar.domain.funding.dto.response.TransferRefundResponse;
+import com.common.solstar.domain.funding.dto.response.TransferTotalAmountResponse;
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.entity.FundingStatus;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
@@ -81,6 +83,20 @@ public class FundingMonitoringService {
 
                 // 현재는 계좌번호만을 저장하는 방식
                 funding.createAccount(fundingAccount.getAccountNumber());
+
+                // 펀딩 계좌 생성 => 펀딩 계좌에 금액 이체에 시간적으로 딜레이가 필요한가?
+
+
+                // 펀딩의 계좌에 totalAmount 넣어주기 위해 request dto 생성
+                TransferTotalAmountRequest totalAmountRequest = TransferTotalAmountRequest.builder()
+                        .userKey(funding.getHost().getUserKey())
+                        .accountNo(fundingAccount.getAccountNumber())
+                        .totalAmount(funding.getTotalAmount())
+                        .build();
+
+                // 펀딩 계좌에 이체
+                transferTotalAmount(totalAmountRequest);
+
             } else {
                 funding.setStatus(FundingStatus.CLOSED);
 
@@ -133,7 +149,7 @@ public class FundingMonitoringService {
     }
 
 
-    // 계좌 생성
+    // 펀딩 계좌 생성
     private DemandDepositAccountResponse createFundingAccount(CreateDemandDepositAccountRequest request) {
 
         String url = "/edu/demandDeposit/createDemandDepositAccount";
@@ -184,7 +200,84 @@ public class FundingMonitoringService {
         return null;
     }
 
-    // 계좌 이체
+    // 펀딩 계좌 생성 시 시스템 계좌에서 펀딩의 총 모금액 이체
+    public TransferTotalAmountResponse transferTotalAmount(TransferTotalAmountRequest request) {
+
+        String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
+
+        CommonHeader header = CommonHeader.builder()
+                .apiName("updateDemandDepositAccountTransfer")
+                .apiServiceCode("updateDemandDepositAccountTransfer")
+                .userKey(request.getUserKey())
+                .apiKey(apiKey)
+                .build();
+        header.setCommonHeader();
+
+        TransferApiRequest apiRequest = TransferApiRequest.builder()
+                .header(header)
+                .depositAccountNo(request.getAccountNo())
+                .depositTransactionSummary("펀딩 총 모금액 입금")
+                .transactionBalance(Integer.toString(request.getTotalAmount()))
+                .withdrawalAccountNo(systemAccountNo)
+                .withdrawalTransactionSummary("펀딩 총 모금액 출금")
+                .build();
+
+        try {
+
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
+
+            String response = responseMono.block();
+
+            JsonNode root = objectMapper.readTree(response);
+
+            if (root.has("REC")) {
+                return TransferTotalAmountResponse.builder()
+                        .isSuccess(true)
+                        .build();
+            }
+
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+
+            try {
+                // 오류 응답 JSON 파싱
+                JsonNode root = objectMapper.readTree(errorBody);
+
+                if (root.has("responseCode")) {
+                    String responseCode = root.get("responseCode").asText();
+
+                    // responseCode에 따른 커스텀 예외 처리
+                    switch (responseCode) {
+                        case "A1003":
+                            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                        default:
+                            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                    }
+                } else {
+                    throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+                }
+
+            } catch (JsonProcessingException jsonParseException) {
+                // JSON 파싱 오류 시 기본 예외 처리
+                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+            }
+        } catch (Exception e) {
+            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+        }
+
+        return TransferTotalAmountResponse.builder()
+                .isSuccess(false)
+                .build();
+    }
+
+    // 환불 관련 계좌 이체
     public TransferRefundResponse transferRefund(TransferRefundRequest request) {
 
         String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
