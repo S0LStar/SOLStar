@@ -229,7 +229,7 @@ public class FundingController {
     public ResponseEntity<?> useMoney(@RequestHeader(value = "Authorization", required = false) String header,
                                       @RequestBody UseBudgetRequest useBudgetRequest) {
         String authEmail = jwtUtil.getLoginUser(header);
-
+        fundingService.useMoney(authEmail, useBudgetRequest);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
