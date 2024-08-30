@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TransferRefundRequest {
 
-    private String userKey;
     private FundingJoin fundingJoin;
 }
