@@ -2,8 +2,11 @@ import { useState } from 'react';
 import './FundingJoinPassword.css';
 import PropTypes from 'prop-types';
 import WideButton from '../../common/WideButton';
+import axiosInstance from '../../../util/AxiosInstance';
+import { useParams } from 'react-router-dom';
 
 const FundingJoinPassword = ({ closeModal, totalJoinAmount, title }) => {
+  const { fundingId } = useParams();
   const [password, setPassword] = useState('');
   const [shake, setShake] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -24,20 +27,33 @@ const FundingJoinPassword = ({ closeModal, totalJoinAmount, title }) => {
 
   const handleJoin = () => {
     console.log('펀딩 참여 비밀번호', password);
-    // TODO : 펀딩 참여 API 연결 (/api/funding/join)
-    const correctPassword = '123456'; // temp Password
 
-    // 비밀번호가 맞은 경우, 후원 성공 modal (200)
-    if (password === correctPassword) {
-      setSuccess(true);
-    } else {
-      // 비밀번호가 틀린 경우 (status 403)
-      setShake(true);
-      setTimeout(() => {
-        setShake(false);
-        setPassword('');
-      }, 2000); // 애니메이션 시간과 동일하게 설정
-    }
+    // 펀딩 참여 API 연결
+    const joinFunding = async () => {
+      try {
+        const response = await axiosInstance.post('/funding/join', {
+          fundingId: parseInt(fundingId),
+          amount: totalJoinAmount,
+          password: password,
+        });
+
+        console.log(response);
+
+        // 비밀번호가 맞은 경우, 후원 성공 modal (200)
+        setSuccess(true);
+      } catch (error) {
+        if (error.status === 403) {
+          // 비밀번호가 틀린 경우 (status 403)
+          setShake(true);
+          setTimeout(() => {
+            setShake(false);
+            setPassword('');
+          }, 2000); // 애니메이션 시간과 동일하게 설정
+        }
+      }
+    };
+
+    joinFunding();
   };
 
   if (success) {
