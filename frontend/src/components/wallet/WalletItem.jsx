@@ -1,4 +1,3 @@
-import React from 'react';
 import './WalletItem.css';
 import Wallet from '../../assets/wallet/Wallet.png';
 import FundingWallet from '../../assets/wallet/FundingWallet.png';
