@@ -2,7 +2,7 @@ package com.common.solstar.domain.wallet.model.service;
 
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
-import com.common.solstar.domain.funding.model.repository.FundingRepositorySupport;
+import com.common.solstar.domain.fundingJoin.model.repository.FundingJoinRepositorySupport;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.domain.wallet.dto.response.FindMyAccountReponse;
@@ -40,8 +40,8 @@ public class WalletService {
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final FundingRepositorySupport fundingRepositorySupport;
     private final FundingRepository fundingRepository;
+    private final FundingJoinRepositorySupport fundingJoinRepositorySupport;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -179,9 +179,12 @@ public class WalletService {
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
-        
-        // 로그인 유저가 해당 펀딩 주최자가 아니라면
-        if(user.getId() != funding.getHost().getId()){
+
+
+        // 로그인 유저가 주최자도 아니고 참여자도 아닌경우
+        if(user.getId() != funding.getHost().getId() && !fundingJoinRepositorySupport.isJoinFunding(fundingId, user.getId())){
+            System.out.println("로그인 유저 : "+user.getId());
+            System.out.println("호스트 :" + funding.getHost().getId());
             throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
         }
 
