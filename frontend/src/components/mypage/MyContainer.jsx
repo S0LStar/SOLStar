@@ -189,7 +189,7 @@ function MyContainer() {
                 <div
                   className="my-funding-context"
                   onClick={() => {
-                    navigate(`/agencymy/request`);
+                    navigate(`/my/request`);
                   }}
                 >
                   인증 펀딩 요청
@@ -198,7 +198,7 @@ function MyContainer() {
                 <div
                   className="my-funding-context"
                   onClick={() => {
-                    navigate(`/agencymy/myartist`);
+                    navigate(`/my/myartist`);
                   }}
                 >
                   소속 아티스트 <img src={RightVector} alt="" />
@@ -206,7 +206,7 @@ function MyContainer() {
                 <div
                   className="my-funding-context"
                   onClick={() => {
-                    navigate(`/agencymy/myartistfunding`);
+                    navigate(`/my/myartistfunding`);
                   }}
                 >
                   소속 아티스트 펀딩 <img src={RightVector} alt="" />
