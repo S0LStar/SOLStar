@@ -60,12 +60,18 @@ function FundingPayment({ artistName, artistProfileImage }) {
   }, [fundingId]);
 
   if (loading) {
-    return <Loading />; // 로딩 컴포넌트 또는 텍스트
+    return (
+      <Loading>
+        <span style={{ color: '#0046ff' }}>정산 내역</span>을<br /> 가져오는
+        중이에요
+      </Loading>
+    );
   }
 
   return (
     <div className="funding-payment-container">
       <div className="funding-payment-balance">
+        {/* TODO: 이미지처리 */}
         <img src={DefaultImage} alt="" className="funding-payment-image" />
         <div>
           <div>{artistName} 펀딩 계좌 잔액</div>

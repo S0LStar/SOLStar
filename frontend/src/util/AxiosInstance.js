@@ -16,11 +16,11 @@ const axiosInstance = axios.create({
 
 const EXCLUDED_PATHS = ['/auth'];
 
-// Redux에서 토큰 가져오기
+// Redux에서 accessToken 가져오기
 const state = store.getState();
-const { accessToken, refreshToken } = state.auth;
+const { accessToken } = state.auth;
 
-if (accessToken && refreshToken) {
+if (accessToken) {
   axiosInstance.defaults.headers.common['Authorization'] =
     `Bearer ${accessToken}`;
 }
@@ -57,16 +57,18 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        // refresh 요청에서 withCredentials: true를 사용하여 쿠키 포함
         const response = await axios.post(
           `${API_LINK}/auth/refresh`,
           {},
           { withCredentials: true }
         );
+
         const newAccessToken = response.data.data.accessToken;
         store.dispatch(
           setToken({
             accessToken: newAccessToken,
-            refreshToken: state.auth.refreshToken, // refreshToken은 redux에 저장된 것을 사용
+            // refreshToken은 쿠키에서 관리하므로 여기서 설정할 필요 없음
           })
         );
 
