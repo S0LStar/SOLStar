@@ -11,6 +11,7 @@ import com.common.solstar.domain.auth.dto.response.RefreshResponse;
 import com.common.solstar.domain.auth.dto.response.UserAccountValidateResponse;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
+import com.common.solstar.global.api.exception.WebClientExceptionHandler;
 import com.common.solstar.global.api.request.CheckAuthCodeApiRequest;
 import com.common.solstar.global.api.request.OpenAccountAuthApiRequest;
 import com.common.solstar.global.auth.CustomUserDetailsService;
@@ -53,6 +54,7 @@ public class AuthService {
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final WebClientExceptionHandler webClientExceptionHandler;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -186,32 +188,35 @@ public class AuthService {
                 }
                 """.formatted(apiKey, request.getUserId());
 
-        // API 요청 보내기
-        Mono<String> responseMono = webClient.post()
-                .uri(url)
-                .header("Content-Type", "application/json")
-                .bodyValue(apiRequest)
-                .retrieve()
-                .bodyToMono(String.class);
-
-        String response = responseMono.block();
-
         try{
-            JsonNode root = objectMapper.readTree(response);
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
 
-            if(!root.has("userKey")) {
-                throw new ExceptionResponse(CustomException.NOT_SAME_USER_EXCEPTION);
-            }
+            String response = responseMono.block();
+            JsonNode root = objectMapper.readTree(response);
 
             String userKey = root.get("userKey").asText();
 
             return UserAccountValidateResponse.builder()
                     .useKey(userKey)
                     .build();
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
+
+            webClientExceptionHandler.handleWebClientException(errorBody);
+
         } catch (Exception e){
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
 
+        return null;
     }
 
     // 1원 송금
@@ -243,13 +248,16 @@ public class AuthService {
                     .retrieve()
                     .bodyToMono(String.class);
 
-            String response = responseMono.block();
+            responseMono.block();
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
 
-            JsonNode root = objectMapper.readTree(response);
-            if(root.has("responseCode")) {
-                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-            }
-        } catch (Exception e) {
+            webClientExceptionHandler.handleWebClientException(errorBody);
+
+        }
+        catch (Exception e) {
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
 
@@ -303,32 +311,13 @@ public class AuthService {
             String errorBody = e.getResponseBodyAsString();
             System.out.println("Error Response: " + errorBody);
 
-            try {
-                // 오류 응답 JSON 파싱
-                JsonNode root = objectMapper.readTree(errorBody);
+            webClientExceptionHandler.handleWebClientException(errorBody);
 
-                if (root.has("responseCode")) {
-                    String responseCode = root.get("responseCode").asText();
-
-                    // responseCode에 따른 커스텀 예외 처리
-                    switch (responseCode) {
-                        case "A1087":
-                            throw new ExceptionResponse(CustomException.EXPIRED_AUTH_CODE);
-                        default:
-                            throw new ExceptionResponse(CustomException.NOT_FOUND_AUTH_CODE);
-                    }
-                } else {
-                    throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                }
-
-            } catch (JsonProcessingException jsonParseException) {
-                // JSON 파싱 오류 시 기본 예외 처리
-                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-            }
         } catch (Exception e) {
             // 기타 예외 처리
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
+        return null;
     }
 
     // 소속사 회원가입

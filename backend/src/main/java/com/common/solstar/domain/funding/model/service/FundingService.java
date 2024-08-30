@@ -2,6 +2,7 @@ package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
 import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
+import com.common.solstar.domain.funding.dto.request.UseBudgetRequest;
 import com.common.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
@@ -31,6 +32,9 @@ public interface FundingService {
 
     // 펀딩 정산 완료
     void doneFunding(int fundingId, String authEmail);
+
+    // 펀딩 정산금 이체 (주최자 사용)
+    void useMoney(String authEmail, UseBudgetRequest useBudgetRequest);
 
     // 내가 선호하는 아티스트 펀딩 조회
     List<FundingResponseDto> getMyLikeArtistFunding(String authEmail);

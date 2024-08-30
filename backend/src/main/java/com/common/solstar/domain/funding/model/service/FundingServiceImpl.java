@@ -4,10 +4,7 @@ import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
-import com.common.solstar.domain.funding.dto.request.FundingCreateRequestDto;
-import com.common.solstar.domain.funding.dto.request.FundingUpdateRequestDto;
-import com.common.solstar.domain.funding.dto.request.InquireAccountRequestDto;
-import com.common.solstar.domain.funding.dto.request.TransferJoinRequest;
+import com.common.solstar.domain.funding.dto.request.*;
 import com.common.solstar.domain.funding.dto.response.*;
 import com.common.solstar.domain.funding.entity.Funding;
 import com.common.solstar.domain.funding.entity.FundingStatus;
@@ -22,8 +19,8 @@ import com.common.solstar.domain.likeList.entity.LikeList;
 import com.common.solstar.domain.likeList.model.repository.LikeListRepository;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
+import com.common.solstar.global.api.exception.WebClientExceptionHandler;
 import com.common.solstar.global.api.request.CommonHeader;
-import com.common.solstar.domain.funding.dto.request.DonateRequest;
 import com.common.solstar.global.api.request.FindAccountApiRequest;
 import com.common.solstar.global.api.request.TransferApiRequest;
 import com.common.solstar.global.exception.CustomException;
@@ -32,6 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +37,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import javax.swing.undo.AbstractUndoableEdit;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,6 +58,8 @@ public class FundingServiceImpl implements FundingService {
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AccountRepository accountRepository;
+    private final GroupedOpenApi api;
+    private final WebClientExceptionHandler webClientExceptionHandler;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -66,7 +67,11 @@ public class FundingServiceImpl implements FundingService {
     @Value("${system.account.no}")
     private String systemAccountNo;
 
+    @Value("${system.user.key}")
+    private String systemUserKey;
+
     @Override
+    @Transactional
     public void createFunding(FundingCreateRequestDto fundingDto, String authEmail) {
 
         Artist artist = artistRepository.findById(fundingDto.getArtistId())
@@ -224,8 +229,9 @@ public class FundingServiceImpl implements FundingService {
         Account fundingAccount = accountRepository.findByAccountNumber(funding.getAccount())
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ACCOUNT_EXCEPTION));
 
+        // 시스템 유저 키를 사용하여 펀딩 계좌 생성
         InquireAccountRequestDto inquireRequestDto = InquireAccountRequestDto.builder()
-                .userKey(loginUser.getUserKey())
+                .userKey(systemUserKey)
                 .accountNo(fundingAccount.getAccountNumber())
                 .build();
 
@@ -244,6 +250,23 @@ public class FundingServiceImpl implements FundingService {
         funding.setStatus(FundingStatus.CLOSED);
     }
 
+    @Override
+    public void useMoney(String authEmail, UseBudgetRequest useBudgetRequest) {
+
+        // 로그인 유저가 펀딩의 주최자인지 확인
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        Funding funding = fundingRepository.findById(useBudgetRequest.getFundingId())
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        if (!loginUser.equals(funding.getHost()))
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
+
+        // request dto의 store에 펀딩 계좌에서 이체
+        if (!transferToStore(useBudgetRequest))
+            throw new ExceptionResponse(CustomException.TRANSFER_FAILURE_EXCEPTION);
+    }
 
     @Override
     public List<FundingResponseDto> getMyLikeArtistFunding(String authEmail) {
@@ -301,7 +324,7 @@ public class FundingServiceImpl implements FundingService {
     }
     
     // 펀딩 참여 시 시스템 계좌에 이체
-    public TransferJoinResponse transferFunding(TransferJoinRequest request) {
+    private TransferJoinResponse transferFunding(TransferJoinRequest request) {
 
         String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
 
@@ -348,30 +371,12 @@ public class FundingServiceImpl implements FundingService {
             }
 
         } catch (WebClientResponseException e) {
-          // WebClient 오류 응답 처리
-          String errorBody = e.getResponseBodyAsString();
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
 
-          try {
-              // 오류 응답 JSON 파싱
-              JsonNode root = objectMapper.readTree(errorBody);
+            webClientExceptionHandler.handleWebClientException(errorBody);
 
-              if (root.has("responseCode")) {
-                  String responseCode = root.get("responseCode").asText();
-
-                  // responseCode에 따른 커스텀 예외 처리
-                  switch (responseCode) {
-                      case "A1003":
-                          throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                      default:
-                          throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                  }
-              } else {
-                  throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-              }
-          } catch (JsonProcessingException jsonParseException) {
-              // JSON 파싱 오류 시 기본 예외 처리
-              throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-          }
         } catch (Exception e) {
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
@@ -412,13 +417,18 @@ public class FundingServiceImpl implements FundingService {
             String response = responseMono.block();
             JsonNode root = objectMapper.readTree(response);
 
-            if (!root.has("REC"))
-                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-
             return root.get("REC").get("accountBalance").asText();
-        } catch (WebClientResponseException | JsonProcessingException e) {
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
+
+            webClientExceptionHandler.handleWebClientException(errorBody);
+
+        }catch (Exception e){
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
+        return null;
     }
 
     // 펀딩 계좌 잔액 기부
@@ -428,8 +438,8 @@ public class FundingServiceImpl implements FundingService {
         CommonHeader header = CommonHeader.builder()
                 .apiName("updateDemandDepositAccountTransfer")
                 .apiServiceCode("updateDemandDepositAccountTransfer")
-                .userKey(request.getUserKey())
                 .apiKey(apiKey)
+                .userKey(systemUserKey)
                 .build();
         header.setCommonHeader();
 
@@ -451,15 +461,78 @@ public class FundingServiceImpl implements FundingService {
                     .retrieve()
                     .bodyToMono(String.class);
 
-            String response = responseMono.block();
-            JsonNode root = objectMapper.readTree(response);
+            responseMono.block();
 
-            if (!root.has("REC"))
-                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
 
-        } catch (WebClientResponseException | JsonProcessingException e) {
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
+
+            webClientExceptionHandler.handleWebClientException(errorBody);
+
+        }catch (Exception e){
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
+    }
+
+    // 펀딩 사용처에 이체
+    public boolean transferToStore(UseBudgetRequest request) {
+
+        String url = "/edu/demandDeposit/updateDemandDepositAccountTransfer";
+
+        CommonHeader header = CommonHeader.builder()
+                .apiName("updateDemandDepositAccountTransfer")
+                .apiServiceCode("updateDemandDepositAccountTransfer")
+                .apiKey(apiKey)
+                .userKey(systemUserKey)
+                .build();
+        header.setCommonHeader();
+
+        Funding funding = fundingRepository.findById(request.getFundingId())
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        // 시스템 계좌에 참여자의 펀딩 참여 금액 입금
+        TransferApiRequest apiRequest = TransferApiRequest.builder()
+                .header(header)
+                .depositAccountNo(request.getStoreAccount())
+                .depositTransactionSummary(funding.getTitle() + " 입금")
+                .transactionBalance(Integer.toString(request.getBalance()))
+                .withdrawalAccountNo(funding.getAccount())
+                .withdrawalTransactionSummary(request.getStoreSummary())
+                .build();
+
+        try {
+
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
+
+            String response = responseMono.block();
+
+            JsonNode root = objectMapper.readTree(response);
+
+            // 성공 상태면 true 반환
+            if (root.has("REC")) {
+                return true;
+            }
+
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
+
+            webClientExceptionHandler.handleWebClientException(errorBody);
+
+        }catch (Exception e){
+            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
+        }
+
+        return false;
     }
 
 }
