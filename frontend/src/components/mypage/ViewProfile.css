@@ -1,22 +1,22 @@
-.edit-container {
+.view-container {
   padding: 16px;
   margin: 0 auto;
   margin-bottom: 80px;
   /* width: 360px; */
 }
 
-.edit-header {
+.view-header {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.edit-header img {
+.view-header img {
   margin-right: 10px;
   height: 14px;
 }
 
-.edit-myprofile-img {
+.view-myprofile-img {
   display: flex;
   width: 120px;
   height: 120px;
@@ -24,27 +24,27 @@
   margin: 0 auto;
 }
 
-.edit-contents {
+.view-contents {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-right: 36px;
 }
 
-.edit-content {
+.view-content {
   width: 100%;
   padding-right: 36x;
   margin-bottom: 20px;
 }
 
-.edit-label {
+.view-label {
   padding: 4px;
   font-size: 14px;
   color: #6c7072;
   margin-bottom: 10px;
 }
 
-.edit-input {
+.view-input {
   font-size: 16px;
   width: 100%;
   height: 36px;
@@ -52,19 +52,4 @@
   border: 1.5px solid color-mix(in srgb, #6c7072 50%, white 50%);
   padding: 0 16px;
   background-color: #fcfcfc;
-}
-
-.edit-container .edit-buttons {
-  margin-top: 20px;
-  display: flex;
-  gap: 20px;
-}
-
-.edit-container .edit-buttons .wide-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  border-radius: 15px;
-  height: 36px;
 }

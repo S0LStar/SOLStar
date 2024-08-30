@@ -23,7 +23,7 @@ import ZzimPage from '../pages/ZzimPage';
 import ZzimContainer from '../components/zzim/ZzimContainer';
 import MyPage from '../pages/MyPage';
 import MyPageContainer from '../components/mypage/MyContainer';
-import EditProfile from '../components/mypage/EditProfile';
+import ViewProfile from '../components/mypage/ViewProfile.jsx';
 import ParticipantFunding from '../components/mypage/ParticipantFunding';
 import CreatedFunding from '../components/mypage/CreatedFunding';
 import AgencyMyPageContainer from '../components/mypage/AgencyMyPageContainer';
@@ -98,7 +98,7 @@ function AppRoutes() {
 
               <Route path="/my" element={<MyPage />}>
                 <Route index element={<MyPageContainer />} />
-                <Route path="editprofile" element={<EditProfile />} />
+                <Route path="viewprofile" element={<ViewProfile />} />
                 <Route
                   path="participantfunding"
                   element={<ParticipantFunding />}
