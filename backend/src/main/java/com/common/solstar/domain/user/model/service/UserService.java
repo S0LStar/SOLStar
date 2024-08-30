@@ -1,7 +1,10 @@
 package com.common.solstar.domain.user.model.service;
 
+import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.common.solstar.domain.funding.entity.Funding;
+import com.common.solstar.domain.funding.model.repository.FundingRepository;
 import com.common.solstar.domain.funding.model.repository.FundingRepositorySupport;
+import com.common.solstar.domain.fundingJoin.entity.FundingJoin;
 import com.common.solstar.domain.fundingJoin.model.repository.FundingJoinRepository;
 import com.common.solstar.domain.fundingJoin.model.repository.FundingJoinRepositorySupport;
 import com.common.solstar.domain.user.dto.request.UpdateIntroductionRequest;
@@ -17,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class UserService {
     private final FundingJoinRepository fundingJoinRepository;
     private final FundingJoinRepositorySupport fundingJoinRepositorySupport;
     private final FundingRepositorySupport fundingRepositorySupport;
+    private final FundingRepository fundingRepository;
 
     // 로그인 유저 정보 조회
     public UserDetailResponse getLoginUserDetail(String authEmail) {
@@ -47,7 +52,7 @@ public class UserService {
     }
 
     // 참여 펀딩 조회
-    public List<UserJoinFundingReponse> getUserJoinFunding(String authEmail) {
+    public List<FundingResponseDto> getUserJoinFunding(String authEmail) {
         if(authEmail == null) {
             throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
         }
@@ -55,18 +60,35 @@ public class UserService {
         User user = userRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
-        return fundingJoinRepositorySupport.findFundingByUserEmail(user.getId());
+        List<FundingJoin> fundingJoinList = fundingJoinRepository.findByUserId(user.getId());
+
+        List<Funding> fundingList = fundingJoinList.stream()
+                .map(FundingJoin::getFunding)
+                .collect(Collectors.toList());
+
+        List<FundingResponseDto> responseList = fundingList.stream()
+                .map(funding -> FundingResponseDto.createResponseDto(funding))
+                .collect(Collectors.toList());
+
+        return responseList;
     }
 
     // 주최 펀딩 조회
-    public List<HostFundingResponse> getHostFunding(String authEmail) {
+    public List<FundingResponseDto> getHostFunding(String authEmail) {
         if(authEmail == null) {
             throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
         }
 
         User user = userRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
-        return fundingRepositorySupport.findFundingByHostId(user.getId());
+
+        List<Funding> fundingList = fundingRepository.findByHostId(user.getId());
+
+        List<FundingResponseDto> responseList = fundingList.stream()
+                .map(funding -> FundingResponseDto.createResponseDto(funding))
+                .collect(Collectors.toList());
+
+        return responseList;
 
     }
 
@@ -88,5 +110,39 @@ public class UserService {
         }
 
         userRepository.save(user);
+    }
+
+    // 로그아웃
+    public void logout(String accessToken, String refreshToken, String authEmail) {
+
+        if(authEmail == null) {
+            throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
+        }
+
+        User user = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        user.deleteRefreshToken();
+        userRepository.save(user);
+    }
+
+    // 특정 유저가 주최한 펀딩 조회
+    public List<FundingResponseDto> getHostFundingById(String authEmail, int userId) {
+
+        if(authEmail == null) {
+            throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
+        }
+
+        User user = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        List<Funding> fundingList = fundingRepository.findByHostId(userId);
+
+        List<FundingResponseDto> responseList = fundingList.stream()
+                .map(funding -> FundingResponseDto.createResponseDto(funding))
+                .collect(Collectors.toList());
+
+        return responseList;
+
     }
 }
