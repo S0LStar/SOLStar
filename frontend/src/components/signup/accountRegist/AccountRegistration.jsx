@@ -1,11 +1,13 @@
 import './AccountRegistration.css';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import AxiosInstance from '../../../util/AxiosInstance'; // AxiosInstance 임포트
 import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
 import CircleX from '../../../assets/signup/CircleX.png';
 import DownVector from '../../../assets/common/DownVector.png';
+import axiosInstance from '../../../util/AxiosInstance';
 
 // 은행별 modal 아이콘
 const bankIcons = {
@@ -38,17 +40,43 @@ function AccountRegistration() {
   const [currentStep] = useState(3);
   const [account, setAccount] = useState({
     ...location.state.account,
-    accountNumber: '',
+    accountNo: '',
     bankName: '',
     accountHolder: '',
+    userKey: '',
   });
   const [nextActive, setNextActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  // 페이지 로딩 시 실행할 axios 통신
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const response = await AxiosInstance.post(
+          'auth/user-account/validate',
+          { userId: 'ksh219805@gmail.com' }
+          // { userId: account.email }
+        );
+        console.log('초기 데이터:', response.data);
+
+        // userKey를 account 상태에 추가로 저장
+        if (response.data && response.data.data) {
+          setAccount((prevAccount) => ({
+            ...prevAccount,
+            userKey: response.data.data.useKey, // 올바른 key 명 확인
+          }));
+        }
+      } catch (error) {
+        console.error('초기 데이터 불러오기 실패:', error);
+      }
+    };
+    fetchInitialData(); // 컴포넌트 마운트 시 실행
+  }, []); // 빈 배열: 처음 마운트될 때만 실행
+
   // 값 다 채워졌는지 확인
   useEffect(() => {
     const isFormComplete = Boolean(
-      account.accountNumber && account.bankName && account.accountHolder
+      account.accountNo && account.bankName && account.accountHolder
     );
 
     setNextActive(isFormComplete);
@@ -63,10 +91,10 @@ function AccountRegistration() {
     }));
   };
 
-  const handleClearAccountNumber = () => {
+  const handleClearAccountNo = () => {
     setAccount((prevAccount) => ({
       ...prevAccount,
-      accountNumber: '',
+      accountNo: '',
       accountHolder: '',
     }));
   };
@@ -86,14 +114,29 @@ function AccountRegistration() {
     setShowModal(false);
   };
 
-  const handleConfirm = () => {
-    if (account.accountNumber && account.bankName) {
-      setTimeout(() => {
+  const handleConfirm = async () => {
+    if (account.accountNo) {
+      try {
+        const response = await axiosInstance.post(
+          '/auth/account/authenticate',
+          {
+            accountNo: account.accountNo,
+            userKey: account.userKey,
+          }
+        );
+
+        // 예금주명 (accountHolder) 업데이트
         setAccount((prevAccount) => ({
           ...prevAccount,
-          accountHolder: '홍길동',
+          accountHolder: account.name, // 예금주명을 서버에서 반환한다면 사용하고, 그렇지 않다면 기본값 사용
         }));
-      }, 1000);
+
+        alert('계좌 인증이 성공적으로 완료되었습니다.');
+      } catch (error) {
+        console.error('계좌 인증 실패:', error);
+        // 계좌 인증 실패 메시지 출력
+        alert('계좌 인증에 실패했습니다. 다시 시도해 주세요.');
+      }
     } else {
       alert('계좌번호와 은행명을 입력해 주세요.');
     }
@@ -117,12 +160,12 @@ function AccountRegistration() {
         </div>
         <form className="accountregist-form">
           <div className="accountregist-form-field">
-            <label htmlFor="accountNumber">계좌번호</label>
+            <label htmlFor="accountNo">계좌번호</label>
             <div>
               <input
                 type="text"
-                id="accountNumber"
-                value={account.accountNumber}
+                id="accountNo"
+                value={account.accountNo}
                 onChange={handleChange}
                 placeholder="'-'없이 계좌번호 입력"
               />
@@ -130,7 +173,7 @@ function AccountRegistration() {
                 src={CircleX}
                 alt="계좌번호 입력 지우기"
                 className="clear-icon"
-                onClick={handleClearAccountNumber}
+                onClick={handleClearAccountNo}
               />
             </div>
             <hr />

@@ -5,7 +5,17 @@ import UnderBar from '../src/components/common/UnderBar';
 
 function App() {
   const location = useLocation();
-  const excludeFooterPaths = ['/login', '/signup'];
+  const excludeFooterPaths = [
+    '/login',
+    '/signup',
+    '/signup/term',
+    '/signup/create',
+    '/signup/regist',
+    '/signup/verify',
+    '/signup/set',
+    '/signup/reset',
+    '/signup/created',
+  ];
 
   return (
     <>

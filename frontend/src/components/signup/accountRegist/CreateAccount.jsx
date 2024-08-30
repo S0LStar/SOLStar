@@ -1,62 +1,132 @@
 import './CreateAccount.css';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AxiosInstance from '../../../util/AxiosInstance'; // AxiosInstance 임포트
 import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
 import DefaultImage from '../../../assets/funding/DefaultImage.png';
 
 function CreateAccount() {
+  const API_LINK = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [currentStep] = useState(2);
   const [account, setAccount] = useState({
     email: '',
     name: '',
     nickname: '',
-    birthdate: '',
+    birthDate: '',
     phone: '',
     profileImage: '',
     password: '',
     passwordConfirm: '',
   });
+  const [emailValid, setEmailValid] = useState(null); // 이메일 중복 체크 상태
+  const [nicknameValid, setNicknameValid] = useState(null); // 닉네임 중복 체크 상태
+  const [emailFormatValid, setEmailFormatValid] = useState(true); // 이메일 형식 체크 상태
+  const [passwordMatch, setPasswordMatch] = useState(true); // 비밀번호 일치 상태
   const [nextActive, setNextActive] = useState(false); // 다음 넘어가기 전 검증
   const [previewImage, setPreviewImage] = useState(null); // 이미지
 
-  const fileInputRef = useRef(null); //파일 입출력
+  const fileInputRef = useRef(null); // 파일 입출력
 
-  // 이미지 빼고 모두 입력시 다음 가능
   useEffect(() => {
     const isFormComplete = Boolean(
       account.email &&
         account.name &&
         account.nickname &&
-        account.birthdate &&
+        account.birthDate &&
         account.phone &&
         account.password &&
         account.passwordConfirm &&
-        account.password === account.passwordConfirm // 비밀번호 확인
+        account.password === account.passwordConfirm &&
+        emailValid === true && // 이메일 중복 체크 완료
+        emailFormatValid === true && // 이메일 형식 체크 완료
+        nicknameValid === true && // 닉네임 중복 체크 완료
+        passwordMatch === true // 비밀번호 일치 체크 완료
     );
 
     setNextActive(isFormComplete);
-  }, [account]);
+  }, [account, emailValid, emailFormatValid, nicknameValid, passwordMatch]);
 
-  // 입력 시 변경
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setAccount((prevAccount) => ({
-      ...prevAccount,
-      [id]: value,
-    }));
+
+    if (id === 'phone') {
+      const formattedValue = value.replace(/[^0-9]/g, ''); // 숫자가 아닌 문자 제거
+      if (formattedValue.length <= 11) {
+        setAccount((prevAccount) => ({
+          ...prevAccount,
+          [id]: formattedValue,
+        }));
+      }
+    } else if (id === 'name' || id === 'nickname') {
+      if (value.length <= 10) {
+        setAccount((prevAccount) => ({
+          ...prevAccount,
+          [id]: value,
+        }));
+      }
+    } else {
+      setAccount((prevAccount) => ({
+        ...prevAccount,
+        [id]: value,
+      }));
+    }
+
+    if (id === 'email') {
+      // 이메일 형식 체크
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setEmailFormatValid(emailRegex.test(value));
+    }
+
+    if (id === 'password' || id === 'passwordConfirm') {
+      // 비밀번호 중복 체크
+      const newAccount = { ...account, [id]: value };
+      setPasswordMatch(newAccount.password === newAccount.passwordConfirm);
+    }
   };
 
-  // 클릭 시 사진 입력
+  const handleBlur = async (e) => {
+    const { id, value } = e.target;
+
+    if (id === 'email' && emailFormatValid) {
+      // email 중복 체크
+      try {
+        const response = await AxiosInstance.post(
+          'auth/user/email/duplicate-check',
+          { email: value }
+        );
+        setEmailValid(response.data.isAvailable);
+      } catch (error) {
+        console.error('이메일 중복 체크 실패:', error);
+        setEmailValid(false);
+        setEmailValid(true);
+      }
+    }
+
+    if (id === 'nickname') {
+      // 닉네임 중복 체크
+      try {
+        const response = await AxiosInstance.post(
+          'auth/user/nickname/duplicate-check',
+          { nickname: value }
+        );
+        setNicknameValid(response.data.isAvailable);
+      } catch (error) {
+        console.error('닉네임 중복 체크 실패:', error);
+        setNicknameValid(false);
+        setNicknameValid(true);
+      }
+    }
+  };
+
   const handleImageUploadClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  // 이미지 변경
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -82,7 +152,7 @@ function CreateAccount() {
         <form className="create-form">
           <div className="create-form-image">
             <div
-              onClick={handleImageUploadClick}
+              // onClick={handleImageUploadClick}
               className="create-image-preview"
             >
               {previewImage ? (
@@ -105,8 +175,17 @@ function CreateAccount() {
               id="email"
               value={account.email}
               onChange={handleChange}
+              onBlur={handleBlur}
               placeholder="이메일"
             />
+            {emailFormatValid === false && (
+              <div className="error-message">
+                유효한 이메일 형식이 아닙니다.
+              </div>
+            )}
+            {emailValid === false && (
+              <div className="error-message">이미 사용 중인 이메일입니다.</div>
+            )}
           </div>
           <div className="create-form-field">
             <input
@@ -125,6 +204,9 @@ function CreateAccount() {
               onChange={handleChange}
               placeholder="비밀번호 확인"
             />
+            {!passwordMatch && (
+              <div className="error-message">비밀번호가 일치하지 않습니다.</div>
+            )}
           </div>
           <div className="create-form-field">
             <input
@@ -141,14 +223,18 @@ function CreateAccount() {
               id="nickname"
               value={account.nickname}
               onChange={handleChange}
+              onBlur={handleBlur}
               placeholder="닉네임"
             />
+            {nicknameValid === false && (
+              <div className="error-message">이미 사용 중인 닉네임입니다.</div>
+            )}
           </div>
           <div className="create-form-field">
             <input
               type="date"
-              id="birthdate"
-              value={account.birthdate}
+              id="birthDate"
+              value={account.birthDate}
               onChange={handleChange}
               placeholder="생년월일"
             />
@@ -159,7 +245,7 @@ function CreateAccount() {
               id="phone"
               value={account.phone}
               onChange={handleChange}
-              placeholder="전화번호"
+              placeholder="전화번호 01043214321"
             />
           </div>
         </form>
@@ -168,6 +254,7 @@ function CreateAccount() {
           isActive={nextActive}
           onClick={() => {
             if (nextActive) {
+              console.log(account);
               navigate('/signup/regist', { state: { account } });
             }
           }}

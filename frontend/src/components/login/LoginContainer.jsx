@@ -30,16 +30,20 @@ function LoginContainer() {
         password: password,
       });
 
-      const { accessToken, refreshToken } = response.data.data;
-      dispatch(setToken({ accessToken, refreshToken, role }));
+      const { accessToken } = response.data.data;
+      dispatch(setToken({ accessToken, role }));
 
       // 로컬 스토리지에 토큰 저장
       localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('role', role);
 
-      alert('로그인 성공');
-      navigate('/');
+      if (response !== null) {
+        // 0.5초 후에 실행
+        setTimeout(() => {
+          alert('로그인 성공');
+          navigate('/');
+        }, 500); // 500 milliseconds = 0.5 seconds
+      }
     } catch (error) {
       console.error('로그인 실패:', error);
       alert('로그인 실패');
