@@ -13,6 +13,7 @@ import com.common.solstar.domain.funding.model.repository.FundingRepository;
 import com.common.solstar.domain.fundingJoin.entity.FundingJoin;
 import com.common.solstar.domain.fundingJoin.model.repository.FundingJoinRepository;
 import com.common.solstar.domain.user.entity.User;
+import com.common.solstar.global.api.exception.WebClientExceptionHandler;
 import com.common.solstar.global.api.request.CommonHeader;
 import com.common.solstar.global.api.request.CreateDemandDepositAccountApiRequest;
 import com.common.solstar.global.api.request.TransferApiRequest;
@@ -44,6 +45,7 @@ public class FundingMonitoringService {
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final WebClientExceptionHandler webClientExceptionHandler;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -195,7 +197,14 @@ public class FundingMonitoringService {
                 return accountResponse;
             }
 
-        } catch (Exception e) {
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
+
+            webClientExceptionHandler.handleWebClientException(errorBody);
+
+        } catch (Exception e){
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
         return null;
@@ -246,30 +255,11 @@ public class FundingMonitoringService {
         } catch (WebClientResponseException e) {
             // WebClient 오류 응답 처리
             String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
 
-            try {
-                // 오류 응답 JSON 파싱
-                JsonNode root = objectMapper.readTree(errorBody);
+            webClientExceptionHandler.handleWebClientException(errorBody);
 
-                if (root.has("responseCode")) {
-                    String responseCode = root.get("responseCode").asText();
-
-                    // responseCode에 따른 커스텀 예외 처리
-                    switch (responseCode) {
-                        case "A1003":
-                            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                        default:
-                            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                    }
-                } else {
-                    throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                }
-
-            } catch (JsonProcessingException jsonParseException) {
-                // JSON 파싱 오류 시 기본 예외 처리
-                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-            }
-        } catch (Exception e) {
+        } catch (Exception e){
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
 
@@ -328,30 +318,11 @@ public class FundingMonitoringService {
         } catch (WebClientResponseException e) {
             // WebClient 오류 응답 처리
             String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
 
-            try {
-                // 오류 응답 JSON 파싱
-                JsonNode root = objectMapper.readTree(errorBody);
+            webClientExceptionHandler.handleWebClientException(errorBody);
 
-                if (root.has("responseCode")) {
-                    String responseCode = root.get("responseCode").asText();
-
-                    // responseCode에 따른 커스텀 예외 처리
-                    switch (responseCode) {
-                        case "A1003":
-                            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                        default:
-                            throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                    }
-                } else {
-                    throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                }
-
-            } catch (JsonProcessingException jsonParseException) {
-                // JSON 파싱 오류 시 기본 예외 처리
-                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-            }
-        } catch (Exception e) {
+        } catch (Exception e){
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
 
