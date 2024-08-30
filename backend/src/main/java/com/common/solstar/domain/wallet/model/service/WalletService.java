@@ -8,6 +8,7 @@ import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.domain.wallet.dto.response.FindMyAccountReponse;
 import com.common.solstar.domain.wallet.dto.response.FindMyHostFundingAccountResponse;
 import com.common.solstar.domain.wallet.dto.response.FundingTransactionHistoryResponse;
+import com.common.solstar.global.api.exception.WebClientExceptionHandler;
 import com.common.solstar.global.api.request.CommonHeader;
 import com.common.solstar.global.api.request.FindAccountApiRequest;
 import com.common.solstar.global.api.request.FundingTransactionHistoryApiRequest;
@@ -42,6 +43,7 @@ public class WalletService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final FundingRepository fundingRepository;
     private final FundingJoinRepositorySupport fundingJoinRepositorySupport;
+    private final WebClientExceptionHandler webClientExceptionHandler;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -92,12 +94,17 @@ public class WalletService {
                     .userName(user.getName())
                     .accountNo(user.getAccount().getAccountNumber())
                     .build();
-        } catch (WebClientResponseException | JsonProcessingException e) {
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
 
+            webClientExceptionHandler.handleWebClientException(errorBody);
 
+        } catch (Exception e){
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-
-            }
+        }
+        return null;
     }
 
     // 내가 주최하는 펀딩의 계좌 조회
@@ -158,8 +165,14 @@ public class WalletService {
                         .userName(user.getName())
                         .build());
 
-            } catch (WebClientResponseException | JsonProcessingException e) {
-                // 예외 발생 시 사용자 정의 예외를 던짐
+            } catch (WebClientResponseException e) {
+                // WebClient 오류 응답 처리
+                String errorBody = e.getResponseBodyAsString();
+                System.out.println("Error Response: " + errorBody);
+
+                webClientExceptionHandler.handleWebClientException(errorBody);
+
+            } catch (Exception e){
                 throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
             }
         }
@@ -183,8 +196,6 @@ public class WalletService {
 
         // 로그인 유저가 주최자도 아니고 참여자도 아닌경우
         if(user.getId() != funding.getHost().getId() && !fundingJoinRepositorySupport.isJoinFunding(fundingId, user.getId())){
-            System.out.println("로그인 유저 : "+user.getId());
-            System.out.println("호스트 :" + funding.getHost().getId());
             throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
         }
 
@@ -243,8 +254,14 @@ public class WalletService {
                 }
             }
 
-        } catch (WebClientResponseException | JsonProcessingException e) {
-            // 예외 발생 시 사용자 정의 예외를 던짐
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
+
+            webClientExceptionHandler.handleWebClientException(errorBody);
+
+        } catch (Exception e){
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
 
