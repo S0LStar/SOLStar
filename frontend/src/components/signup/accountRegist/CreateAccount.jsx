@@ -94,7 +94,7 @@ function CreateAccount() {
       // email 중복 체크
       try {
         const response = await AxiosInstance.post(
-          `${API_LINK}/auth/user/email/duplicate-check`,
+          'auth/user/email/duplicate-check',
           { email: value }
         );
         setEmailValid(response.data.isAvailable);
@@ -109,7 +109,7 @@ function CreateAccount() {
       // 닉네임 중복 체크
       try {
         const response = await AxiosInstance.post(
-          `${API_LINK}/auth/user/nickname/duplicate-check`,
+          'auth/user/nickname/duplicate-check',
           { nickname: value }
         );
         setNicknameValid(response.data.isAvailable);
