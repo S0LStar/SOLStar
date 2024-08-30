@@ -15,10 +15,9 @@ const store = configureStore({
 });
 
 const accessToken = localStorage.getItem('accessToken');
-const refreshToken = localStorage.getItem('refreshToken');
 const role = localStorage.getItem('role');
-if (accessToken && refreshToken && role) {
-  store.dispatch(setToken({ accessToken, refreshToken, role }));
+if (accessToken && role) {
+  store.dispatch(setToken({ accessToken, role }));
 }
 
 export default store;
