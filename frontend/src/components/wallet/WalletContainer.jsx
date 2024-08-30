@@ -72,7 +72,7 @@ function WalletContainer() {
   return (
     <>
       <div className="wallet-container">
-        <div className="wallet-header">내 지갑</div>
+        <div className="wallet-header">나의 지갑</div>
         {walletData ? (
           <WalletItem walletData={walletData} />
         ) : (
