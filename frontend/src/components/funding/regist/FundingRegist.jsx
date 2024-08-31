@@ -3,13 +3,13 @@ import BackButton from '../../common/BackButton';
 import { useState } from 'react';
 import FundingRegistInfo from './FundingRegistInfo';
 import FundingRegistContent from './FundingRegistContent';
+import axiosInstance from '../../../util/AxiosInstance';
 
 function FundingRegistContainer() {
   const [step, setStep] = useState(1); // 펀딩 등록 단계
   const [funding, setFunding] = useState({
     // 펀딩 정보를 관리할 state
     type: 'COMMON',
-    fundingImage: '',
     title: '',
     deadlineDate: '',
     goalAmount: 0,
@@ -27,7 +27,21 @@ function FundingRegistContainer() {
   };
 
   const handleRegist = () => {
-    // TODO: 등록 완료, API 연결 필요
+    // 펀딩 생성 API 연결
+    const registFunding = async () => {
+      const response = await axiosInstance.post('funding', {
+        type: funding.type,
+        title: funding.title,
+        deadlineDate: funding.deadlineDate,
+        goalAmount: funding.goalAmount,
+        artistId: funding.artistId,
+        content: funding.content,
+      });
+
+      console.log(response);
+    };
+
+    registFunding();
     console.log(funding);
   };
 

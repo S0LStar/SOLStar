@@ -64,7 +64,6 @@ public class FundingServiceImpl implements FundingService {
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AccountRepository accountRepository;
-    private final GroupedOpenApi api;
     private final WebClientExceptionHandler webClientExceptionHandler;
     private final AgencyRepository agencyRepository;
 
@@ -95,13 +94,7 @@ public class FundingServiceImpl implements FundingService {
         // String 타입의 입력값을 FundingType으로 변환
         FundingType fundingType = FundingType.fromString(fundingDto.getType());
 
-        // 사진 s3에 업로드
-        imageUtil.upload(fundingImage);
-        
-        // 사진 파일 이름 바꿔서 DB 에 저장
-        String uploadFile = imageUtil.uploadImage(fundingImage);
-
-        Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), uploadFile, fundingDto.getContent(), fundingDto.getGoalAmount(),
+        Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), artist.getProfileImage(), fundingDto.getContent(), fundingDto.getGoalAmount(),
                 fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
 
         fundingRepository.save(createdFunding);

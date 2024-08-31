@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './FundingPayment.css';
 
-import DefaultImage from '../../../assets/character/Sol.png';
+import DefaultArtist from '../../../assets/common/DefaultArtist.png';
 import axiosInstance from '../../../util/AxiosInstance';
 import Error from '../../common/Error';
 import Loading from '../../common/Loading';
@@ -72,7 +72,11 @@ function FundingPayment({ artistName, artistProfileImage }) {
     <div className="funding-payment-container">
       <div className="funding-payment-balance">
         {/* TODO: 이미지처리 */}
-        <img src={DefaultImage} alt="" className="funding-payment-image" />
+        <img
+          src={artistProfileImage || DefaultArtist}
+          alt=""
+          className="funding-payment-image"
+        />
         <div>
           <div>{artistName} 펀딩 계좌 잔액</div>
           <div>{filteredPayment.accountBalance.toLocaleString()}</div>
