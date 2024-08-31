@@ -14,14 +14,12 @@ import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.common.solstar.global.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -32,6 +30,7 @@ public class ArtistServiceImpl implements ArtistService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
     private final LikeListRepository likeListRepository;
+    private final ImageUtil imageUtil;
 
     @Override
     public List<ArtistSearchResponseDto> searchArtists(String keyword, String authEmail) {
@@ -42,8 +41,16 @@ public class ArtistServiceImpl implements ArtistService {
         // 검색어로 아티스트 리스트 불러오기
         List<Artist> artists = artistRepository.findByNameContainingIgnoreCaseOrGroupContainingIgnoreCase(keyword, keyword);
 
+        List<Artist> newArtists = new ArrayList<>();
+        for (Artist artist : artists) {
+            String fileName = imageUtil.extractFileName(artist.getProfileImage());
+
+            artist.setProfileImage(fileName);
+            newArtists.add(artist);
+        }
+
         // 아티스트마다 찜 여부 확인 후, dto로 변환
-        List<ArtistSearchResponseDto> artistSearchResponseList = artists.stream()
+        List<ArtistSearchResponseDto> artistSearchResponseList = newArtists.stream()
                 .map(artist -> {
                     boolean isLiked = likeListRepository.existsByUserAndArtist(loginUser, artist);
                     return ArtistSearchResponseDto.createResponseDto(artist, isLiked);
