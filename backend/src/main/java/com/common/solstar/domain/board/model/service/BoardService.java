@@ -32,7 +32,7 @@ public class BoardService {
     private final ImageUtil imageUtil;
 
     @Transactional
-    public void createBoard(int fundingId, BoardCreateRequestDto boardDto, String authEmail) {
+    public void createBoard(int fundingId, BoardCreateRequestDto boardDto, String authEmail, MultipartFile contentImage) {
 
         // 현재 로그인한 유저가 해당 펀딩의 host 인지 확인
         Funding funding = fundingRepository.findById(fundingId)
@@ -46,11 +46,9 @@ public class BoardService {
             throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
         }
 
-        MultipartFile multipartFile = boardDto.getContentImage();
+        imageUtil.upload(contentImage);
 
-        imageUtil.upload(multipartFile);
-
-        String uploadFile = imageUtil.uploadImage(multipartFile);
+        String uploadFile = imageUtil.uploadImage(contentImage);
 
         Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent(), uploadFile);
 
