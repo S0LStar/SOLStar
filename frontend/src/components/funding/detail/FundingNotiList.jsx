@@ -87,7 +87,7 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
         <div key={notice.boardId} className="notice-item">
           <div className="notice-profile-info">
             <img
-              src={profileImage || DefaultImage}
+              src={DefaultImage}
               alt="프로필 이미지"
               className="profile-image"
             />
