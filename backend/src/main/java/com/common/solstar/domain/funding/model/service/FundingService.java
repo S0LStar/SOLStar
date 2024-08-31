@@ -7,13 +7,14 @@ import com.common.solstar.domain.funding.dto.response.FundingContentResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.common.solstar.domain.fundingJoin.dto.request.FundingJoinCreateRequestDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface FundingService {
 
     // 펀딩 생성
-    void createFunding(FundingCreateRequestDto fundingDto, String authEmail);
+    void createFunding(FundingCreateRequestDto fundingDto, String authEmail, MultipartFile fundingImage);
 
     // 펀딩 수정
     void updateFunding(int fundingId, FundingUpdateRequestDto fundingDto, String authEmail);
