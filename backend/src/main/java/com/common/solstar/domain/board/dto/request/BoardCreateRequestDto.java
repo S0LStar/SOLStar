@@ -17,6 +17,4 @@ public class BoardCreateRequestDto {
     @NotNull
     private String content;
 
-    private MultipartFile contentImage;
-
 }
