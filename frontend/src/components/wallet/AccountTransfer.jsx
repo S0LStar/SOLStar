@@ -7,10 +7,8 @@ import Wallet from '../../assets/wallet/Wallet.png';
 import FundingWallet from '../../assets/wallet/FundingWallet.png';
 import Shinhan from '../../assets/wallet/Shinhan.png';
 import BackButton from '../common/BackButton';
-import Error from '../../common/Error';
 
 function AccountTransfer() {
-  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [transactionHistory, setTransactionHistory] = useState([]); // 거래 내역 상태 초기화
@@ -54,8 +52,7 @@ function AccountTransfer() {
   const handleTransfer = async () => {
     // 이체 로직
     if (!balance || !memo) {
-      // alert('금액과 메모를 입력해주세요.');
-      setError('금액과 메모를 입력해주세요.');
+      alert('금액과 메모를 입력해주세요.');
       return;
     }
 
@@ -67,8 +64,7 @@ function AccountTransfer() {
         storeSummary: memo,
       });
       console.log('이체 성공:', response.data);
-      // alert('이체가 완료되었습니다.');
-      setError('이체가 완료되었습니다.');
+      alert('이체가 완료되었습니다.');
 
       // 이체 후 상태 초기화 또는 필요한 후처리 로직 추가
       setAccountNumber('');
@@ -76,8 +72,7 @@ function AccountTransfer() {
       setMemo('');
     } catch (error) {
       console.error('이체 실패:', error);
-      // alert('이체에 실패했습니다.');
-      setError('이체에 실패했습니다.');
+      alert('이체에 실패했습니다.');
     }
   };
 
@@ -163,7 +158,6 @@ function AccountTransfer() {
           </div>
         </div>
       </div>
-      {error && <Error setError={setError} />}
     </>
   );
 }
