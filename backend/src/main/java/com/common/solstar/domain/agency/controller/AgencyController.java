@@ -6,6 +6,8 @@ import com.common.solstar.domain.agency.dto.response.AgencyDetailResponse;
 import com.common.solstar.domain.agency.model.service.AgencyService;
 import com.common.solstar.domain.funding.dto.response.FundingAgencyResponseDto;
 import com.common.solstar.global.auth.jwt.JwtUtil;
+import com.common.solstar.global.exception.CustomException;
+import com.common.solstar.global.exception.ExceptionResponse;
 import com.common.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +32,13 @@ public class AgencyController {
     @GetMapping("/funding")
     @Operation(summary = "펀딩 인증 요청 조회")
     public ResponseEntity<?> getFundingList(@RequestHeader(value = "Authorization", required = false) String header) {
+        String accessToken = header.substring(7);
         String authEmail = jwtUtil.getLoginUser(header);
+        String role = jwtUtil.roleFromToken(accessToken);
+
+        if (role.equals("USER"))
+            throw new ExceptionResponse(CustomException.NO_AUTH_FUNDING_ACCEPT_EXCEPTION);
+
         List<FundingAgencyResponseDto> fundingList = agencyService.getFundingList(authEmail);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
