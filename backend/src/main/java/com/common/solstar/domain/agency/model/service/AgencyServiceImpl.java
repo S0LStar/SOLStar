@@ -159,4 +159,21 @@ public class AgencyServiceImpl implements AgencyService {
                 .build();
     }
 
+    // 로그아웃
+    @Override
+    @Transactional
+    public void logout(String authEmail) {
+        if(authEmail == null) {
+            throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
+        }
+
+        Agency agency = agencyRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
+
+        agency.deleteRefreshToken();
+        agencyRepository.save(agency);
+    }
+
+
+
 }

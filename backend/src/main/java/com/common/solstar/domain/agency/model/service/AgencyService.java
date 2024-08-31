@@ -20,4 +20,6 @@ public interface AgencyService {
     void updateName(String authEmail, UpdateNameRequest request);
 
     AgencyDetailResponse getAgencyDetail(String authEmail);
+
+    void logout(String authEmail);
 }
