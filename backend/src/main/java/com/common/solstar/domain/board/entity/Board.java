@@ -61,6 +61,10 @@ public class Board extends BaseTimeEntity {
         }
     }
 
+    public void uploadImage(String contentImage) {
+        this.contentImage = contentImage;
+    }
+
     public void deleteBoard() {
         this.isDelete = true;
     }
