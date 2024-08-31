@@ -22,7 +22,7 @@ public interface FundingService {
     void deleteFunding(int fundingId, String authEmail);
 
     // 펀딩 상세 조회
-    FundingDetailResponseDto getFundingById(int fundingId, String authEmail);
+    FundingDetailResponseDto getFundingById(String header, int fundingId);
 
     // 펀딩 내용 조회
     FundingContentResponseDto getFundingContent(int fundingId, String authEmail);
