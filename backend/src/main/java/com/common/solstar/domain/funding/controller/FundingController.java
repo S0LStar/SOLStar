@@ -102,8 +102,7 @@ public class FundingController {
     @Operation(summary = "펀딩 상세 정보 조회")
     public ResponseEntity<?> getFundingInfo(@RequestHeader(value = "Authorization", required = false) String header,
                                             @PathVariable("fundingId") int fundingId) {
-        String authEmail = jwtUtil.getLoginUser(header);
-        FundingDetailResponseDto selectedFunding = fundingService.getFundingById(fundingId, authEmail);
+        FundingDetailResponseDto selectedFunding = fundingService.getFundingById(header, fundingId);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())

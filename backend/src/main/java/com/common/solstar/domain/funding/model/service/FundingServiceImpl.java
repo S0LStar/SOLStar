@@ -25,6 +25,7 @@ import com.common.solstar.global.api.exception.WebClientExceptionHandler;
 import com.common.solstar.global.api.request.CommonHeader;
 import com.common.solstar.global.api.request.FindAccountApiRequest;
 import com.common.solstar.global.api.request.TransferApiRequest;
+import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
 import com.common.solstar.global.util.ImageUtil;
@@ -58,6 +59,7 @@ public class FundingServiceImpl implements FundingService {
     private final LikeListRepository likeListRepository;
     private final FundingJoinRepository fundingJoinRepository;
     private final ImageUtil imageUtil;
+    private final JwtUtil jwtUtil;
 
     private final WebClient webClient = WebClient.builder()
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
@@ -149,14 +151,24 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
-    public FundingDetailResponseDto getFundingById(int fundingId, String authEmail) {
+    public FundingDetailResponseDto getFundingById(String header, int fundingId) {
 
-        // 로그인한 유저 찾기
-        User loginUser = userRepository.findByEmail(authEmail)
-                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+        String accessToken = header.substring(7);
+        String authEmail = jwtUtil.getLoginUser(header);
+        String role = jwtUtil.roleFromToken(accessToken);
+
+            // 로그인한 유저 찾기
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        if (role.equals("USER") && funding.getType().equals(FundingType.VERIFIED)) {
+            FundingAgency fundingAgency = fundingAgencyRepository.findByFunding(funding)
+                    .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_AGENCY_EXCEPTION));
+
+            if (!fundingAgency.isStatus())
+                throw new ExceptionResponse(CustomException.NOT_ACCEPT_FUNDING_EXCEPTION);
+        }
 
         String fileName = imageUtil.extractFileName(funding.getFundingImage());
 
