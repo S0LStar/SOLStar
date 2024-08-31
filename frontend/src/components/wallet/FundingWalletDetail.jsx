@@ -6,6 +6,7 @@ import './FundingWalletDetail.css';
 import Wallet from '../../assets/wallet/Wallet.png';
 import FundingWallet from '../../assets/wallet/FundingWallet.png';
 import Shinhan from '../../assets/wallet/Shinhan.png';
+import BackButton from '../common/BackButton';
 
 function FundingWalletDetail() {
   const navigate = useNavigate();
@@ -68,8 +69,13 @@ function FundingWalletDetail() {
   return (
     <>
       <div className="fundingwalletdetail-container">
+        <div className="fundingwalletdetail-header">
+          <BackButton />
+          <div className="fundingwalletdetail-header-description">
+            펀딩 지갑
+          </div>
+        </div>
         <div className="fundingwalletdetail-item">
-          <div className="fundingwalletdetail-header">펀딩 지갑</div>
           <div className="fundingwalletdetail-background">
             <div className="fundingwalletdetail-owner">
               {walletData.artistName} 펀딩 계좌 잔액
