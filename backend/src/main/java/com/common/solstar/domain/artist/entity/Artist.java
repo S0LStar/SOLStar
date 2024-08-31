@@ -41,5 +41,8 @@ public class Artist {
     @Column(name = "is_delete", nullable = false)
     private boolean isDelete;
 
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 
 }

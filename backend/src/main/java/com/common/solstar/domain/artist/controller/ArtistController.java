@@ -40,15 +40,6 @@ public class ArtistController {
         String authEmail = jwtUtil.getLoginUser(header);
         List<ArtistSearchResponseDto> artistList = artistService.searchArtists(keyword, authEmail);
 
-        Artist artist = artistRepository.findById(1)
-                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
-
-        String imageUrl = artist.getProfileImage();
-
-        String fileName = imageUtil.extractFileName(imageUrl);
-
-        System.out.println(fileName);
-
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
                 .message("아티스트 검색 완료")
