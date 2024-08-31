@@ -46,7 +46,7 @@ public class FundingController {
     @Operation(summary = "펀딩 생성")
     public ResponseEntity<?> createFunding(@RequestHeader(value = "Authorization", required = false) String header,
                                            @RequestBody FundingCreateRequestDto fundingDto,
-                                           MultipartFile fundingImage) {
+                                           @RequestPart MultipartFile fundingImage) {
         String accessToken = header.substring(7);
         String authEmail = jwtUtil.getLoginUser(header);
         String role = jwtUtil.roleFromToken(accessToken);
