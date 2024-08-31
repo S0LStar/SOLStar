@@ -5,7 +5,6 @@ import temp from '../../assets/character/Sol.png'; // Placeholder image
 import Zzim from '../../assets/artist/Zzim.png';
 import NoZzim from '../../assets/artist/NoZzim.png';
 import axiosInstance from '../../util/AxiosInstance';
-import Loading from '../common/Loading';
 
 function ZzimContainer() {
   const navigate = useNavigate();

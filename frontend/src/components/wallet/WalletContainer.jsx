@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import AxiosInstance from '../../util/AxiosInstance'; // AxiosInstance 임포트
 import WalletItem from './WalletItem.jsx';
 import FundingWalletItem from './FundingWalletItem.jsx';
+import Loading from '../common/Loading';
 
 function WalletContainer() {
   const navigate = useNavigate();
@@ -62,7 +63,14 @@ function WalletContainer() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // 로딩 중일 때 표시
+    return (
+      <div>
+        <Loading>
+          <span style={{ color: '#0046ff' }}>정산 내역</span>을<br /> 가져오는
+          중이에요
+        </Loading>
+      </div>
+    ); // 로딩 중일 때 표시
   }
 
   if (error) {
@@ -76,7 +84,7 @@ function WalletContainer() {
         {walletData ? (
           <WalletItem walletData={walletData} />
         ) : (
-          <div>지갑 데이터가 없습니다.</div>
+          <div className="nowallet">지갑 데이터가 없습니다.</div>
         )}
 
         <div className="wallet-header">펀딩 지갑</div>
@@ -93,7 +101,7 @@ function WalletContainer() {
             />
           ))
         ) : (
-          <div>펀딩 지갑 데이터가 없습니다.</div>
+          <div className="nowallet">펀딩 지갑 데이터가 없습니다.</div>
         )}
       </div>
     </>

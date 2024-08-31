@@ -6,6 +6,7 @@ import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
 import CircleX from '../../../assets/signup/CircleX.png';
+import SignUpButton from '../../common/SignUpButton';
 
 function AccountVerification() {
   const navigate = useNavigate();
@@ -87,10 +88,8 @@ function AccountVerification() {
     <>
       <div className="accountverify-container">
         <div className="accountverify-header">
-          <div className="accountverify-header-backInfo">
-            <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
-            1원 인증
-          </div>
+          <SignUpButton />
+          <div className="accountverify-header-description">1원 인증</div>
           <ProgressBar currentStep={currentStep} />
         </div>
 
