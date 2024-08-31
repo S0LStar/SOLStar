@@ -2,15 +2,13 @@ import PropTypes from 'prop-types';
 import WideButton from '../../common/WideButton';
 import './FundingRegistInfo.css';
 import ArtistSearchModal from './ArtistSearchModal';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import DefaultImage from '../../../assets/funding/DefaultImage.png';
 import SelectIcon from '../../../assets/common/SelectIcon.png';
 
 function FundingRegistInfo({ funding, onChange, onNext }) {
   const [nextActive, setNextActive] = useState(false); // 다음 버튼 활성화 상태
   const [artistSearchModal, setArtistSearchModal] = useState(false); // 아티스트 검색 모달 상태
-  const [previewImage, setPreviewImage] = useState(null); // 이미지 미리보기 상태
   const [artistName, setArtistName] = useState('');
 
   // 모든 필드가 채워졌는지 확인
@@ -25,27 +23,6 @@ function FundingRegistInfo({ funding, onChange, onNext }) {
 
     setNextActive(isFormComplete);
   }, [funding]);
-
-  // 참조를 통해 파일 입력 요소에 접근
-  const fileInputRef = React.createRef();
-
-  // 이미지 업로드 함수
-  const handleImageUploadClick = () => {
-    // 숨겨진 파일 입력 필드를 클릭
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  // 이미지 변경 함수
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // 미리보기 이미지 설정
-      setPreviewImage(URL.createObjectURL(file));
-      onChange({ target: { id: 'fundingImage', value: file } });
-    }
-  };
 
   // 아티스트 검색 핸들링 함수
   const handleSelectArtist = (artist) => {
@@ -73,43 +50,6 @@ function FundingRegistInfo({ funding, onChange, onNext }) {
         </div>
       </div>
 
-      <div className="funding-regist-image">
-        <label htmlFor="image">펀딩 대표 사진</label>
-        <div className="funding-regist-image-content">
-          {previewImage ? (
-            <img
-              src={previewImage}
-              alt="미리보기"
-              className="funding-regist-image-preview"
-              onClick={handleImageUploadClick}
-            />
-          ) : (
-            <div
-              className="funding-regist-image-box"
-              onClick={handleImageUploadClick}
-            >
-              <img
-                src={DefaultImage}
-                alt=""
-                className="funding-regist-default-image"
-              />
-            </div>
-          )}
-          <input
-            type="file"
-            id="image"
-            ref={fileInputRef}
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{ display: 'none' }}
-          />
-          <div className="funding-regist-image-description">
-            <div>이런 사진을 등록해보세요 !</div>
-            <div>- 아티스트 사진</div>
-            <div>- 홍보 대상 사진</div>
-          </div>
-        </div>
-      </div>
       <div className="funding-regist-title">
         <label htmlFor="title">펀딩 제목</label>
         <input
