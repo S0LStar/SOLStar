@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import WideButton from '../../common/WideButton';
 import BackButton from '../../common/BackButton';
 import './FundingDetail.css';
@@ -16,6 +16,7 @@ import Closed from '../../../assets/funding/Closed.png';
 import axiosInstance from '../../../util/AxiosInstance';
 
 function FundingDetail() {
+  const navigate = useNavigate();
   const { fundingId } = useParams();
   const [funding, setFunding] = useState(null);
   const [activeTab, setActiveTab] = useState('plan'); // 활성화 탭 상태관리
@@ -83,7 +84,12 @@ function FundingDetail() {
         )}
         <h1 className="funding-detail-title">{funding.title}</h1>
 
-        <div className="funding-detail-artist-info">
+        <div
+          className="funding-detail-artist-info"
+          onClick={() => {
+            navigate(`/artist/${funding.artistId}`);
+          }}
+        >
           {/* TODO: 이미지처리 */}
           <img src={Certification} alt="" />
           <div>{funding.artistName}</div>

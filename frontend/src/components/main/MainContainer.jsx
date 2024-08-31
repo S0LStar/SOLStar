@@ -9,6 +9,7 @@ import RecentPopularFundingCard from './RecentPopularFundingCard';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../util/AxiosInstance';
 import { useEffect, useState } from 'react';
+import Empty from '../common/Empty';
 
 function MainContainer() {
   const navigate = useNavigate();
@@ -119,15 +120,19 @@ function MainContainer() {
             </div>
           </div>
           <div className="main-artist-funding-list">
-            {zzimArtistFunding.slice(0, 10).map((funding) => (
-              <ArtistFundingCard
-                key={funding.fundingId}
-                funding={funding}
-                onClick={() => {
-                  navigate(`/funding/${funding.fundingId}`);
-                }}
-              />
-            ))}
+            {zzimArtistFunding.length > 0 ? (
+              zzimArtistFunding.slice(0, 10).map((funding) => (
+                <ArtistFundingCard
+                  key={funding.fundingId}
+                  funding={funding}
+                  onClick={() => {
+                    navigate(`/funding/${funding.fundingId}`);
+                  }}
+                />
+              ))
+            ) : (
+              <Empty>선호 아티스트의 펀딩</Empty>
+            )}
           </div>
         </div>
         <div className="main-recent-popular-funding-list">
@@ -146,16 +151,20 @@ function MainContainer() {
             </div>
           </div>
           <div className="main-popular-funding-list">
-            {recentPopularFunding.slice(0, 5).map((funding, index) => (
-              <RecentPopularFundingCard
-                key={funding.fundingId}
-                index={index}
-                funding={funding}
-                onClick={() => {
-                  navigate(`/funding/${funding.fundingId}`);
-                }}
-              />
-            ))}
+            {recentPopularFunding.length > 0 ? (
+              recentPopularFunding.slice(0, 5).map((funding, index) => (
+                <RecentPopularFundingCard
+                  key={funding.fundingId}
+                  index={index}
+                  funding={funding}
+                  onClick={() => {
+                    navigate(`/funding/${funding.fundingId}`);
+                  }}
+                />
+              ))
+            ) : (
+              <Empty>최근 인기 펀딩</Empty>
+            )}
           </div>
         </div>
       </div>
