@@ -11,10 +11,13 @@ import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.common.solstar.global.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +29,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
+    private final ImageUtil imageUtil;
 
     @Transactional
     public void createBoard(int fundingId, BoardCreateRequestDto boardDto, String authEmail) {
@@ -42,7 +46,13 @@ public class BoardService {
             throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
         }
 
-        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent(), boardDto.getContentImage());
+        MultipartFile multipartFile = boardDto.getContentImage();
+
+        imageUtil.upload(multipartFile);
+
+        String uploadFile = imageUtil.uploadImage(multipartFile);
+
+        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent(), uploadFile);
 
         boardRepository.save(createdBoard);
     }
@@ -60,7 +70,16 @@ public class BoardService {
 
         List<Board> boardEntities = boardRepository.findByFunding_Id(fundingId);
 
-        List<BoardResponseDto> responseDtos = boardEntities.stream()
+        List<Board> newBoards = new ArrayList<>();
+
+        for (Board board : boardEntities) {
+            String fileName = imageUtil.extractFileName(board.getContentImage());
+            board.uploadImage(fileName);
+
+            newBoards.add(board);
+        }
+
+        List<BoardResponseDto> responseDtos = newBoards.stream()
                 .map(board -> BoardResponseDto.createResponseDto(board, isHost))
                 .collect(Collectors.toList());
 
