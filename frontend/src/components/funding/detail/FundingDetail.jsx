@@ -205,14 +205,15 @@ function FundingDetail() {
           >
             공지사항
           </button>
-          {funding.joinStatus !== 0 && (
-            <button
-              onClick={() => setActiveTab('payment')}
-              className={`funding-content-tab-button ${activeTab === 'payment' && 'active'}`}
-            >
-              정산
-            </button>
-          )}
+          {funding.joinStatus !== 0 &&
+            (funding.status === 'SUCCESS' || funding.status === 'CLOSED') && (
+              <button
+                onClick={() => setActiveTab('payment')}
+                className={`funding-content-tab-button ${activeTab === 'payment' && 'active'}`}
+              >
+                정산
+              </button>
+            )}
         </div>
         <div className="funding-content-detail">
           {activeTab === 'plan' ? (
