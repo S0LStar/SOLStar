@@ -5,6 +5,7 @@ import AxiosInstance from '../../../util/AxiosInstance'; // AxiosInstance 임포
 import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
+import SignUpButton from '../../common/SignUpButton';
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -80,10 +81,12 @@ function ResetPassword() {
         } else {
           // 실패 시 오류 메시지 표시하고 /login으로 이동
           alert('회원가입에 실패하셨습니다. 다시 시도해 주세요.');
+          navigate('/signup/created', { state: { account } });
           navigate('/signup');
         }
       } catch (error) {
         console.error('비밀번호 재설정 요청 실패:', error);
+        navigate('/signup/created', { state: { account } });
         alert('비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해 주세요.');
         navigate('/login');
       }
@@ -94,10 +97,8 @@ function ResetPassword() {
     <>
       <div className="resetpass-container">
         <div className="resetpass-header">
-          <div className="resetpass-header-backInfo">
-            <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
-            비밀번호 확인
-          </div>
+          <SignUpButton />
+          <div className="resetpass-header-description">비밀번호 재설정</div>
           <ProgressBar currentStep={currentStep} />
         </div>
 

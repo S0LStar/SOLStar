@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import AxiosInstance from '../../util/AxiosInstance'; // AxiosInstance import
-import './FundingWalletDetail.css';
+import './AccountTransfer.css';
 import Wallet from '../../assets/wallet/Wallet.png';
 import FundingWallet from '../../assets/wallet/FundingWallet.png';
 import Shinhan from '../../assets/wallet/Shinhan.png';
 
-function FundingWalletDetail() {
-  const navigate = useNavigate();
+function AccountTransfer() {
   const location = useLocation();
   const [transactionHistory, setTransactionHistory] = useState([]); // 거래 내역 상태 초기화
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
@@ -83,14 +81,7 @@ function FundingWalletDetail() {
               {walletData.balance.toLocaleString()} 원
             </div>
             <div className="fundingwalletdetail-buttons">
-              <button
-                className="fundingwalletdetail-withdrawbutton"
-                onClick={() => {
-                  navigate(`/wallet/${walletData.id}/transfer`, {
-                    state: { walletData },
-                  });
-                }}
-              >
+              <button className="fundingwalletdetail-withdrawbutton">
                 이체
               </button>
             </div>
@@ -104,45 +95,9 @@ function FundingWalletDetail() {
 
         <div>거래 내역</div>
         <hr />
-        <div className="transaction-history">
-          {transactionHistory.length > 0 ? (
-            transactionHistory.map((transaction, index) => (
-              <div key={index} className="transaction-item">
-                <div className="transaction-time">
-                  {transaction.transactionDateTime}
-                </div>
-                <div className="transaction-summary">
-                  {transaction.transactionSummary}
-                </div>
-                <div className="transaction-balance">
-                  {transaction.transactionTypeName}&nbsp;
-                  <span
-                    className={`transaction-balance-main ${
-                      transaction.transactionTypeName === '입금'
-                        ? 'blue-text'
-                        : 'red-text'
-                    }`}
-                  >
-                    {transaction.transactionBalance.toLocaleString()}
-                  </span>
-                  &nbsp;원
-                </div>
-                <div className="transaction-afterbalance">
-                  잔액&nbsp;
-                  <span className="transaction-afterbalance-main">
-                    {transaction.transactionAfterBalance.toLocaleString()}
-                  </span>
-                  &nbsp; 원
-                </div>
-              </div>
-            ))
-          ) : (
-            <div>거래 내역이 없습니다.</div>
-          )}
-        </div>
       </div>
     </>
   );
 }
 
-export default FundingWalletDetail;
+export default AccountTransfer;
