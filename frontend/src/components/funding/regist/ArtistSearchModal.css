@@ -70,9 +70,13 @@
   padding: 15px 10px;
   cursor: pointer;
   font-size: 14px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #dddddd7d;
   display: flex;
   align-items: center;
+}
+
+.artist-search-modal-list li:last-child {
+  border-bottom: none;
 }
 
 .search-modal-default-artist-profile {
