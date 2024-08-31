@@ -126,6 +126,12 @@ function AccountTransfer() {
         <div className="accounttransfer-item">
           <div className="accounttransfer-background">
             <div className="accounttransfer-transfer-form">
+              {/* <input
+                type="text"
+                placeholder="계좌번호"
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+              /> */}
               <input
                 type="number"
                 placeholder="금액"
