@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import AxiosInstance from '../../util/AxiosInstance'; // AxiosInstance import
 import WideButton from '../common/WideButton';
 import FundingCard from '../funding/common/FundingCard';
+import Check from '../../assets/mypage/Check.png';
+import X from '../../assets/mypage/X.png';
 
 function RequestFunding() {
   const navigate = useNavigate();
@@ -83,18 +85,16 @@ function RequestFunding() {
                 }}
               />
               <div className="request-funding-buttons">
-                <WideButton
+                <img
+                  src={Check}
+                  alt=""
                   onClick={() => handleCancel(funding.fundingId)}
-                  isActive={true}
-                >
-                  거절
-                </WideButton>
-                <WideButton
+                />
+                <img
+                  src={X}
+                  alt=""
                   onClick={() => handleComplete(funding.fundingId)}
-                  isActive={true}
-                >
-                  승인
-                </WideButton>
+                />
               </div>
             </div>
           ))}
