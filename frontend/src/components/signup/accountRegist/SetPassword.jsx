@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
+import SignUpButton from '../../common/SignUpButton';
 
 function SetPassword() {
   const navigate = useNavigate();
@@ -58,10 +59,8 @@ function SetPassword() {
     <>
       <div className="setpass-container">
         <div className="setpass-header">
-          <div className="setpass-header-backInfo">
-            <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
-            비밀번호 설정
-          </div>
+          <SignUpButton />
+          <div className="setpass-header-description">비밀번호 설정</div>
           <ProgressBar currentStep={currentStep} />
         </div>
 
