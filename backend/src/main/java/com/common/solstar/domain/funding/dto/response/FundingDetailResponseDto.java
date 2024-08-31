@@ -13,6 +13,8 @@ public class FundingDetailResponseDto {
 
     private String title;
 
+    private int artistId;
+
     private String artistProfileImage;
 
     private String artistName;
@@ -43,6 +45,7 @@ public class FundingDetailResponseDto {
     public static FundingDetailResponseDto createResponseDto(Funding funding) {
         return FundingDetailResponseDto.builder()
                 .title(funding.getTitle())
+                .artistId(funding.getArtist().getId())
                 .artistProfileImage(funding.getArtist().getProfileImage())
                 .artistName(funding.getArtist().getName())
                 .fundingImage(funding.getFundingImage())
