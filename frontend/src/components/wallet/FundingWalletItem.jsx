@@ -23,7 +23,7 @@ function FundingWalletItem({ walletData, onClick }) {
     <div className="fundingwallet-item">
       <div className="fundingwallet-background" onClick={onClick}>
         <div className="fundingwallet-owner">
-          {walletData.name}님의 충전 계좌
+          {walletData.artistName} 펀딩 계좌 잔액
         </div>
         <img src={icon} alt={walletData.code} className="fundingwallet-icon" />
         <div className="fundingwallet-balance">
