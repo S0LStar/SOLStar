@@ -6,6 +6,8 @@ import WideButton from '../common/WideButton';
 import FundingCard from '../funding/common/FundingCard';
 import Check from '../../assets/mypage/Check.png';
 import X from '../../assets/mypage/X.png';
+import BackButton from '../common/BackButton';
+import Empty from '../common/Empty';
 
 function RequestFunding() {
   const navigate = useNavigate();
@@ -72,32 +74,39 @@ function RequestFunding() {
   return (
     <>
       <div className="request-container">
-        <div className="request-funding">인증 펀딩 요청</div>
+        <div className="request-header">
+          <BackButton />
+          <div className="request-header-description">인증 펀딩 요청</div>
+        </div>
         <div className="request-funding-list">
-          {fundingData.map((funding) => (
-            <div className="request-funding-item" key={funding.fundingId}>
-              <FundingCard
-                funding={{
-                  ...funding,
-                  totalAmount: funding.totalAmount || 0, // 기본값 설정
-                  successRate: funding.successRate || 0, // 기본값 설정
-                  goalAmount: funding.goalAmount || 1, // 기본값 설정으로 나누기 오류 방지
-                }}
-              />
-              <div className="request-funding-buttons">
-                <img
-                  src={Check}
-                  alt=""
-                  onClick={() => handleCancel(funding.fundingId)}
+          {fundingData.length === 0 ? (
+            <Empty>인증 펀딩 요청</Empty>
+          ) : (
+            fundingData.map((funding) => (
+              <div className="request-funding-item" key={funding.fundingId}>
+                <FundingCard
+                  funding={{
+                    ...funding,
+                    totalAmount: funding.totalAmount || 0, // 기본값 설정
+                    successRate: funding.successRate || 0, // 기본값 설정
+                    goalAmount: funding.goalAmount || 1, // 기본값 설정으로 나누기 오류 방지
+                  }}
                 />
-                <img
-                  src={X}
-                  alt=""
-                  onClick={() => handleComplete(funding.fundingId)}
-                />
+                <div className="request-funding-buttons">
+                  <img
+                    src={Check}
+                    alt=""
+                    onClick={() => handleCancel(funding.fundingId)}
+                  />
+                  <img
+                    src={X}
+                    alt=""
+                    onClick={() => handleComplete(funding.fundingId)}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </>

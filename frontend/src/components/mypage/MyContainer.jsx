@@ -170,14 +170,14 @@ function MyContainer() {
           <>
             <div className="my-name">{profileData.name}</div>
             <div className="my-edit-button">
-              <WideButton
+              {/* <WideButton
                 onClick={() => {
                   navigate(`/my`);
                 }}
                 isActive={true}
               >
                 내 정보 보기
-              </WideButton>
+              </WideButton> */}
               <WideButton onClick={handleLogout} isActive={true}>
                 로그아웃
               </WideButton>
