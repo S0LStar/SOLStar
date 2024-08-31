@@ -45,7 +45,7 @@
   margin-top: 19vw;
   color: white;
   font-size: 20px;
-  font-weight: bolder;
+  font-weight: 500;
   text-align: right;
   width: auto;
 }
@@ -72,4 +72,43 @@
 }
 .fundingwalletdetail-withdrawbutton {
   margin-right: 8vw;
+}
+
+.fundingwalletdetail-container hr {
+  border-top: 1px;
+}
+
+.transaction-history {
+  margin: 10px;
+}
+
+.transaction-item {
+  background-color: color-mix(in srgb, #9ed0f2 10%, white 90%);
+  border-radius: 10px;
+  padding: 5vw;
+}
+
+.transaction-time {
+  font-size: 12px;
+}
+
+.transaction-summary {
+  font-size: 14px;
+  margin-top: 2vw;
+}
+
+.transaction-balance {
+  font-size: 14px;
+  color: #6c7072;
+  text-align: right;
+}
+
+.transaction-afterbalance {
+  font-size: 8px;
+  text-align: right;
+}
+
+.transaction-afterbalance-main {
+  font-size: 10px;
+  color: #6c7072;
 }

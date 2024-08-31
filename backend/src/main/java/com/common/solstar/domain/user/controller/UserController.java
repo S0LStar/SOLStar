@@ -2,6 +2,8 @@ package com.common.solstar.domain.user.controller;
 
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.common.solstar.domain.user.dto.request.UpdateIntroductionRequest;
+import com.common.solstar.domain.user.dto.request.UpdateNicknameRequest;
+import com.common.solstar.domain.user.dto.request.UpdateProfileImageRequest;
 import com.common.solstar.domain.user.dto.response.HostFundingResponse;
 import com.common.solstar.domain.user.dto.response.UserDetailResponse;
 import com.common.solstar.domain.user.dto.response.UserJoinFundingReponse;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -129,7 +132,33 @@ public class UserController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @Operation(summary = "프로필 이미지 수정")
+    @PostMapping("/profileImage")
+    public ResponseEntity<ResponseDto<String>> updateProfileImage (@RequestHeader(value = "Authorization", required = false) String header,
+                                                                   @RequestBody UpdateProfileImageRequest request){
+        String authEmail = jwtUtil.getLoginUser(header);
+        userService.updateProfileImage(authEmail, request);
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.OK.value())
+                .message("프로필 이미지 수정 성공")
+                .data(null)
+                .build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
+    @Operation(summary = "닉네임 수정")
+    @PostMapping("/nickname")
+    public ResponseEntity<ResponseDto<String>> updateNickname (@RequestHeader(value = "Authorization", required = false) String header,
+                                                               @Valid @RequestBody UpdateNicknameRequest request){
+        String authEmail = jwtUtil.getLoginUser(header);
+        userService.updateNickname(authEmail, request);
+        ResponseDto<String> responseDto = ResponseDto.<String>builder()
+                .status(HttpStatus.OK.value())
+                .message("닉네임 수정 성공")
+                .data(null)
+                .build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
 
 }
