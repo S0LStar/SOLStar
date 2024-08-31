@@ -62,6 +62,10 @@ public class Agency implements UserDetails {
         this.name = name;
     }
 
+    public void deleteRefreshToken(){
+        this.refreshToken = null;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("AGENCY"));
