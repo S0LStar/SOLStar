@@ -18,8 +18,7 @@ public enum CustomException {
     DUPLICATED_ID_EXCEPTION(400,"DuplicatedIDException","가입된 아이디가 존재합니다."),
     DUPLICATED_NAME_EXCEPTION(400,"DuplicateNameException","가입된 닉네임 또는 이름이 존재합니다."),
 
-
-    // 잘못된 API 요청
+    // 잘못된 API 요청,
     BAD_SSAFY_API_REQUEST(400,"BadSsafypiRequestException","잘못된 금융 API 요청입니다."),
     EXPIRED_AUTH_CODE(403,"ExpriedAuthCode", "인증시간이 만료되었습니다."),
     NOT_FOUND_AUTH_CODE(404,"NotFoundAuthCode","인증코드 발급 기록이 없습니다.(이미 인증한 코드입니다)"),
@@ -36,6 +35,7 @@ public enum CustomException {
     NOT_SUCCESS_FUNDING_EXCEPTION(400, "NotSuccessFundingException", "현재 완료된 펀딩이 아닙니다."),
     INVALID_FUNDING_JOIN_EXCEPTION(400, "InvalidFundingJoinException", "올바르지 않은 펀딩 참여 형식입니다."),
     INVALID_FUNDING_HOST_EXCEPTION(400, "InvalidFundingHostException", "해당 사용자는 펀딩 주최자가 아닙니다."),
+    NO_AUTH_FUNDING_ACCEPT_EXCEPTION(400, "NoAuthFundingAcceptException", "펀딩 승인할 수 있는 권한이 없습니다."),
 
     // 펀딩 공지사항
     NOT_FOUND_BOARD_EXCEPTION(400, "NotFoundBoardException", "펀딩 공지사항이 존재하지 않습니다."),

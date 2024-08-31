@@ -107,7 +107,7 @@ public class UserController {
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
     public ResponseEntity<ResponseDto<String>> logout(@RequestHeader(value = "Authorization", required = false) String header,
-                                                      @CookieValue(value = "refreshToken", required = false)Cookie cookie,
+                                                      @CookieValue(value = "refreshToken", required = false) Cookie cookie,
                                                       HttpServletResponse response) {
 
         String accessToken = header.substring(7);
@@ -115,7 +115,7 @@ public class UserController {
         String role = jwtUtil.roleFromToken(accessToken);
 
         // 토큰에 담긴 role이 USER면
-        if(role.equals("USER")){
+        if(role.equals("USER")) {
             userService.logout(authEmail);
         }
         else {

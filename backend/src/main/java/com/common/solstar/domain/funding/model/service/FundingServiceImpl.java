@@ -2,6 +2,8 @@ package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.account.model.repository.AccountRepository;
+import com.common.solstar.domain.agency.entity.Agency;
+import com.common.solstar.domain.agency.model.repository.AgencyRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.funding.dto.request.*;
@@ -64,6 +66,7 @@ public class FundingServiceImpl implements FundingService {
     private final AccountRepository accountRepository;
     private final GroupedOpenApi api;
     private final WebClientExceptionHandler webClientExceptionHandler;
+    private final AgencyRepository agencyRepository;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -80,6 +83,10 @@ public class FundingServiceImpl implements FundingService {
 
         Artist artist = artistRepository.findById(fundingDto.getArtistId())
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
+
+        // 소속사인 경우 펀딩 생성 불가
+        if (agencyRepository.existsByEmail(authEmail))
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         // User 생성하여 host 찾기
         User host = userRepository.findByEmail(authEmail)
