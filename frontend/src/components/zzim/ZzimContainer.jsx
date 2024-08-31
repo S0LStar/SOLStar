@@ -5,6 +5,7 @@ import temp from '../../assets/character/Sol.png'; // Placeholder image
 import Zzim from '../../assets/artist/Zzim.png';
 import NoZzim from '../../assets/artist/NoZzim.png';
 import axiosInstance from '../../util/AxiosInstance';
+import Loading from '../common/Loading';
 
 function ZzimContainer() {
   const navigate = useNavigate();
@@ -96,7 +97,14 @@ function ZzimContainer() {
         <div className="zzim-header">찜 아티스트</div>
         <div className="artist-list">
           {zzimArtist.length === 0 ? (
-            <div className="no-artist-message">찜한 아티스트가 없습니다.</div>
+            <div>
+              <div className="no-artist-message">찜한 아티스트가 없습니다.</div>
+              <Loading>
+                {' '}
+                <span style={{ color: '#0046ff' }}>찜한 아티스트를</span>을
+                <br /> 가져오는 중이에요
+              </Loading>
+            </div>
           ) : (
             zzimArtist.map((artist) => (
               <div key={artist.artistId} className="artist-item">
@@ -104,6 +112,9 @@ function ZzimContainer() {
                   src={artist.profileImage || temp} // 기본 이미지 설정
                   alt={artist.name}
                   className="artist-image"
+                  onClick={() => {
+                    navigate(`/artist/${artist.artistId}`);
+                  }}
                 />
                 {artist.isLike ? (
                   <img
@@ -121,14 +132,26 @@ function ZzimContainer() {
                   />
                 )}
                 <div className="artist-text">
-                  <span className="artist-type">
+                  <span
+                    className="artist-type"
+                    onClick={() => {
+                      navigate(`/artist/${artist.artistId}`);
+                    }}
+                  >
                     {artist.type === 'MEMBER'
                       ? artist.group
                       : artist.type === 'GROUP'
                         ? '그룹'
                         : 'SOLO'}
                   </span>
-                  <span className="artist-name">{artist.name}</span>
+                  <span
+                    className="artist-name"
+                    onClick={() => {
+                      navigate(`/artist/${artist.artistId}`);
+                    }}
+                  >
+                    {artist.name}
+                  </span>
                 </div>
               </div>
             ))
