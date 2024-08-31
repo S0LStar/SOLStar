@@ -30,7 +30,6 @@ public class ArtistController {
     private final ArtistService artistService;
     private final JwtUtil jwtUtil;
     private final ArtistRepository artistRepository;
-    private final ImageUtil imageUtil;
 
     // 검색어로 아티스트 조회
     @GetMapping
