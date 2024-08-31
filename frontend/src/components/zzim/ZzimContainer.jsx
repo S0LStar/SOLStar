@@ -99,11 +99,6 @@ function ZzimContainer() {
           {zzimArtist.length === 0 ? (
             <div>
               <div className="no-artist-message">찜한 아티스트가 없습니다.</div>
-              <Loading>
-                {' '}
-                <span style={{ color: '#0046ff' }}>찜한 아티스트를</span>을
-                <br /> 가져오는 중이에요
-              </Loading>
             </div>
           ) : (
             zzimArtist.map((artist) => (
