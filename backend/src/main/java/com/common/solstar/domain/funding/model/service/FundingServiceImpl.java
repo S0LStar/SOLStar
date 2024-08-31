@@ -41,6 +41,7 @@ import reactor.core.publisher.Mono;
 
 import javax.swing.undo.AbstractUndoableEdit;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -300,15 +301,15 @@ public class FundingServiceImpl implements FundingService {
 
         List<Funding> fundingEntities = fundingRepository.findByArtistIn(likeArtistEntities);
 
-        // 진행중
+        List<Funding> newFundings = new ArrayList<>();
         for (Funding funding : fundingEntities) {
             String fileName = imageUtil.extractFileName(funding.getFundingImage());
-
             funding.setFundingImage(fileName);
+
+            newFundings.add(funding);
         }
 
-
-        List<FundingResponseDto> fundingList = fundingEntities.stream()
+        List<FundingResponseDto> fundingList = newFundings.stream()
                 .map(funding -> FundingResponseDto.createResponseDto(funding))
                 .collect(Collectors.toList());
 
@@ -325,8 +326,16 @@ public class FundingServiceImpl implements FundingService {
         // totalJoin 기준으로 내림차순 정렬된 펀딩 목록을 가져옴
         List<Funding> popularFundings = fundingRepository.findPopularFundings();
 
+        List<Funding> newFundings = new ArrayList<>();
+        for (Funding funding : popularFundings) {
+            String fileName = funding.getFundingImage();
+            funding.setFundingImage(fileName);
+
+            newFundings.add(funding);
+        }
+
         // Funding 엔티티를 FundingResponseDto 로 변환
-        return popularFundings.stream()
+        return newFundings.stream()
                 .map(FundingResponseDto::createResponseDto)
                 .collect(Collectors.toList());
     }
@@ -341,7 +350,15 @@ public class FundingServiceImpl implements FundingService {
         // 검색어로 펀딩 리스트 불러오기
         List<Funding> searchFundings = fundingRepository.findByTitleContainingIgnoreCase(keyword);
 
-        return searchFundings.stream()
+        List<Funding> newFundings = new ArrayList<>();
+        for (Funding funding : searchFundings) {
+            String fileName = funding.getFundingImage();
+            funding.setFundingImage(fileName);
+
+            newFundings.add(funding);
+        }
+
+        return newFundings.stream()
                 .map(FundingResponseDto::createResponseDto)
                 .collect(Collectors.toList());
     }
