@@ -116,7 +116,7 @@ public class UserService {
     }
 
     // 로그아웃
-    public void logout(String accessToken, String refreshToken, String authEmail) {
+    public void logout(String authEmail) {
 
         if(authEmail == null) {
             throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);

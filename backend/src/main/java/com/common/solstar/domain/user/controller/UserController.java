@@ -1,5 +1,6 @@
 package com.common.solstar.domain.user.controller;
 
+import com.common.solstar.domain.agency.model.service.AgencyService;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.common.solstar.domain.user.dto.request.UpdateIntroductionRequest;
 import com.common.solstar.domain.user.dto.request.UpdateNicknameRequest;
@@ -33,6 +34,7 @@ public class UserController {
 
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final AgencyService agencyService;
 
     @Operation(summary = "로그인 유저 정보 조회")
     @GetMapping("/me")
@@ -109,9 +111,16 @@ public class UserController {
                                                       HttpServletResponse response) {
 
         String accessToken = header.substring(7);
-        String refreshToken = cookie.getValue();
         String authEmail = jwtUtil.getLoginUser(header);
-        userService.logout(accessToken, refreshToken, authEmail);
+        String role = jwtUtil.roleFromToken(accessToken);
+
+        // 토큰에 담긴 role이 USER면
+        if(role.equals("USER")){
+            userService.logout(authEmail);
+        }
+        else {
+            agencyService.logout(authEmail);
+        }
 
         // refresh token 쿠키 삭제
         ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
