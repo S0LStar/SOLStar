@@ -16,7 +16,7 @@ function CreatedFunding() {
 
   const fetchCreatedFundingData = async () => {
     const response = await axiosInstance.get('user/host-funding');
-    console.log(response);
+    console.log('1', response);
     setFundingData(response.data.data);
     // const fundingData = response.data;
   };
