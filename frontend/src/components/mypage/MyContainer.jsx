@@ -14,7 +14,7 @@ function MyContainer() {
   const navigate = useNavigate();
   const dispatch = useDispatch(); // Redux 디스패치 사용
   const authState = useSelector((state) => state.auth); // 현재 auth 상태 가져오기
-  const [profileData, setProfileData] = useState(null);
+  const [profileData, setProfileData] = useState({});
   const [introduction, setIntroduction] = useState('');
   const [nickname, setNickname] = useState('');
   const [isEditingIntroduction, setIsEditingIntroduction] = useState(false); // 자기소개 수정 모드 상태 추가
@@ -23,24 +23,27 @@ function MyContainer() {
 
   useEffect(() => {
     // 컴포넌트가 마운트될 때 API 호출
-    if (authState.role === 'AGENCY') {
-      // 여기에 소속사일 경우 fetchprofile 해야 함
-    } else {
-      const fetchProfile = async () => {
-        try {
-          const response = await AxiosInstance.get('/user/me');
-          console.log('프로필 데이터:', response.data.data);
-          setProfileData(response.data.data);
-          setIntroduction(response.data.data.introduction || '');
-          setNickname(response.data.data.nickname || '');
-        } catch (error) {
-          console.error('프로필 불러오기 실패:', error);
-          setError('프로필 불러오기 실패');
-          alert('로그인 실패');
+    const fetchProfile = async () => {
+      try {
+        let response;
+        if (authState.role === 'AGENCY') {
+          response = await AxiosInstance.get('/agency/me'); // AGENCY일 경우
+        } else {
+          response = await AxiosInstance.get('/user/me'); // USER일 경우
         }
-      };
-      fetchProfile();
-    }
+
+        console.log('프로필 데이터:', response.data.data);
+        setProfileData(response.data.data);
+        setIntroduction(response.data.data.introduction || '');
+        setNickname(response.data.data.nickname || '');
+      } catch (error) {
+        console.error('프로필 불러오기 실패:', error);
+        setError('프로필 불러오기 실패');
+        alert('로그인 실패');
+      }
+    };
+
+    fetchProfile();
   }, [authState.role]); // 빈 배열: 컴포넌트가 마운트될 때만 실행
 
   const handleImageUpload = async (event) => {
@@ -110,7 +113,7 @@ function MyContainer() {
     if (isEditingNickname) {
       // 현재 닉네임 수정 모드이면 수정 내용을 저장
       try {
-        const response = await AxiosInstance.patch('/user/nickname', {
+        const response = await AxiosInstance.post('/user/nickname', {
           nickname,
         });
         console.log('닉네임 업데이트 성공:', response.data);
@@ -146,16 +149,6 @@ function MyContainer() {
     }
   };
 
-  const myProfileTempData = profileData || {
-    img: temp,
-    name: authState.role === 'AGENCY' ? '어도어' : '',
-    introduction: '',
-    email: '',
-    nickname: '',
-    birthdate: '',
-    phone: '',
-  };
-
   return (
     <>
       <div className="my-container">
@@ -167,7 +160,7 @@ function MyContainer() {
         />
         <img
           className="my-profile"
-          src={myProfileTempData.img ? myProfileTempData.img : DefaultArtist}
+          src={profileData && profileData.img ? profileData.img : DefaultArtist}
           alt=""
           // onClick={() => document.getElementById('profile-image-input').click()}
         />
@@ -175,7 +168,7 @@ function MyContainer() {
         {authState.role === 'AGENCY' ? (
           // AGENCY의 경우
           <>
-            <div className="my-name">{myProfileTempData.name}</div>
+            <div className="my-name">{profileData.name}</div>
             <div className="my-edit-button">
               <WideButton
                 onClick={() => {
