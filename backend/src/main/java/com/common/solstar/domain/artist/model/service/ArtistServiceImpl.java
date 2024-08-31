@@ -67,7 +67,17 @@ public class ArtistServiceImpl implements ArtistService {
 
         List<Funding> fundingEntities = fundingRepository.findByArtist_Id(artistId);
 
-        List<FundingResponseDto> fundingList = fundingEntities.stream()
+        List<Funding> newFundings = new ArrayList<>();
+        for (Funding fundingEntity : fundingEntities) {
+            String fileName = imageUtil.extractFileName(fundingEntity.getFundingImage());
+
+            fundingEntity.setFundingImage(fileName);
+
+            newFundings.add(fundingEntity);
+        }
+
+
+        List<FundingResponseDto> fundingList = newFundings.stream()
                 .map(funding -> FundingResponseDto.createResponseDto(funding))
                 .collect(Collectors.toList());
 
