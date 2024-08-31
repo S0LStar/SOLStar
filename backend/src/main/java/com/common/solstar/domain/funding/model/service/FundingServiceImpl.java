@@ -29,7 +29,6 @@ import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
 import com.common.solstar.global.util.ImageUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +41,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import javax.swing.undo.AbstractUndoableEdit;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

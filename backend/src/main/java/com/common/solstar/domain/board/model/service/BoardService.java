@@ -32,7 +32,7 @@ public class BoardService {
     private final ImageUtil imageUtil;
 
     @Transactional
-    public void createBoard(int fundingId, BoardCreateRequestDto boardDto, String authEmail, MultipartFile contentImage) {
+    public void createBoard(int fundingId, BoardCreateRequestDto boardDto, String authEmail) {
 
         // 현재 로그인한 유저가 해당 펀딩의 host 인지 확인
         Funding funding = fundingRepository.findById(fundingId)
@@ -46,11 +46,7 @@ public class BoardService {
             throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
         }
 
-        imageUtil.upload(contentImage);
-
-        String uploadFile = imageUtil.uploadImage(contentImage);
-
-        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent(), uploadFile);
+        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent());
 
         boardRepository.save(createdBoard);
     }
@@ -68,16 +64,7 @@ public class BoardService {
 
         List<Board> boardEntities = boardRepository.findByFunding_Id(fundingId);
 
-        List<Board> newBoards = new ArrayList<>();
-
-        for (Board board : boardEntities) {
-            String fileName = imageUtil.extractFileName(board.getContentImage());
-            board.uploadImage(fileName);
-
-            newBoards.add(board);
-        }
-
-        List<BoardResponseDto> responseDtos = newBoards.stream()
+        List<BoardResponseDto> responseDtos = boardEntities.stream()
                 .map(board -> BoardResponseDto.createResponseDto(board, isHost))
                 .collect(Collectors.toList());
 
