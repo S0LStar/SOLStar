@@ -88,14 +88,6 @@ function CreatedFunding() {
               </div>
             ))
           )}
-          {fundingData.map((funding) => (
-            <div
-              className="createdfunding-funding-item"
-              key={funding.fundingId}
-            >
-              <FundingCard funding={funding} />
-            </div>
-          ))}
         </div>
       </div>
     </>
