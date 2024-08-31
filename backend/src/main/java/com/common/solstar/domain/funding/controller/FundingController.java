@@ -1,5 +1,6 @@
 package com.common.solstar.domain.funding.controller;
 
+import com.common.solstar.domain.agency.model.service.AgencyService;
 import com.common.solstar.domain.board.dto.request.BoardCreateRequestDto;
 import com.common.solstar.domain.board.dto.request.BoardUpdateRequestDto;
 import com.common.solstar.domain.board.dto.response.BoardResponseDto;
@@ -12,7 +13,10 @@ import com.common.solstar.domain.funding.dto.response.FundingDetailResponseDto;
 import com.common.solstar.domain.funding.dto.response.FundingResponseDto;
 import com.common.solstar.domain.funding.model.service.FundingService;
 import com.common.solstar.domain.fundingJoin.dto.request.FundingJoinCreateRequestDto;
+import com.common.solstar.domain.user.model.service.UserService;
 import com.common.solstar.global.auth.jwt.JwtUtil;
+import com.common.solstar.global.exception.CustomException;
+import com.common.solstar.global.exception.ExceptionResponse;
 import com.common.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +36,8 @@ public class FundingController {
 
     private final FundingService fundingService;
     private final BoardService boardService;
+    private final UserService userService;
+    private final AgencyService agencyService;
     private final JwtUtil jwtUtil;
 
     // 펀딩 생성
@@ -39,7 +45,13 @@ public class FundingController {
     @Operation(summary = "펀딩 생성")
     public ResponseEntity<?> createFunding(@RequestHeader(value = "Authorization", required = false) String header,
                                            @RequestBody FundingCreateRequestDto fundingDto) {
+        String accessToken = header.substring(7);
         String authEmail = jwtUtil.getLoginUser(header);
+        String role = jwtUtil.roleFromToken(accessToken);
+
+        if (!role.equals("USER") && !role.equals("AGENCY"))
+            throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
+
         fundingService.createFunding(fundingDto, authEmail);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
@@ -90,8 +102,7 @@ public class FundingController {
     @Operation(summary = "펀딩 상세 정보 조회")
     public ResponseEntity<?> getFundingInfo(@RequestHeader(value = "Authorization", required = false) String header,
                                             @PathVariable("fundingId") int fundingId) {
-        String authEmail = jwtUtil.getLoginUser(header);
-        FundingDetailResponseDto selectedFunding = fundingService.getFundingById(fundingId, authEmail);
+        FundingDetailResponseDto selectedFunding = fundingService.getFundingById(header, fundingId);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())

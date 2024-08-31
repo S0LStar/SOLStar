@@ -2,6 +2,8 @@ package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.account.model.repository.AccountRepository;
+import com.common.solstar.domain.agency.entity.Agency;
+import com.common.solstar.domain.agency.model.repository.AgencyRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.funding.dto.request.*;
@@ -23,6 +25,7 @@ import com.common.solstar.global.api.exception.WebClientExceptionHandler;
 import com.common.solstar.global.api.request.CommonHeader;
 import com.common.solstar.global.api.request.FindAccountApiRequest;
 import com.common.solstar.global.api.request.TransferApiRequest;
+import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
 import com.common.solstar.global.util.ImageUtil;
@@ -56,6 +59,7 @@ public class FundingServiceImpl implements FundingService {
     private final LikeListRepository likeListRepository;
     private final FundingJoinRepository fundingJoinRepository;
     private final ImageUtil imageUtil;
+    private final JwtUtil jwtUtil;
 
     private final WebClient webClient = WebClient.builder()
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
@@ -64,6 +68,7 @@ public class FundingServiceImpl implements FundingService {
     private final AccountRepository accountRepository;
     private final GroupedOpenApi api;
     private final WebClientExceptionHandler webClientExceptionHandler;
+    private final AgencyRepository agencyRepository;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -80,6 +85,10 @@ public class FundingServiceImpl implements FundingService {
 
         Artist artist = artistRepository.findById(fundingDto.getArtistId())
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
+
+        // 소속사인 경우 펀딩 생성 불가
+        if (agencyRepository.existsByEmail(authEmail))
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         // User 생성하여 host 찾기
         User host = userRepository.findByEmail(authEmail)
@@ -142,14 +151,25 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
-    public FundingDetailResponseDto getFundingById(int fundingId, String authEmail) {
+    public FundingDetailResponseDto getFundingById(String header, int fundingId) {
 
-        // 로그인한 유저 찾기
-        User loginUser = userRepository.findByEmail(authEmail)
-                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+        String accessToken = header.substring(7);
+        String authEmail = jwtUtil.getLoginUser(header);
+        String role = jwtUtil.roleFromToken(accessToken);
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        if (role.equals("USER") && funding.getType().equals(FundingType.VERIFIED)) {
+            FundingAgency fundingAgency = fundingAgencyRepository.findByFunding(funding)
+                    .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_AGENCY_EXCEPTION));
+
+            if (!fundingAgency.isStatus())
+                throw new ExceptionResponse(CustomException.NOT_ACCEPT_FUNDING_EXCEPTION);
+        }
 
         String fileName = imageUtil.extractFileName(funding.getFundingImage());
 
