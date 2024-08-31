@@ -6,10 +6,12 @@ import DefaultArtist from '../../assets/common/DefaultArtist.png';
 import FundingCard from '../funding/common/FundingCard';
 import Loading from '../common/Loading';
 import './ArtistFunding.css';
+import Empty from '../common/Empty';
 
 function MyArtistFunding() {
   const { artistId } = useParams();
   const [artist, setArtist] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // 특정 아티스트 펀딩 리스트 조회
@@ -21,11 +23,22 @@ function MyArtistFunding() {
         setArtist(response.data.data);
       } catch (error) {
         console.error('error', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchArtistData();
   }, []);
+
+  if (loading) {
+    return (
+      <Loading>
+        <span style={{ color: '#0046ff' }}>아티스트 펀딩 내역</span>을
+        <br /> 가져오는 중이에요
+      </Loading>
+    );
+  }
 
   return (
     <div className="artist-funding-detail">
@@ -53,10 +66,7 @@ function MyArtistFunding() {
             <FundingCard key={funding.fundingId} funding={funding} />
           ))
         ) : (
-          <Loading>
-            <span style={{ color: '#0046ff' }}>아티스트 펀딩 내역</span>을
-            <br /> 가져오는 중이에요
-          </Loading>
+          <Empty>등록된 펀딩</Empty>
         )}
       </div>
     </div>

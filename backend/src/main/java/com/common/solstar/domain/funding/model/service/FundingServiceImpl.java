@@ -25,6 +25,7 @@ import com.common.solstar.global.api.request.FindAccountApiRequest;
 import com.common.solstar.global.api.request.TransferApiRequest;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.common.solstar.global.util.ImageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +34,7 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -52,6 +54,7 @@ public class FundingServiceImpl implements FundingService {
     private final ArtistRepository artistRepository;
     private final LikeListRepository likeListRepository;
     private final FundingJoinRepository fundingJoinRepository;
+    private final ImageUtil imageUtil;
 
     private final WebClient webClient = WebClient.builder()
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
@@ -84,7 +87,15 @@ public class FundingServiceImpl implements FundingService {
         // String 타입의 입력값을 FundingType으로 변환
         FundingType fundingType = FundingType.fromString(fundingDto.getType());
 
-        Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), fundingDto.getFundingImage(), fundingDto.getContent(), fundingDto.getGoalAmount(),
+        MultipartFile multipartFile = fundingDto.getFundingImage();
+
+        // 사진 s3에 업로드
+        imageUtil.uploadImage(multipartFile);
+        
+        // 사진 파일 이름 바꿔서 DB 에 저장
+        String uploadFile = imageUtil.uploadImage(multipartFile);
+
+        Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), uploadFile, fundingDto.getContent(), fundingDto.getGoalAmount(),
                 fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
 
         fundingRepository.save(createdFunding);
@@ -138,6 +149,10 @@ public class FundingServiceImpl implements FundingService {
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        String fileName = imageUtil.extractFileName(funding.getFundingImage());
+
+        funding.setFundingImage(fileName);
 
         FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
 
@@ -284,6 +299,14 @@ public class FundingServiceImpl implements FundingService {
                 .collect(Collectors.toList());
 
         List<Funding> fundingEntities = fundingRepository.findByArtistIn(likeArtistEntities);
+
+        // 진행중
+        for (Funding funding : fundingEntities) {
+            String fileName = imageUtil.extractFileName(funding.getFundingImage());
+
+            funding.setFundingImage(fileName);
+        }
+
 
         List<FundingResponseDto> fundingList = fundingEntities.stream()
                 .map(funding -> FundingResponseDto.createResponseDto(funding))
