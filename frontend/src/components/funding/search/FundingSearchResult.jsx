@@ -3,13 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import SearchReset from '../../../assets/common/SearchReset.png';
 import GoBack from '../../../assets/common/GoBack.png';
 import Go from '../../../assets/common/Go.png';
-import temp from '../../../assets/character/Sol.png';
 import Zzim from '../../../assets/artist/Zzim.png';
 import NoZzim from '../../../assets/artist/NoZzim.png';
+import DefaultArtist from '../../../assets/common/DefaultArtist.png';
 
 import './FundingSearchResult.css';
 import FundingCard from '../common/FundingCard';
 import axiosInstance from '../../../util/AxiosInstance';
+import Empty from '../../common/Empty';
 
 function FundingSearchResult() {
   const location = useLocation();
@@ -170,33 +171,41 @@ function FundingSearchResult() {
           <img src={Go} alt="" className="search-result-go" />
         </div>
         <div className="artist-list">
-          {data.artistList.map((artist) => (
-            <div
-              key={artist.artistId}
-              className="artist-item"
-              onClick={() => {
-                navigate(`/artist/${artist.artistId}`);
-              }}
-            >
-              <img src={temp} alt={artist.name} className="artist-image" />
-              {artist.liked ? (
+          {data.artistList.length > 0 ? (
+            data.artistList.map((artist) => (
+              <div
+                key={artist.artistId}
+                className="artist-item"
+                onClick={() => {
+                  navigate(`/artist/${artist.artistId}`);
+                }}
+              >
                 <img
-                  src={Zzim}
-                  alt=""
-                  className="artist-item-zzim"
-                  onClick={(e) => toggleZzim(artist.artistId, e)}
+                  src={artist.profileImage || DefaultArtist}
+                  alt={artist.name}
+                  className="artist-image"
                 />
-              ) : (
-                <img
-                  src={NoZzim}
-                  alt=""
-                  className="artist-item-zzim"
-                  onClick={(e) => toggleZzim(artist.artistId, e)}
-                />
-              )}
-              <span className="artist-name">{artist.name}</span>
-            </div>
-          ))}
+                {artist.liked ? (
+                  <img
+                    src={Zzim}
+                    alt=""
+                    className="artist-item-zzim"
+                    onClick={(e) => toggleZzim(artist.artistId, e)}
+                  />
+                ) : (
+                  <img
+                    src={NoZzim}
+                    alt=""
+                    className="artist-item-zzim"
+                    onClick={(e) => toggleZzim(artist.artistId, e)}
+                  />
+                )}
+                <span className="artist-name">{artist.name}</span>
+              </div>
+            ))
+          ) : (
+            <Empty>해당하는 아티스트</Empty>
+          )}
         </div>
       </div>
 
@@ -206,9 +215,13 @@ function FundingSearchResult() {
           <img src={Go} alt="" className="search-result-go" />
         </div>
         <div className="search-result-funding-list">
-          {data.fundingList.map((funding) => (
-            <FundingCard key={funding.fundingId} funding={funding} />
-          ))}
+          {data.fundingList.length > 0 ? (
+            data.fundingList.map((funding) => (
+              <FundingCard key={funding.fundingId} funding={funding} />
+            ))
+          ) : (
+            <Empty>해당하는 펀딩</Empty>
+          )}
         </div>
       </div>
     </div>

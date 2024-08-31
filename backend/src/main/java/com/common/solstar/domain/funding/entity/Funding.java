@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Where(clause = "type != 'VERIFIED' OR is_delete = false")
 public class Funding extends BaseTimeEntity {
 
     @Id
@@ -88,10 +87,6 @@ public class Funding extends BaseTimeEntity {
             this.title = fundingDto.getTitle();
         }
 
-        if (fundingDto.getFundingImage() != null) {
-            this.fundingImage = fundingDto.getFundingImage();
-        }
-
         if (fundingDto.getContent() != null) {
             this.content = fundingDto.getContent();
         }
@@ -100,6 +95,10 @@ public class Funding extends BaseTimeEntity {
     public void updateByJoin(int amount) {
         this.totalAmount += amount;
         this.totalJoin += 1;
+    }
+
+    public void setFundingImage(String fundingImage) {
+        this.fundingImage = fundingImage;
     }
 
     // 펀딩 성공 시 계좌번호 업데이트

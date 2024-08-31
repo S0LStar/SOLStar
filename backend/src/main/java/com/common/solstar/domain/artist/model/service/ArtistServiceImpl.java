@@ -14,14 +14,12 @@ import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.common.solstar.global.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -32,6 +30,7 @@ public class ArtistServiceImpl implements ArtistService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
     private final LikeListRepository likeListRepository;
+    private final ImageUtil imageUtil;
 
     @Override
     public List<ArtistSearchResponseDto> searchArtists(String keyword, String authEmail) {
@@ -42,8 +41,16 @@ public class ArtistServiceImpl implements ArtistService {
         // 검색어로 아티스트 리스트 불러오기
         List<Artist> artists = artistRepository.findByNameContainingIgnoreCaseOrGroupContainingIgnoreCase(keyword, keyword);
 
+        List<Artist> newArtists = new ArrayList<>();
+        for (Artist artist : artists) {
+            String fileName = imageUtil.extractFileName(artist.getProfileImage());
+
+            artist.setProfileImage(fileName);
+            newArtists.add(artist);
+        }
+
         // 아티스트마다 찜 여부 확인 후, dto로 변환
-        List<ArtistSearchResponseDto> artistSearchResponseList = artists.stream()
+        List<ArtistSearchResponseDto> artistSearchResponseList = newArtists.stream()
                 .map(artist -> {
                     boolean isLiked = likeListRepository.existsByUserAndArtist(loginUser, artist);
                     return ArtistSearchResponseDto.createResponseDto(artist, isLiked);
@@ -58,9 +65,22 @@ public class ArtistServiceImpl implements ArtistService {
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
 
+        String profileImage = imageUtil.extractFileName(artist.getProfileImage());
+        artist.setProfileImage(profileImage);
+
         List<Funding> fundingEntities = fundingRepository.findByArtist_Id(artistId);
 
-        List<FundingResponseDto> fundingList = fundingEntities.stream()
+        List<Funding> newFundings = new ArrayList<>();
+        for (Funding fundingEntity : fundingEntities) {
+            String fileName = imageUtil.extractFileName(fundingEntity.getFundingImage());
+
+            fundingEntity.setFundingImage(fileName);
+
+            newFundings.add(fundingEntity);
+        }
+
+
+        List<FundingResponseDto> fundingList = newFundings.stream()
                 .map(funding -> FundingResponseDto.createResponseDto(funding))
                 .collect(Collectors.toList());
 
@@ -81,7 +101,15 @@ public class ArtistServiceImpl implements ArtistService {
                 .map(LikeList::getArtist)
                 .collect(Collectors.toList());
 
-        List<LikeArtistResponseDto> likeArtistList = likeArtistEntities.stream()
+        List<Artist> newArtists = new ArrayList<>();
+        for (Artist artist : likeArtistEntities) {
+            String fileName = imageUtil.extractFileName(artist.getProfileImage());
+            artist.setProfileImage(fileName);
+
+            newArtists.add(artist);
+        }
+
+        List<LikeArtistResponseDto> likeArtistList = newArtists.stream()
                 .map(artist -> LikeArtistResponseDto.createResponseDto(artist))
                 .collect(Collectors.toList());
 
@@ -97,6 +125,9 @@ public class ArtistServiceImpl implements ArtistService {
 
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
+
+        String fileName = imageUtil.extractFileName(artist.getProfileImage());
+        artist.setProfileImage(fileName);
 
         // existsByUserAndArtist를 사용하여 존재 여부 확인
         boolean isLiked = likeListRepository.existsByUserAndArtist(loginUser, artist);
