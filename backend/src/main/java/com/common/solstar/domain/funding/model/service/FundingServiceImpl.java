@@ -81,7 +81,7 @@ public class FundingServiceImpl implements FundingService {
 
     @Override
     @Transactional
-    public void createFunding(FundingCreateRequestDto fundingDto, String authEmail) {
+    public void createFunding(FundingCreateRequestDto fundingDto, String authEmail, MultipartFile fundingImage) {
 
         Artist artist = artistRepository.findById(fundingDto.getArtistId())
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
@@ -97,13 +97,11 @@ public class FundingServiceImpl implements FundingService {
         // String 타입의 입력값을 FundingType으로 변환
         FundingType fundingType = FundingType.fromString(fundingDto.getType());
 
-        MultipartFile multipartFile = fundingDto.getFundingImage();
-
         // 사진 s3에 업로드
-        imageUtil.upload(multipartFile);
+        imageUtil.upload(fundingImage);
         
         // 사진 파일 이름 바꿔서 DB 에 저장
-        String uploadFile = imageUtil.uploadImage(multipartFile);
+        String uploadFile = imageUtil.uploadImage(fundingImage);
 
         Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), uploadFile, fundingDto.getContent(), fundingDto.getGoalAmount(),
                 fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
