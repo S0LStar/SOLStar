@@ -110,7 +110,7 @@ function MyContainer() {
     if (isEditingNickname) {
       // 현재 닉네임 수정 모드이면 수정 내용을 저장
       try {
-        const response = await AxiosInstance.patch('/user/nickname', {
+        const response = await AxiosInstance.post('/user/nickname', {
           nickname,
         });
         console.log('닉네임 업데이트 성공:', response.data);
