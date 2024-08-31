@@ -5,6 +5,7 @@ import WideButton from '../common/WideButton';
 import temp from '../../assets/character/Shoo.png';
 import LeftVector from '../../assets/common/LeftVector.png';
 import DefaultArtist from '../../assets/common/DefaultArtist.png';
+import BackButton from '../common/BackButton';
 
 function ViewProfile() {
   const navigate = useNavigate();
@@ -15,8 +16,8 @@ function ViewProfile() {
     <>
       <div className="view-container">
         <div className="view-header">
-          <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />내
-          정보 보기
+          <BackButton />
+          <div className="view-header-description">내 정보 보기</div>
         </div>
         <img
           className="view-myprofile-img"
@@ -70,14 +71,6 @@ function ViewProfile() {
               disabled
             />
           </div>
-        </div>
-        <div className="view-buttons">
-          <WideButton onClick={() => navigate(-1)} isActive={false}>
-            취소
-          </WideButton>
-          <WideButton onClick={() => navigate(`/my`)} isActive={true}>
-            완료
-          </WideButton>
         </div>
       </div>
     </>

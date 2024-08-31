@@ -8,6 +8,7 @@ import WideButton from '../../common/WideButton';
 import CircleX from '../../../assets/signup/CircleX.png';
 import DownVector from '../../../assets/common/DownVector.png';
 import axiosInstance from '../../../util/AxiosInstance';
+import SignUpButton from '../../common/SignUpButton';
 
 // 은행별 modal 아이콘
 const bankIcons = {
@@ -146,10 +147,8 @@ function AccountRegistration() {
     <>
       <div className="accountregist-container">
         <div className="accountregist-header">
-          <div className="accountregist-header-backInfo">
-            <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
-            1원 인증
-          </div>
+          <SignUpButton />
+          <div className="accountregist-header-description">1원 요청</div>
           <ProgressBar currentStep={currentStep} />
         </div>
 

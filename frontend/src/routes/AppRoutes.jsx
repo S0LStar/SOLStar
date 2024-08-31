@@ -24,6 +24,7 @@ import ArtistFunding from '../components/artistfunding/ArtistFunding.jsx';
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
 import FundingWalletDetail from '../components/wallet/FundingWalletDetail';
+import AccountTransfer from '../components/wallet/AccountTransfer';
 
 // Zzim
 import ZzimPage from '../pages/ZzimPage';
@@ -105,6 +106,7 @@ function AppRoutes() {
               <Route path="/wallet" element={<WalletPage />}>
                 <Route index element={<WalletContainer />} />
                 <Route path=":id" element={<FundingWalletDetail />} />
+                <Route path=":id/transfer" element={<AccountTransfer />} />
               </Route>
               <Route path="/zzim" element={<ZzimPage />}>
                 <Route index element={<ZzimContainer />} />

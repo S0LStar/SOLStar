@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './FundingWalletItem.css';
 import Wallet from '../../assets/wallet/Wallet.png';
 import FundingWallet from '../../assets/wallet/FundingWallet.png';
@@ -7,6 +8,7 @@ import Shinhan from '../../assets/wallet/Shinhan.png';
 // 필요에 따라 더 많은 아이콘 추가 가능
 
 function FundingWalletItem({ walletData, onClick }) {
+  const navigate = useNavigate();
   let icon;
 
   // code에 따라 아이콘 선택
@@ -31,17 +33,9 @@ function FundingWalletItem({ walletData, onClick }) {
         </div>
         <div className="fundingwallet-buttons">
           <button
-            className="fundingwallet-calculatebutton"
-            onClick={() => {
-              console.log(1);
-            }}
-          >
-            정산
-          </button>
-          <button
             className="fundingwallet-withdrawbutton"
             onClick={() => {
-              console.log(2);
+              navigate(`/wallet/${walletData.fundingId}/transfer`);
             }}
           >
             이체
