@@ -33,7 +33,7 @@ public class ImageUtil {
         return getImageUrl(upload(file));
     }
 
-    private String upload(MultipartFile file) {
+    public String upload(MultipartFile file) {
         if (file.isEmpty() && file.getOriginalFilename() != null)
 //            throw new FileEmptyException("파일이 비어있습니다.");
             System.out.println("파일이 비어있습니다.");
