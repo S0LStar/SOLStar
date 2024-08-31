@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
+import SignUpButton from '../../common/SignUpButton';
 
 function CreatedAccount() {
   const navigate = useNavigate();
@@ -15,10 +16,8 @@ function CreatedAccount() {
     <>
       <div className="created-container">
         <div className="created-header">
-          <div className="created-header-backInfo">
-            <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
-            회원가입 완료
-          </div>
+          <SignUpButton />
+          <div className="created-header-description">내 참여 펀딩</div>
           <ProgressBar currentStep={currentStep} />
         </div>
 

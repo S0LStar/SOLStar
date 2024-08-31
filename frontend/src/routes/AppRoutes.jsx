@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute'; // PrivateRoute import
+import LoggedInRoute from './LoggedInRoute'; // LoggedInRoute import
 
 // Main
 import MainPage from '../pages/MainPage';
@@ -24,6 +25,7 @@ import ArtistFunding from '../components/artistfunding/ArtistFunding.jsx';
 import WalletPage from '../pages/WalletPage';
 import WalletContainer from '../components/wallet/WalletContainer';
 import FundingWalletDetail from '../components/wallet/FundingWalletDetail';
+import AccountTransfer from '../components/wallet/AccountTransfer';
 
 // Zzim
 import ZzimPage from '../pages/ZzimPage';
@@ -57,10 +59,24 @@ function AppRoutes() {
   return (
     <Routes>
       {/* 로그인 및 회원가입 페이지는 보호하지 않음 */}
-      <Route path="/login" element={<LoginPage />}>
+      <Route
+        path="/login"
+        element={
+          <LoggedInRoute>
+            <LoginPage />
+          </LoggedInRoute>
+        }
+      >
         <Route index element={<LoginContainer />} />
       </Route>
-      <Route path="/signup" element={<SignUpPage />}>
+      <Route
+        path="/signup"
+        element={
+          <LoggedInRoute>
+            <SignUpPage />
+          </LoggedInRoute>
+        }
+      >
         <Route index element={<TermOfService />} />
         {/* <Route index element={<SignUpContainer />} /> */}
         <Route path="term" element={<TermOfService />} />
@@ -105,6 +121,7 @@ function AppRoutes() {
               <Route path="/wallet" element={<WalletPage />}>
                 <Route index element={<WalletContainer />} />
                 <Route path=":id" element={<FundingWalletDetail />} />
+                <Route path=":id/transfer" element={<AccountTransfer />} />
               </Route>
               <Route path="/zzim" element={<ZzimPage />}>
                 <Route index element={<ZzimContainer />} />
