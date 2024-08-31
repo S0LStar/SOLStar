@@ -65,6 +65,9 @@ public class ArtistServiceImpl implements ArtistService {
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
 
+        String profileImage = imageUtil.extractFileName(artist.getProfileImage());
+        artist.setProfileImage(profileImage);
+
         List<Funding> fundingEntities = fundingRepository.findByArtist_Id(artistId);
 
         List<Funding> newFundings = new ArrayList<>();
