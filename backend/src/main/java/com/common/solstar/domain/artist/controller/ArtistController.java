@@ -3,8 +3,13 @@ package com.common.solstar.domain.artist.controller;
 import com.common.solstar.domain.artist.dto.response.ArtistResponseDto;
 import com.common.solstar.domain.artist.dto.response.ArtistSearchResponseDto;
 import com.common.solstar.domain.artist.dto.response.LikeArtistResponseDto;
+import com.common.solstar.domain.artist.entity.Artist;
+import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.artist.model.service.ArtistService;
 import com.common.solstar.global.auth.jwt.JwtUtil;
+import com.common.solstar.global.exception.CustomException;
+import com.common.solstar.global.exception.ExceptionResponse;
+import com.common.solstar.global.util.ImageUtil;
 import com.common.solstar.global.util.ResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +29,8 @@ public class ArtistController {
 
     private final ArtistService artistService;
     private final JwtUtil jwtUtil;
+    private final ArtistRepository artistRepository;
+    private final ImageUtil imageUtil;
 
     // 검색어로 아티스트 조회
     @GetMapping
@@ -32,6 +39,15 @@ public class ArtistController {
                                            @RequestParam("keyword") String keyword) {
         String authEmail = jwtUtil.getLoginUser(header);
         List<ArtistSearchResponseDto> artistList = artistService.searchArtists(keyword, authEmail);
+
+        Artist artist = artistRepository.findById(1)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
+
+        String imageUrl = artist.getProfileImage();
+
+        String fileName = imageUtil.extractFileName(imageUrl);
+
+        System.out.println(fileName);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())
