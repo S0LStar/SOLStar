@@ -202,7 +202,7 @@ function MyContainer() {
                   인증 펀딩 요청
                   <img src={RightVector} alt="" />
                 </div>
-                <div
+                {/* <div
                   className="my-funding-context"
                   onClick={() => {
                     navigate(`/my/myartist`);
@@ -217,7 +217,7 @@ function MyContainer() {
                   }}
                 >
                   소속 아티스트 펀딩 <img src={RightVector} alt="" />
-                </div>
+                </div> */}
               </div>
             </div>
           </>
