@@ -101,7 +101,15 @@ public class ArtistServiceImpl implements ArtistService {
                 .map(LikeList::getArtist)
                 .collect(Collectors.toList());
 
-        List<LikeArtistResponseDto> likeArtistList = likeArtistEntities.stream()
+        List<Artist> newArtists = new ArrayList<>();
+        for (Artist artist : likeArtistEntities) {
+            String fileName = imageUtil.extractFileName(artist.getProfileImage());
+            artist.setProfileImage(fileName);
+
+            newArtists.add(artist);
+        }
+
+        List<LikeArtistResponseDto> likeArtistList = newArtists.stream()
                 .map(artist -> LikeArtistResponseDto.createResponseDto(artist))
                 .collect(Collectors.toList());
 
@@ -117,6 +125,9 @@ public class ArtistServiceImpl implements ArtistService {
 
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
+
+        String fileName = imageUtil.extractFileName(artist.getProfileImage());
+        artist.setProfileImage(fileName);
 
         // existsByUserAndArtist를 사용하여 존재 여부 확인
         boolean isLiked = likeListRepository.existsByUserAndArtist(loginUser, artist);
