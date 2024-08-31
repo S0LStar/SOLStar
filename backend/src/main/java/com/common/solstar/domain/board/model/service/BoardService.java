@@ -46,13 +46,7 @@ public class BoardService {
             throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
         }
 
-        MultipartFile multipartFile = boardDto.getContentImage();
-
-        imageUtil.upload(multipartFile);
-
-        String uploadFile = imageUtil.uploadImage(multipartFile);
-
-        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent(), uploadFile);
+        Board createdBoard = Board.createBoard(funding, boardDto.getTitle(), boardDto.getContent());
 
         boardRepository.save(createdBoard);
     }
@@ -70,16 +64,7 @@ public class BoardService {
 
         List<Board> boardEntities = boardRepository.findByFunding_Id(fundingId);
 
-        List<Board> newBoards = new ArrayList<>();
-
-        for (Board board : boardEntities) {
-            String fileName = imageUtil.extractFileName(board.getContentImage());
-            board.uploadImage(fileName);
-
-            newBoards.add(board);
-        }
-
-        List<BoardResponseDto> responseDtos = newBoards.stream()
+        List<BoardResponseDto> responseDtos = boardEntities.stream()
                 .map(board -> BoardResponseDto.createResponseDto(board, isHost))
                 .collect(Collectors.toList());
 

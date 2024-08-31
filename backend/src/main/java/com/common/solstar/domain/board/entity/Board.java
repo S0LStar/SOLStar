@@ -37,12 +37,11 @@ public class Board extends BaseTimeEntity {
     @Column(name = "is_delete", nullable = false)
     private Boolean isDelete;
 
-    public static Board createBoard(Funding funding, String title, String content, String contentImage) {
+    public static Board createBoard(Funding funding, String title, String content) {
         return Board.builder()
                 .funding(funding)
                 .title(title)
                 .content(content)
-                .contentImage(contentImage)
                 .isDelete(false)
                 .build();
     }
@@ -56,13 +55,6 @@ public class Board extends BaseTimeEntity {
             this.content = boardDto.getContent();
         }
 
-        if (boardDto.getContentImage() != null) {
-            this.contentImage = boardDto.getContentImage();
-        }
-    }
-
-    public void uploadImage(String contentImage) {
-        this.contentImage = contentImage;
     }
 
     public void deleteBoard() {
