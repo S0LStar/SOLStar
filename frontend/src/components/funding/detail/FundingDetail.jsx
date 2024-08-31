@@ -8,7 +8,6 @@ import FundingNoti from './FundingNotiList';
 import FundingJoinModal from './FundingJoinModal';
 import FundingPayment from './FundingPayment';
 
-import Sol from '../../../assets/character/Sol.png'; // temp Image
 import Certification from '../../../assets/common/Certification.png';
 import Success from '../../../assets/funding/Success.png';
 import Fail from '../../../assets/funding/Fail.png';
@@ -69,7 +68,11 @@ function FundingDetail() {
     >
       <div className="funding-detail-image-container">
         <BackButton />
-        <img src={Sol} alt="Funding" className="funding-detail-image" />
+        <img
+          src={funding.fundingImage}
+          alt="Funding"
+          className="funding-detail-image"
+        />
       </div>
       <div className="funding-detail-header">
         {funding.type === 'VERIFIED' && (
