@@ -91,7 +91,7 @@ public class FundingServiceImpl implements FundingService {
         MultipartFile multipartFile = fundingDto.getFundingImage();
 
         // 사진 s3에 업로드
-        imageUtil.uploadImage(multipartFile);
+        imageUtil.upload(multipartFile);
         
         // 사진 파일 이름 바꿔서 DB 에 저장
         String uploadFile = imageUtil.uploadImage(multipartFile);
