@@ -16,8 +16,6 @@ public class FundingCreateRequestDto {
     @NotNull
     private String type;
 
-    private MultipartFile fundingImage;
-
     @NotNull
     private String title;
 

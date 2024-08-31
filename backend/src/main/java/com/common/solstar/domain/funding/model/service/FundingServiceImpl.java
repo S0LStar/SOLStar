@@ -61,7 +61,6 @@ public class FundingServiceImpl implements FundingService {
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AccountRepository accountRepository;
-    private final GroupedOpenApi api;
     private final WebClientExceptionHandler webClientExceptionHandler;
 
     @Value("${ssafy.api.key}")
@@ -87,15 +86,7 @@ public class FundingServiceImpl implements FundingService {
         // String 타입의 입력값을 FundingType으로 변환
         FundingType fundingType = FundingType.fromString(fundingDto.getType());
 
-        MultipartFile multipartFile = fundingDto.getFundingImage();
-
-        // 사진 s3에 업로드
-        imageUtil.uploadImage(multipartFile);
-        
-        // 사진 파일 이름 바꿔서 DB 에 저장
-        String uploadFile = imageUtil.uploadImage(multipartFile);
-
-        Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), uploadFile, fundingDto.getContent(), fundingDto.getGoalAmount(),
+        Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), artist.getProfileImage(), fundingDto.getContent(), fundingDto.getGoalAmount(),
                 fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
 
         fundingRepository.save(createdFunding);
@@ -149,10 +140,6 @@ public class FundingServiceImpl implements FundingService {
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
-
-        String fileName = imageUtil.extractFileName(funding.getFundingImage());
-
-        funding.setFundingImage(fileName);
 
         FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
 
@@ -236,7 +223,6 @@ public class FundingServiceImpl implements FundingService {
             throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         // 펀딩이 완료된 상태인지 확인
-        if (!funding.getStatus().equals(FundingStatus.SUCCESS))
             throw new ExceptionResponse(CustomException.NOT_SUCCESS_FUNDING_EXCEPTION);
 
         // 펀딩 계좌에서 총 금액 찾아서 만약 남아있다면 "기부" 메시지로 이체 후 계좌 연결관계 제거
