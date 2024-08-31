@@ -4,46 +4,63 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
+import SignUpButton from '../../common/SignUpButton';
 
 function SetPassword() {
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep] = useState(4);
-  const account = location.state?.account || {};
 
-  const [password, setPassword] = useState('');
+  // 초기 계정 정보 입력
+  const [account, setAccount] = useState({
+    ...location.state?.account,
+    accountpassword: '',
+  });
   const [nextActive, setNextActive] = useState(false);
 
-  // Check if password is set to enable the next button
+  // 비밀번호 6자리 확인
   useEffect(() => {
-    setNextActive(password.length === 6); // Enable 'Next' button when 6 characters are entered
-  }, [password]);
+    setNextActive(account.accountpassword.length === 6); // Enable 'Next' button when 6 characters are entered
+  }, [account.accountpassword]);
 
-  // Handle number button clicks
+  // 비밀번호 입력
   const handleNumberClick = (num) => {
-    if (password.length < 6) {
-      setPassword(password + num);
+    if (account.accountpassword.length < 6) {
+      setAccount((prevAccount) => ({
+        ...prevAccount,
+        accountpassword: prevAccount.accountpassword + num,
+      }));
     }
   };
 
-  // Handle clear action
+  // 초기화 버튼
   const handleClear = () => {
-    setPassword('');
+    setAccount((prevAccount) => ({
+      ...prevAccount,
+      accountpassword: '',
+    }));
   };
 
-  // Handle backspace action
+  // 1글자 지우기 버튼
   const handleBackspace = () => {
-    setPassword(password.slice(0, -1));
+    setAccount((prevAccount) => ({
+      ...prevAccount,
+      accountpassword: prevAccount.accountpassword.slice(0, -1),
+    }));
+  };
+
+  const handleNext = () => {
+    if (nextActive) {
+      navigate('/signup/reset', { state: { account } });
+    }
   };
 
   return (
     <>
       <div className="setpass-container">
         <div className="setpass-header">
-          <div className="setpass-header-backInfo">
-            <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
-            비밀번호 설정
-          </div>
+          <SignUpButton />
+          <div className="setpass-header-description">비밀번호 설정</div>
           <ProgressBar currentStep={currentStep} />
         </div>
 
@@ -53,7 +70,7 @@ function SetPassword() {
           {[...Array(6)].map((_, index) => (
             <div
               key={index}
-              className={`circle ${password.length > index ? 'active' : ''}`}
+              className={`circle ${account.accountpassword.length > index ? 'active' : ''}`}
             />
           ))}
         </div>
@@ -84,11 +101,7 @@ function SetPassword() {
 
         <WideButton
           isActive={nextActive}
-          onClick={() => {
-            if (nextActive) {
-              navigate('/signup/reset', { state: { account, password } });
-            }
-          }}
+          onClick={handleNext} // Use handleNext to navigate
           className="setpass-next-button"
         >
           다음

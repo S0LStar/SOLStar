@@ -12,7 +12,25 @@
   padding: 50px;
 }
 
-.my-nickname {
+.my-name {
+  font-size: 22px;
+}
+
+.my-name-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-name-text img {
+  margin-left: 10px;
+}
+
+.my-name-text input {
+  border: 0px;
+  width: 30%;
+  max-width: 100%;
+  word-wrap: break-word;
   font-size: 22px;
 }
 
@@ -21,8 +39,8 @@
 }
 
 .my-intro {
-  font-size: 14px; /* 자기소개 텍스트 크기 */
-  padding: 16px 20%;
+  font-size: 14px;
+  padding: 16px 10%;
 }
 
 .my-intro-text {
@@ -35,6 +53,23 @@
   margin-left: 10px;
 }
 
+.my-intro-text input {
+  border: 0px;
+  width: 60%;
+  max-width: 100%;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+.my-intro-text span {
+  display: inline-block;
+  max-width: 80%;
+  word-wrap: break-word;
+  font-size: 14px;
+  text-align: center;
+  overflow-wrap: break-word;
+}
+
 .my-container .my-edit-button {
   display: flex;
   justify-content: center;
@@ -44,8 +79,8 @@
 
 .my-container .wide-button {
   min-width: 125px;
-  width: 40%;
-  height: 30px;
+  width: 36%;
+  height: 36px;
   border-radius: 15px;
   display: flex;
   align-items: center;

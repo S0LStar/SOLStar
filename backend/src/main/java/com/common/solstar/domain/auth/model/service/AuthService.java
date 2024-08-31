@@ -4,13 +4,12 @@ import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.account.model.repository.AccountRepository;
 import com.common.solstar.domain.agency.entity.Agency;
 import com.common.solstar.domain.agency.model.repository.AgencyRepository;
+import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.auth.dto.request.*;
-import com.common.solstar.domain.auth.dto.response.CheckAuthCodeResponse;
-import com.common.solstar.domain.auth.dto.response.LoginResponse;
-import com.common.solstar.domain.auth.dto.response.RefreshResponse;
-import com.common.solstar.domain.auth.dto.response.UserAccountValidateResponse;
+import com.common.solstar.domain.auth.dto.response.*;
 import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
+import com.common.solstar.global.api.exception.WebClientExceptionHandler;
 import com.common.solstar.global.api.request.CheckAuthCodeApiRequest;
 import com.common.solstar.global.api.request.OpenAccountAuthApiRequest;
 import com.common.solstar.global.auth.CustomUserDetailsService;
@@ -53,6 +52,8 @@ public class AuthService {
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
             .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final WebClientExceptionHandler webClientExceptionHandler;
+    private final ArtistRepository artistRepository;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -73,11 +74,9 @@ public class AuthService {
         }
 
         // 사용 불가능한 닉네임일 경우 (유저, 소속사에서 겹치는거 제외. 아티스트 이름이랑도 겹치는거 추가 구현 예정)
-        if(userRepository.existsByNickname(nickname) || agencyRepository.existsByName(nickname)){
+        if(userRepository.existsByNickname(nickname) || agencyRepository.existsByName(nickname) || artistRepository.existsByName(nickname)){
             throw new ExceptionResponse(CustomException.DUPLICATED_NAME_EXCEPTION);
         }
-
-        String userKey = "userKey"; // 금융 api에서 email로 계좌 정보 조회에서 불러와야함
 
         Account account = Account.builder()
                 .accountNumber(signupRequest.getAccountNumber())
@@ -94,7 +93,7 @@ public class AuthService {
                 .phone(signupRequest.getPhone())
                 .profileImage(signupRequest.getProfileImage())
                 .account(account)
-                .userKey(userKey) // userKey 받아오는 로직 수정필요
+                .userKey(signupRequest.getUserKey())
                 .build();
 
         userRepository.save(user);
@@ -188,32 +187,35 @@ public class AuthService {
                 }
                 """.formatted(apiKey, request.getUserId());
 
-        // API 요청 보내기
-        Mono<String> responseMono = webClient.post()
-                .uri(url)
-                .header("Content-Type", "application/json")
-                .bodyValue(apiRequest)
-                .retrieve()
-                .bodyToMono(String.class);
-
-        String response = responseMono.block();
-
         try{
-            JsonNode root = objectMapper.readTree(response);
+            // API 요청 보내기
+            Mono<String> responseMono = webClient.post()
+                    .uri(url)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .bodyToMono(String.class);
 
-            if(!root.has("userKey")) {
-                throw new ExceptionResponse(CustomException.NOT_SAME_USER_EXCEPTION);
-            }
+            String response = responseMono.block();
+            JsonNode root = objectMapper.readTree(response);
 
             String userKey = root.get("userKey").asText();
 
             return UserAccountValidateResponse.builder()
                     .useKey(userKey)
                     .build();
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
+
+            webClientExceptionHandler.handleWebClientException(errorBody);
+
         } catch (Exception e){
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
 
+        return null;
     }
 
     // 1원 송금
@@ -245,13 +247,16 @@ public class AuthService {
                     .retrieve()
                     .bodyToMono(String.class);
 
-            String response = responseMono.block();
+            responseMono.block();
+        } catch (WebClientResponseException e) {
+            // WebClient 오류 응답 처리
+            String errorBody = e.getResponseBodyAsString();
+            System.out.println("Error Response: " + errorBody);
 
-            JsonNode root = objectMapper.readTree(response);
-            if(root.has("responseCode")) {
-                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-            }
-        } catch (Exception e) {
+            webClientExceptionHandler.handleWebClientException(errorBody);
+
+        }
+        catch (Exception e) {
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
 
@@ -305,32 +310,13 @@ public class AuthService {
             String errorBody = e.getResponseBodyAsString();
             System.out.println("Error Response: " + errorBody);
 
-            try {
-                // 오류 응답 JSON 파싱
-                JsonNode root = objectMapper.readTree(errorBody);
+            webClientExceptionHandler.handleWebClientException(errorBody);
 
-                if (root.has("responseCode")) {
-                    String responseCode = root.get("responseCode").asText();
-
-                    // responseCode에 따른 커스텀 예외 처리
-                    switch (responseCode) {
-                        case "A1087":
-                            throw new ExceptionResponse(CustomException.EXPIRED_AUTH_CODE);
-                        default:
-                            throw new ExceptionResponse(CustomException.NOT_FOUND_AUTH_CODE);
-                    }
-                } else {
-                    throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-                }
-
-            } catch (JsonProcessingException jsonParseException) {
-                // JSON 파싱 오류 시 기본 예외 처리
-                throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
-            }
         } catch (Exception e) {
             // 기타 예외 처리
             throw new ExceptionResponse(CustomException.BAD_SSAFY_API_REQUEST);
         }
+        return null;
     }
 
     // 소속사 회원가입
@@ -343,14 +329,42 @@ public class AuthService {
             throw new ExceptionResponse(CustomException.DUPLICATED_ID_EXCEPTION);
         }
 
+        // 이미 가입된 이름이라면 가입 불가능
+        if(agencyRepository.existsByName(request.getName())){
+            throw new ExceptionResponse(CustomException.DUPLICATED_NAME_EXCEPTION);
+        }
+
         Agency agency = Agency.builder()
                 .email(email)
                 .password(bCryptPasswordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone())
                 .name(request.getName())
+                .profileImage(request.getProfileImage())
                 .build();
 
         agencyRepository.save(agency);
 
+    }
+    
+    // 이메일 중복검사
+    public CheckDuplicateResponse checkEmail(String email) {
+        // 이미 가입된 이메일이라면 가입 불가능
+        if(userRepository.existsByEmail(email) || agencyRepository.existsByEmail(email)) {
+            return CheckDuplicateResponse.builder()
+                    .isDuplicate(true)
+                    .build();
+        }
+        return CheckDuplicateResponse.builder().isDuplicate(false).build();
+    }
+
+    // 닉네임 중복검사
+    public CheckDuplicateResponse checkNickname(String nickname) {
+        // 사용 불가능한 닉네임일 경우 (유저, 소속사에서 겹치는거 제외. 아티스트 이름이랑도 겹치는거 추가 구현 예정)
+        if(userRepository.existsByNickname(nickname) || agencyRepository.existsByName(nickname) || artistRepository.existsByName(nickname)){
+            return CheckDuplicateResponse.builder()
+                    .isDuplicate(true)
+                    .build();
+        }
+        return CheckDuplicateResponse.builder().isDuplicate(false).build();
     }
 }

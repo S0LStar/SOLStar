@@ -9,13 +9,13 @@ import java.util.Map;
 
 public interface ArtistService {
 
-    List<ArtistSearchResponseDto> searchArtists(String keyword);
+    List<ArtistSearchResponseDto> searchArtists(String keyword, String authEmail);
 
     ArtistResponseDto getArtistById(int artistId);
 
-    List<LikeArtistResponseDto> getLikeArtistList();
+    List<LikeArtistResponseDto> getLikeArtistList(String authEmail);
 
-    Map<String, Object> getLikeArtist(int artistId);
+    Map<String, Object> getLikeArtist(int artistId, String authEmail);
 
-    void like(int artistId);
+    void like(int artistId, String authEmail);
 }

@@ -1,6 +1,5 @@
 .login-container {
   padding: 16px;
-  margin-bottom: 80px;
   /* width: 360px; */
 }
 
@@ -18,8 +17,15 @@
 }
 
 .login-box {
-  padding-right: 36px;
+  /* padding-right: 36px; */
+  margin-right: 36px;
   margin-bottom: 20px;
+}
+
+.login-email {
+  display: flex;
+  justify-content: space-between;
+  width: 110%;
 }
 
 .login-label {

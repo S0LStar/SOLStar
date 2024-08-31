@@ -1,98 +1,118 @@
 import './RequestFunding.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AxiosInstance from '../../util/AxiosInstance'; // AxiosInstance import
 import WideButton from '../common/WideButton';
-import temp from '../../assets/character/Shoo.png';
-import LeftVector from '../../assets/common/LeftVector.png';
-
 import FundingCard from '../funding/common/FundingCard';
+import Check from '../../assets/mypage/Check.png';
+import X from '../../assets/mypage/X.png';
+import BackButton from '../common/BackButton';
+import Empty from '../common/Empty';
+import Error from '../../common/Error';
 
 function RequestFunding() {
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
+  const [fundingData, setFundingData] = useState([]); // 상태 추가
+  const [loading, setLoading] = useState(true); // 로딩 상태
+  const [error, setError] = useState(null); // 에러 상태
 
-  const fundingData = [
-    {
-      fundingId: 1,
-      type: '',
-      artistName: '뉴진스',
-      title: '뉴진스 데뷔 2주년 기념🎉 2호선을 뉴진스로 물들여요!',
-      fundingImage: 'image',
-      successRate: '',
-      totalAmount: '',
-      status: '',
-      remainDays: '',
-    },
-    {
-      fundingId: 2,
-      type: '',
-      artistName: '민지 (NewJeans)',
-      title:
-        '뉴진스 민지의 이름으로 따뜻한 마음을 전해요 💙 펀딩이 함께하는 사랑의 기부',
-      fundingImage: '../../../assets/character/Sol.png',
-      successRate: '',
-      totalAmount: '',
-      status: '',
-      remainDays: '',
-    },
-    {
-      fundingId: 3,
-      type: '',
-      artistName: '뉴진스',
-      title: '뉴진스 한정판 굿즈 💖 팬심으로 만든 특별 아이템',
-      fundingImage: 'funding_image_3_url',
-      successRate: '',
-      totalAmount: '',
-      status: '',
-      remainDays: '',
-    },
-    {
-      fundingId: 4,
-      type: '',
-      artistName: '뉴진스',
-      title: '뉴진스 한정판 굿즈 💖 팬심으로 만든 특별 아이템',
-      fundingImage: 'funding_image_3_url',
-      successRate: '',
-      totalAmount: '',
-      status: '',
-      remainDays: '',
-    },
-  ];
+  useEffect(() => {
+    const fetchFundingData = async () => {
+      try {
+        const response = await AxiosInstance.get('/agency/funding'); // `/agency/funding` 엔드포인트로 GET 요청
+        setFundingData(response.data.data); // 응답 데이터를 상태로 설정
+      } catch (error) {
+        console.error('펀딩 데이터를 가져오는 데 실패했습니다:', error);
+        setError('펀딩 데이터를 가져오는 데 실패했습니다.');
+      } finally {
+        setLoading(false); // 로딩 상태 업데이트
+      }
+    };
 
-  const handleCancel = (fundingId) => {
-    // API 연결
-    console.log(`Funding ${fundingId} cancelled`);
+    fetchFundingData(); // 데이터 가져오기
+  }, []);
+
+  const handleCancel = async (fundingId) => {
+    try {
+      const response = await AxiosInstance.patch(
+        `/agency/funding-reject/${fundingId}`
+      );
+      console.log(`Funding ${fundingId} cancelled:`, response.data);
+      // 상태 업데이트를 통해 UI를 새로고침할 수 있습니다.
+      setFundingData((prevData) =>
+        prevData.filter((funding) => funding.fundingId !== fundingId)
+      );
+    } catch (error) {
+      console.error(`Funding ${fundingId} cancellation failed:`, error);
+      // alert('펀딩 거절에 실패했습니다.');
+      setError('펀딩 거절에 실패했습니다.');
+    }
   };
 
-  const handleComplete = (fundingId) => {
-    // API 연결
-    console.log(`Funding ${fundingId} completed`);
+  const handleComplete = async (fundingId) => {
+    try {
+      const response = await AxiosInstance.patch(
+        `/agency/funding-accept/${fundingId}`
+      );
+      console.log(`Funding ${fundingId} completed:`, response.data);
+      // 상태 업데이트를 통해 UI를 새로고침할 수 있습니다.
+      setFundingData((prevData) =>
+        prevData.filter((funding) => funding.fundingId !== fundingId)
+      );
+    } catch (error) {
+      console.error(`Funding ${fundingId} acceptance failed:`, error);
+      // alert('펀딩 승인에 실패했습니다.');
+      setError('펀딩 거절에 실패했습니다.');
+    }
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // 로딩 중일 때 표시
+  }
+
+  if (error) {
+    return <div>{error}</div>; // 에러가 발생했을 때 표시
+  }
 
   return (
     <>
       <div className="request-container">
-        <div className="request-funding">인증 펀딩 요청</div>
-        <div className="request-funding-list">
-          {fundingData.map((funding) => (
-            <div className="request-funding-item" key={funding.fundingId}>
-              <FundingCard funding={funding} />
-              <div className="request-funding-buttons">
-                <WideButton
-                  onClick={() => handleCancel(funding.fundingId)}
-                  isActive={false}
-                >
-                  거절
-                </WideButton>
-                <WideButton
-                  onClick={() => handleComplete(funding.fundingId)}
-                  isActive={true}
-                >
-                  승인
-                </WideButton>
-              </div>
-            </div>
-          ))}
+        <div className="request-header">
+          <BackButton />
+          <div className="request-header-description">인증 펀딩 요청</div>
         </div>
+        <div className="request-funding-list">
+          {fundingData.length === 0 ? (
+            <Empty>인증 펀딩 요청</Empty>
+          ) : (
+            fundingData.map((funding) => (
+              <div className="request-funding-item" key={funding.fundingId}>
+                <FundingCard
+                  funding={{
+                    ...funding,
+                    totalAmount: funding.totalAmount || 0, // 기본값 설정
+                    successRate: funding.successRate || 0, // 기본값 설정
+                    goalAmount: funding.goalAmount || 1, // 기본값 설정으로 나누기 오류 방지
+                  }}
+                />
+                <div className="request-funding-buttons">
+                  <img
+                    src={Check}
+                    alt=""
+                    onClick={() => handleCancel(funding.fundingId)}
+                  />
+                  <img
+                    src={X}
+                    alt=""
+                    onClick={() => handleComplete(funding.fundingId)}
+                  />
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+        {error && <Error setError={setError} />}
       </div>
     </>
   );

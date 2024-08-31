@@ -3,12 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import SearchReset from '../../../assets/common/SearchReset.png';
 import GoBack from '../../../assets/common/GoBack.png';
 import Go from '../../../assets/common/Go.png';
-import temp from '../../../assets/character/Sol.png';
 import Zzim from '../../../assets/artist/Zzim.png';
 import NoZzim from '../../../assets/artist/NoZzim.png';
+import DefaultArtist from '../../../assets/common/DefaultArtist.png';
 
 import './FundingSearchResult.css';
 import FundingCard from '../common/FundingCard';
+import axiosInstance from '../../../util/AxiosInstance';
+import Empty from '../../common/Empty';
 
 function FundingSearchResult() {
   const location = useLocation();
@@ -24,97 +26,79 @@ function FundingSearchResult() {
 
   useEffect(() => {
     console.log(query);
-    // TODO : API 연결
-    // 검색 결과 데이터
-    const fetchedData = {
-      fundingList: [
-        {
-          fundingId: 1,
-          type: 'VERIFIED',
-          artistName: '뉴진스',
-          title: '뉴진스 데뷔 2주년 기념🎉 2호선을 뉴진스로 물들여요!',
-          fundingImage: 'image',
-          successRate: 372,
-          totalAmount: 18600000,
-          status: 'PROCESSING',
-          remainDays: 22,
-        },
-        {
-          fundingId: 2,
-          type: 'COMMON',
-          artistName: '민지 (NewJeans)',
-          title:
-            '뉴진스 민지의 이름으로 따뜻한 마음을 전해요 💙 펀딩이 함께하는 사랑의 기부',
-          fundingImage: '../../../assets/character/Sol.png',
-          successRate: 160,
-          totalAmount: 1600000,
-          status: 'SUCCESS',
-          remainDays: null,
-        },
-        {
-          fundingId: 3,
-          type: 'COMMON',
-          artistName: '뉴진스',
-          title: '뉴진스 한정판 굿즈 💖 팬심으로 만든 특별 아이템',
-          fundingImage: 'funding_image_3_url',
-          successRate: 50,
-          totalAmount: 1230000,
-          status: 'FAIL',
-          remainDays: null,
-        },
-        {
-          fundingId: 4,
-          type: 'COMMON',
-          artistName: '뉴진스',
-          title: '뉴진스 한정판 굿즈 💖 팬심으로 만든 특별 아이템',
-          fundingImage: 'funding_image_3_url',
-          successRate: 50,
-          totalAmount: 1230000,
-          status: 'FAIL',
-          remainDays: null,
-        },
-      ],
-      artistList: [
-        {
-          artistId: 1,
-          type: 'GROUP',
-          name: '뉴진스',
-          group: null,
-          profileImage: 'artist_image_1_url',
-          popularity: 230,
-          isLike: false,
-        },
-        {
-          artistId: 2,
-          type: 'MEMBER',
-          name: '민지',
-          group: '뉴진스',
-          profileImage: 'artist_image_2_url',
-          popularity: 200,
-          isLike: true,
-        },
-        {
-          artistId: 3,
-          type: 'MEMBER',
-          name: '혜린',
-          group: '뉴진스',
-          profileImage: 'artist_image_3_url',
-          popularity: 180,
-          isLike: false,
-        },
-        {
-          artistId: 4,
-          type: 'MEMBER',
-          name: '하니',
-          group: '뉴진스',
-          profileImage: 'artist_image_4_url',
-          popularity: 160,
-          isLike: false,
-        },
-      ],
+
+    //  펀딩 검색 결과 데이터 API 연결
+    const fetchFundingData = async () => {
+      try {
+        const response = await axiosInstance.get('/funding', {
+          params: {
+            keyword: query,
+          },
+        });
+
+        const updatedFundingList = response.data.data.fundingList.map(
+          (funding) => {
+            // successRate 계산: totalAmount / goalAmount * 100
+            const successRate = Math.floor(
+              (funding.totalAmount / funding.goalAmount) * 100
+            );
+
+            // successRate를 포함한 새로운 객체 반환
+            return {
+              ...funding,
+              successRate: successRate,
+            };
+          }
+        );
+
+        console.log(response);
+        setData((prevData) => ({
+          ...prevData,
+          fundingList: updatedFundingList,
+        }));
+      } catch (error) {
+        console.error('검색 결과 funding 데이터', error);
+      }
     };
 
-    setData(fetchedData); // 받아온 데이터를 상태로 설정
+    fetchFundingData();
+
+    //  펀딩 검색 결과 데이터 API 연결
+    const fetchArtistData = async () => {
+      try {
+        const response = await axiosInstance.get('/artist', {
+          params: {
+            keyword: query,
+          },
+        });
+
+        const updatedArtistList = response.data.data.artistList.map(
+          (funding) => {
+            // successRate 계산: totalAmount / goalAmount * 100
+            const successRate = Math.floor(
+              (funding.totalAmount / funding.goalAmount) * 100
+            );
+
+            // successRate를 포함한 새로운 객체 반환
+            return {
+              ...funding,
+              successRate: successRate,
+            };
+          }
+        );
+
+        console.log(response);
+        setData((prevData) => ({
+          ...prevData,
+          artistList: updatedArtistList,
+        }));
+      } catch (error) {
+        console.error('검색 결과 funding 데이터', error);
+      }
+    };
+
+    fetchFundingData();
+    fetchArtistData();
   }, [query]);
 
   const handleChange = (e) => {
@@ -127,12 +111,22 @@ function FundingSearchResult() {
     }
   };
 
-  const toggleZzim = (artistId) => {
-    // TODO: 찜/찜 해제 API 요청
+  const toggleZzim = (artistId, event) => {
+    event.stopPropagation();
+
+    // 찜/찜 해제 API 요청
+    const postLike = async () => {
+      const response = await axiosInstance.post(`/artist/like/${artistId}`);
+
+      console.log(response);
+    };
+
+    postLike();
+
     setData((prevData) => {
       const updatedArtistList = prevData.artistList.map((artist) => {
         if (artist.artistId === artistId) {
-          return { ...artist, isLike: !artist.isLike };
+          return { ...artist, liked: !artist.liked };
         }
         return artist;
       });
@@ -177,27 +171,41 @@ function FundingSearchResult() {
           <img src={Go} alt="" className="search-result-go" />
         </div>
         <div className="artist-list">
-          {data.artistList.map((artist) => (
-            <div key={artist.artistId} className="artist-item">
-              <img src={temp} alt={artist.name} className="artist-image" />
-              {artist.isLike ? (
+          {data.artistList.length > 0 ? (
+            data.artistList.map((artist) => (
+              <div
+                key={artist.artistId}
+                className="artist-item"
+                onClick={() => {
+                  navigate(`/artist/${artist.artistId}`);
+                }}
+              >
                 <img
-                  src={Zzim}
-                  alt=""
-                  className="artist-item-zzim"
-                  onClick={() => toggleZzim(artist.artistId)}
+                  src={artist.profileImage || DefaultArtist}
+                  alt={artist.name}
+                  className="artist-image"
                 />
-              ) : (
-                <img
-                  src={NoZzim}
-                  alt=""
-                  className="artist-item-zzim"
-                  onClick={() => toggleZzim(artist.artistId)}
-                />
-              )}
-              <span className="artist-name">{artist.name}</span>
-            </div>
-          ))}
+                {artist.liked ? (
+                  <img
+                    src={Zzim}
+                    alt=""
+                    className="artist-item-zzim"
+                    onClick={(e) => toggleZzim(artist.artistId, e)}
+                  />
+                ) : (
+                  <img
+                    src={NoZzim}
+                    alt=""
+                    className="artist-item-zzim"
+                    onClick={(e) => toggleZzim(artist.artistId, e)}
+                  />
+                )}
+                <span className="artist-name">{artist.name}</span>
+              </div>
+            ))
+          ) : (
+            <Empty>해당하는 아티스트</Empty>
+          )}
         </div>
       </div>
 
@@ -207,9 +215,13 @@ function FundingSearchResult() {
           <img src={Go} alt="" className="search-result-go" />
         </div>
         <div className="search-result-funding-list">
-          {data.fundingList.map((funding) => (
-            <FundingCard key={funding.fundingId} funding={funding} />
-          ))}
+          {data.fundingList.length > 0 ? (
+            data.fundingList.map((funding) => (
+              <FundingCard key={funding.fundingId} funding={funding} />
+            ))
+          ) : (
+            <Empty>해당하는 펀딩</Empty>
+          )}
         </div>
       </div>
     </div>

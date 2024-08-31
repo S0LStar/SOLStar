@@ -5,16 +5,21 @@
   /* width: 360px; */
 }
 
-.request-funding {
+.request-header {
   display: flex;
+  padding: 10px;
   align-items: center;
-  margin-bottom: 20px;
-  font-size: 16px;
-  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.request-header-description {
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: 500;
 }
 
 .request-container .request-funding-item {
-  margin-bottom: 20px;
+  margin-bottom: -20px;
 }
 
 .request-container .funding-card-item {
@@ -31,16 +36,30 @@
 
 .request-container .request-funding-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   align-items: center;
+  position: relative; /* 절대 위치 설정 */
+  right: 0;
+  bottom: 40px; /* 현재 위치에서 위로 40px 올리기 */
+  padding: 0 10px; /* 사진의 크기에 맞춰 좌우 패딩 조정 */
+  gap: 3vw;
+}
+
+.request-container .request-funding-buttons img {
+  width: 30px;
+}
+
+.request-container .wide-button-container {
+  width: 100%;
+  margin: 0px 20px;
 }
 
 .request-container .wide-button {
   width: 100%;
+  min-width: 100px;
   height: 30px;
   font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0px 20px;
 }

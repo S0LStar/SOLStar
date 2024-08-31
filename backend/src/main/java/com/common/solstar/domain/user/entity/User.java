@@ -55,7 +55,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @OneToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id", nullable = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "account_id")
     private Account account;
 
     @Column(length = 255)
@@ -75,6 +75,10 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.refreshToken = refreshToken;
     }
 
+    public void deleteRefreshToken() {
+        this.refreshToken = null;
+    }
+
     public void updateIntroduction(String introduction) {
         this.introduction = introduction;
     }
@@ -83,6 +87,17 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.introduction = null;
     }
 
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void deleteProfileImage(){
+        this.profileImage = null;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

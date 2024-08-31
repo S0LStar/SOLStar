@@ -1,49 +1,109 @@
 import './ResetPassword.css';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import AxiosInstance from '../../../util/AxiosInstance'; // AxiosInstance 임포트
 import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
+import SignUpButton from '../../common/SignUpButton';
+import Error from '../../common/Error';
 
 function ResetPassword() {
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep] = useState(4);
-  const account = location.state?.account || {};
 
-  const [password, setPassword] = useState('');
+  // 초기 계정 정보 입력
+  const [account, setAccount] = useState({
+    ...location.state.account,
+    accountpasswordconfirm: '',
+  });
   const [nextActive, setNextActive] = useState(false);
 
-  // Check if password is set to enable the next button
+  // 비밀번호 6자리 확인
   useEffect(() => {
-    setNextActive(password.length === 6); // Enable 'Next' button when 6 characters are entered
-  }, [password]);
+    setNextActive(account.accountpasswordconfirm.length === 6);
+  }, [account.accountpasswordconfirm]);
 
-  // Handle number button clicks
   const handleNumberClick = (num) => {
-    if (password.length < 6) {
-      setPassword(password + num);
+    if (account.accountpasswordconfirm.length < 6) {
+      setAccount((prevAccount) => ({
+        ...prevAccount,
+        accountpasswordconfirm: prevAccount.accountpasswordconfirm + num,
+      }));
     }
   };
 
-  // Handle clear action
+  // 초기화 버튼
   const handleClear = () => {
-    setPassword('');
+    setAccount((prevAccount) => ({
+      ...prevAccount,
+      accountpasswordconfirm: '',
+    }));
   };
 
-  // Handle backspace action
+  // 1글자 지우기 버튼
   const handleBackspace = () => {
-    setPassword(password.slice(0, -1));
+    setAccount((prevAccount) => ({
+      ...prevAccount,
+      accountpasswordconfirm: prevAccount.accountpasswordconfirm.slice(0, -1),
+    }));
+  };
+
+  const handleNext = async () => {
+    if (nextActive) {
+      console.log(account);
+      if (account.accountpasswordconfirm !== account.accountpassword) {
+        // 비밀번호가 일치하지 않으면 경고를 띄우고 종료
+        // alert('비밀번호가 일치하지 않습니다.');
+        setError('비밀번호가 일치하지 않습니다.');
+        handleClear();
+        return;
+      }
+
+      try {
+        // 비밀번호 확인을 위한 POST 요청
+        const response = await AxiosInstance.post('/auth/signup', {
+          email: account.email,
+          password: account.password,
+          name: account.name,
+          nickname: account.nickname,
+          birthDate: account.birthDate,
+          phone: account.phone,
+          profileImage: account.profileImage,
+          accountNumber: account.accountNo,
+          bankCode: '088',
+          accountPassword: account.accountpassword,
+          userKey: account.userKey,
+        });
+        console.log(response.data.status);
+        if (response.data.status === 201) {
+          // 성공 시 다음 단계로 이동
+          navigate('/signup/created', { state: { account } });
+        } else {
+          // 실패 시 오류 메시지 표시하고 /login으로 이동
+          // alert('회원가입에 실패하셨습니다. 다시 시도해 주세요.');
+          setError('회원가입에 실패하셨습니다. 다시 시도해 주세요.');
+          navigate('/signup/created', { state: { account } });
+          navigate('/signup');
+        }
+      } catch (error) {
+        console.error('비밀번호 재설정 요청 실패:', error);
+        navigate('/signup/created', { state: { account } });
+        // alert('비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        setError('비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        navigate('/login');
+      }
+    }
   };
 
   return (
     <>
       <div className="resetpass-container">
         <div className="resetpass-header">
-          <div className="resetpass-header-backInfo">
-            <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
-            비밀번호 확인
-          </div>
+          <SignUpButton />
+          <div className="resetpass-header-description">비밀번호 재설정</div>
           <ProgressBar currentStep={currentStep} />
         </div>
 
@@ -53,7 +113,9 @@ function ResetPassword() {
           {[...Array(6)].map((_, index) => (
             <div
               key={index}
-              className={`circle ${password.length > index ? 'active' : ''}`}
+              className={`circle ${
+                account.accountpasswordconfirm.length > index ? 'active' : ''
+              }`}
             />
           ))}
         </div>
@@ -84,16 +146,13 @@ function ResetPassword() {
 
         <WideButton
           isActive={nextActive}
-          onClick={() => {
-            if (nextActive) {
-              navigate('/signup/created', { state: { account, password } });
-            }
-          }}
+          onClick={handleNext} // Use handleNext to navigate
           className="resetpass-next-button"
         >
-          다음
+          회원가입 하기
         </WideButton>
       </div>
+      {error && <Error setError={setError} />}
     </>
   );
 }

@@ -14,13 +14,12 @@ import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.common.solstar.global.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -31,11 +30,13 @@ public class ArtistServiceImpl implements ArtistService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
     private final LikeListRepository likeListRepository;
+    private final ImageUtil imageUtil;
 
     @Override
-    public List<ArtistSearchResponseDto> searchArtists(String keyword) {
+    public List<ArtistSearchResponseDto> searchArtists(String keyword, String authEmail) {
         // 로그인한 유저 불러오기
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
         // 검색어로 아티스트 리스트 불러오기
         List<Artist> artists = artistRepository.findByNameContainingIgnoreCaseOrGroupContainingIgnoreCase(keyword, keyword);
@@ -53,9 +54,11 @@ public class ArtistServiceImpl implements ArtistService {
 
     @Override
     public ArtistResponseDto getArtistById(int artistId) {
-
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
+
+        String profileImage = imageUtil.extractFileName(artist.getProfileImage());
+        artist.setProfileImage(profileImage);
 
         List<Funding> fundingEntities = fundingRepository.findByArtist_Id(artistId);
 
@@ -67,10 +70,10 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public List<LikeArtistResponseDto> getLikeArtistList() {
+    public List<LikeArtistResponseDto> getLikeArtistList(String authEmail) {
         // 로그인한 유저가 좋아하는 artist의 id 찾아오기
-        // 임시로 id = 1 인 유저 호출
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
         // LikeList 엔티티 목록을 가져옴
         List<LikeList> likeListEntities = likeListRepository.findByUser_Id(loginUser.getId());
@@ -88,10 +91,12 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Map<String, Object> getLikeArtist(int artistId) {
+    public Map<String, Object> getLikeArtist(int artistId, String authEmail) {
         Map<String, Object> isLike = new HashMap<>();
         // 로그인한 유저 불러오기
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
 
@@ -104,9 +109,12 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public void like(int artistId) {
+    @Transactional
+    public void like(int artistId, String authEmail) {
         // 로그인한 유저 불러오기
-        User loginUser = userRepository.findById(1);
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
 

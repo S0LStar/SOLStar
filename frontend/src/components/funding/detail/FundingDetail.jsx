@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import WideButton from '../../common/WideButton';
 import BackButton from '../../common/BackButton';
 import './FundingDetail.css';
@@ -8,41 +8,29 @@ import FundingNoti from './FundingNotiList';
 import FundingJoinModal from './FundingJoinModal';
 import FundingPayment from './FundingPayment';
 
-import Sol from '../../../assets/character/Sol.png'; // temp Image
 import Certification from '../../../assets/common/Certification.png';
 import Success from '../../../assets/funding/Success.png';
 import Fail from '../../../assets/funding/Fail.png';
 import Closed from '../../../assets/funding/Closed.png';
+import axiosInstance from '../../../util/AxiosInstance';
 
 function FundingDetail() {
+  const navigate = useNavigate();
   const { fundingId } = useParams();
   const [funding, setFunding] = useState(null);
   const [activeTab, setActiveTab] = useState('plan'); // 활성화 탭 상태관리
   const [joinModalOpen, setJoinModalOpen] = useState(false); // 펀딩 참여 모달 상태 관리
 
   useEffect(() => {
-    console.log(parseInt(fundingId));
-
-    // TODO : API 연결
     // 펀딩 상세 조회 Data
-    const tempData = {
-      title: '🎉 뉴진스 데뷔 2주년 기념 🎉 2호선을 뉴진스로 물들여요!',
-      artistProfileImage: 'image',
-      artistName: '뉴진스',
-      fundingImage: 'image_url2',
-      hostNickname: '뉴진스찐팬',
-      hostIntroduction: '뉴진스 찐팬 2년차입니다.',
-      hostProfileImage: null,
-      totalAmount: 500000,
-      goalAmount: 1000000,
-      deadlineDate: '2024-08-28',
-      totalJoin: 1,
-      type: 'VERIFIED',
-      status: 'PROCESSING', // PROCESSING, SUCCESS, FAIL, CLOSED
-      joinStatus: 2, // 0: 참여 가능 대상 (펀딩 진행 중 && 펀딩 참여 전 && 주최자 x), 1: 참여자, 2: 주최자 => 여러번 참여 가능하다면 상태값 수정 필요
+    const fetchFundingDetail = async () => {
+      const response = await axiosInstance.get(`/funding/${fundingId}`);
+
+      console.log(response);
+      setFunding(response.data.data);
     };
 
-    setFunding(tempData);
+    fetchFundingDetail();
   }, [location]);
 
   if (!funding) {
@@ -62,13 +50,29 @@ function FundingDetail() {
     setJoinModalOpen(false);
   };
 
+  // 정산 종료 요청
+  const handleFinish = () => {
+    // 정산 종료 API 요청
+    const finishFunding = async () => {
+      const response = await axiosInstance.patch(`/funding/done/${fundingId}`);
+
+      console.log(response);
+    };
+
+    finishFunding();
+  };
+
   return (
     <div
-      className={`funding-detail-container ${funding.joinStatus !== 0 && 'no-button'}`}
+      className={`funding-detail-container ${funding.joinStatus !== 0 && !(funding.joinStatus === 2 && funding.status === 'SUCCESS') && 'no-button'}`}
     >
       <div className="funding-detail-image-container">
         <BackButton />
-        <img src={Sol} alt="Funding" className="funding-detail-image" />
+        <img
+          src={funding.fundingImage}
+          alt="Funding"
+          className="funding-detail-image"
+        />
       </div>
       <div className="funding-detail-header">
         {funding.type === 'VERIFIED' && (
@@ -83,7 +87,13 @@ function FundingDetail() {
         )}
         <h1 className="funding-detail-title">{funding.title}</h1>
 
-        <div className="funding-detail-artist-info">
+        <div
+          className="funding-detail-artist-info"
+          onClick={() => {
+            navigate(`/artist/${funding.artistId}`);
+          }}
+        >
+          {/* TODO: 이미지처리 */}
           <img src={Certification} alt="" />
           <div>{funding.artistName}</div>
         </div>
@@ -162,6 +172,8 @@ function FundingDetail() {
           <div className="funding-detail-host">
             <div className="funding-detail-host-title">주최자 소개</div>
             <div>
+              {/* TODO: 이미지처리 */}
+
               <img
                 src={Certification}
                 alt=""
@@ -196,25 +208,33 @@ function FundingDetail() {
           >
             공지사항
           </button>
-          {funding.joinStatus !== 0 && (
-            <button
-              onClick={() => setActiveTab('payment')}
-              className={`funding-content-tab-button ${activeTab === 'payment' && 'active'}`}
-            >
-              정산
-            </button>
-          )}
+          {funding.joinStatus !== 0 &&
+            (funding.status === 'SUCCESS' || funding.status === 'CLOSED') && (
+              <button
+                onClick={() => setActiveTab('payment')}
+                className={`funding-content-tab-button ${activeTab === 'payment' && 'active'}`}
+              >
+                정산
+              </button>
+            )}
         </div>
         <div className="funding-content-detail">
           {activeTab === 'plan' ? (
-            <FundingPlan />
+            <FundingPlan fundingId={parseInt(fundingId)} />
           ) : activeTab === 'noti' ? (
             <FundingNoti
               fundingId={parseInt(fundingId)}
               isHost={funding.joinStatus === 2}
+              nickname={funding.hostNickname}
+              profileImage={funding.hostProfileImage}
             />
           ) : (
-            funding.joinStatus !== 0 && <FundingPayment />
+            funding.joinStatus !== 0 && (
+              <FundingPayment
+                artistName={funding.artistName}
+                artistProfileImage={funding.artistProfileImage}
+              />
+            )
           )}
         </div>
       </div>
@@ -223,6 +243,14 @@ function FundingDetail() {
         <div className="wide-button-fix">
           <WideButton onClick={handleJoin} isActive={true}>
             펀딩 참여하기
+          </WideButton>
+        </div>
+      )}
+
+      {funding.status === 'SUCCESS' && funding.joinStatus === 2 && (
+        <div className="wide-button-fix">
+          <WideButton onClick={handleFinish} isActive={true}>
+            정산 종료하기
           </WideButton>
         </div>
       )}

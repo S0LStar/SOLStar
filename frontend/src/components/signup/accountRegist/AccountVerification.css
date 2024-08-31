@@ -1,32 +1,26 @@
 .accountverify-container {
   padding: 16px;
+  margin: 0 auto;
   margin-bottom: 80px;
-  /* width: 360px;
-  margin: 0 auto; */
+  /* width: 360px; */
 }
 
 .accountverify-header {
   display: flex;
-  justify-content: space-between;
+  padding: 10px;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-.accountverify-header img {
-  margin-right: 10px;
-  height: 14px;
+.accountverify-header-description {
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  width: 120%;
 }
 
-.accountverify-header-backInfo {
-  min-width: 120px;
-  font-size: 16px;
-}
-
-.accountverify-description {
-  text-align: left;
-  margin-bottom: 20px;
-  font-size: 12px;
-  font-weight: bold;
+.accountverify-container .progress-bar {
+  width: 60%;
 }
 
 .accountverify-bank-info {
@@ -128,19 +122,11 @@
 }
 
 .accountverify-container .wide-button {
-  width: 60%;
-  margin-top: 20px;
-  background-color: #0046ff;
-  border: none;
-  padding: 12px;
-  border-radius: 30px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 60%;
+  margin-top: 20px;
 }
 
 .accountverify-container .wide-button:hover {

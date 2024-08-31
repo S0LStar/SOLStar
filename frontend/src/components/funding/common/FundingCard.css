@@ -15,6 +15,13 @@
   margin-right: 15px;
 }
 
+.funding-card-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .funding-card-artist {
   font-size: 10px;
   color: #30303070;
@@ -65,6 +72,7 @@
   background-color: #eeeff1;
   position: relative;
   overflow: hidden;
+  margin-bottom: 10px;
 }
 
 .funding-card-achievement-bar::before {

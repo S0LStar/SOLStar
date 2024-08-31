@@ -4,52 +4,57 @@ import { useEffect, useState } from 'react';
 import './ArtistSearchModal.css';
 import SearchIcon from '../../../assets/main/Search.png';
 import DefaultArtistProfile from '../../../assets/common/DefaultArtist.png';
+import axiosInstance from '../../../util/AxiosInstance';
 
 function ArtistSearchModal({ isOpen, onClose, onSelectArtist }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredArtists, setFilteredArtists] = useState('');
+  const [filteredArtists, setFilteredArtists] = useState([]);
+  const [artists, setArtists] = useState([]);
+  const [search, setSearch] = useState(false);
 
-  // 모달이 열릴 때, 외부 화면 스크롤 비활성화
   useEffect(() => {
+    const fetchArtistList = async () => {
+      try {
+        const response = await axiosInstance.get('/artist', {
+          params: {
+            keyword: '', // 초기 로드 시에는 키워드 없이 전체 아티스트 목록을 가져옵니다.
+          },
+        });
+
+        setArtists(response.data.data.artistList);
+        setFilteredArtists(response.data.data.artistList);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchArtistList();
+
     if (isOpen) {
-      // 모달이 열리면 body의 스크롤을 비활성화
       document.body.style.overflow = 'hidden';
     } else {
-      // 모달이 닫히면 body의 스크롤을 다시 활성화
       document.body.style.overflow = 'auto';
     }
 
-    // 모달이 unmount 시에 스크롤 초기화
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, [isOpen]);
 
-  // TODO: tempData
-  const [artists] = useState([
-    { artistId: 1, name: '아티스트 1', profileImage: null },
-    { artistId: 2, name: '아티스트 2', profileImage: null },
-    { artistId: 3, name: '아티스트 3', profileImage: null },
-    { artistId: 4, name: '아티스트 1', profileImage: null },
-    { artistId: 5, name: '아티스트 2', profileImage: null },
-    { artistId: 13, name: '아티스트 3', profileImage: null },
-    { artistId: 11, name: '아티스트 1', profileImage: null },
-    { artistId: 12, name: '아티스트 2', profileImage: null },
-    { artistId: 6, name: '아티스트 3', profileImage: null },
-    { artistId: 9, name: '아티스트 1', profileImage: null },
-    { artistId: 22, name: '아티스트 2', profileImage: null },
-    { artistId: 31, name: '아티스트 3', profileImage: null },
-  ]);
-
-  // 검색 결과와 일치하는 아티스트 반환
   const handleSearch = () => {
-    const results = artists.filter((artist) =>
-      artist.name.includes(searchQuery)
-    );
-    setFilteredArtists(results);
+    if (searchQuery.trim() === '') {
+      // 검색어가 비어 있으면 전체 리스트를 다시 설정
+      setFilteredArtists(artists);
+    } else {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      const results = artists.filter((artist) =>
+        artist.name.toLowerCase().includes(lowerCaseQuery)
+      );
+      setFilteredArtists(results);
+    }
+    setSearch(true);
   };
 
-  // 엔터키 눌렀을 때 검색 결과 반환 함수 실행
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -57,7 +62,6 @@ function ArtistSearchModal({ isOpen, onClose, onSelectArtist }) {
     }
   };
 
-  // 모달 바깥 영역 클릭 시 모달 닫힘
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -86,6 +90,7 @@ function ArtistSearchModal({ isOpen, onClose, onSelectArtist }) {
         </header>
         <ul className="artist-search-modal-list">
           {searchQuery === '' &&
+            !search &&
             artists.map((artist) => (
               <li
                 key={artist.artistId}
@@ -102,7 +107,7 @@ function ArtistSearchModal({ isOpen, onClose, onSelectArtist }) {
                 <div>{artist.name}</div>
               </li>
             ))}
-          {filteredArtists &&
+          {search && filteredArtists.length > 0 ? (
             filteredArtists.map((artist) => (
               <li
                 key={artist.artistId}
@@ -118,7 +123,10 @@ function ArtistSearchModal({ isOpen, onClose, onSelectArtist }) {
                 />
                 <div>{artist.name}</div>
               </li>
-            ))}
+            ))
+          ) : search && filteredArtists.length === 0 ? (
+            <div className="no-results">일치하는 아티스트가 없습니다.</div>
+          ) : null}
         </ul>
       </div>
     </div>
