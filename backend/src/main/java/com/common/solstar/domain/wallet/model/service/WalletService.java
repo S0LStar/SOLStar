@@ -129,7 +129,8 @@ public class WalletService {
         for (Funding funding : hostFundingList) {
 
             // 주최한 펀딩 중 account가 없다면 넘기기
-            if(funding.getAccount().isEmpty()) {
+            if(funding.getAccount()==null || funding.getAccount().isEmpty()) {
+                System.out.println("계좌없대여");
                 continue;
             }
 

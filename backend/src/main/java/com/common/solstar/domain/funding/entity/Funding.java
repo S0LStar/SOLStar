@@ -7,6 +7,7 @@ import com.common.solstar.global.baseTimeEntity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Where(clause = "type != 'VERIFIED' OR is_delete = false")
 public class Funding extends BaseTimeEntity {
 
     @Id
