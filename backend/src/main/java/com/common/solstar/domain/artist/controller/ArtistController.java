@@ -30,7 +30,6 @@ public class ArtistController {
     private final ArtistService artistService;
     private final JwtUtil jwtUtil;
     private final ArtistRepository artistRepository;
-    private final ImageUtil imageUtil;
 
     // 검색어로 아티스트 조회
     @GetMapping
@@ -39,15 +38,6 @@ public class ArtistController {
                                            @RequestParam("keyword") String keyword) {
         String authEmail = jwtUtil.getLoginUser(header);
         List<ArtistSearchResponseDto> artistList = artistService.searchArtists(keyword, authEmail);
-
-        Artist artist = artistRepository.findById(1)
-                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
-
-        String imageUrl = artist.getProfileImage();
-
-        String fileName = imageUtil.extractFileName(imageUrl);
-
-        System.out.println(fileName);
 
         ResponseDto<Object> responseDto = ResponseDto.<Object>builder()
                 .status(HttpStatus.OK.value())

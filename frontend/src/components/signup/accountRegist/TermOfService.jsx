@@ -8,6 +8,7 @@ import CheckElipse from '../../../assets/signup/CheckElipse.png';
 import Circle from '../../../assets/signup/Circle.png';
 import Check from '../../../assets/signup/Check.png';
 import ActiveCheck from '../../../assets/signup/ActiveCheck.png';
+import SignUpButton from '../../common/SignUpButton';
 
 function TermOfService() {
   const navigate = useNavigate();
@@ -39,10 +40,8 @@ function TermOfService() {
     <>
       <div className="term-container">
         <div className="term-header">
-          <div className="term-header-backInfo">
-            <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
-            약관 동의
-          </div>
+          <SignUpButton />
+          <div className="term-header-description">약관 동의</div>
           <ProgressBar currentStep={currentStep} />
         </div>
 

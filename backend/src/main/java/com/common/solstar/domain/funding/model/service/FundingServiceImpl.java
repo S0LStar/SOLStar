@@ -2,6 +2,8 @@ package com.common.solstar.domain.funding.model.service;
 
 import com.common.solstar.domain.account.entity.Account;
 import com.common.solstar.domain.account.model.repository.AccountRepository;
+import com.common.solstar.domain.agency.entity.Agency;
+import com.common.solstar.domain.agency.model.repository.AgencyRepository;
 import com.common.solstar.domain.artist.entity.Artist;
 import com.common.solstar.domain.artist.model.repository.ArtistRepository;
 import com.common.solstar.domain.funding.dto.request.*;
@@ -23,10 +25,10 @@ import com.common.solstar.global.api.exception.WebClientExceptionHandler;
 import com.common.solstar.global.api.request.CommonHeader;
 import com.common.solstar.global.api.request.FindAccountApiRequest;
 import com.common.solstar.global.api.request.TransferApiRequest;
+import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
 import com.common.solstar.global.util.ImageUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +41,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import javax.swing.undo.AbstractUndoableEdit;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,6 +57,7 @@ public class FundingServiceImpl implements FundingService {
     private final LikeListRepository likeListRepository;
     private final FundingJoinRepository fundingJoinRepository;
     private final ImageUtil imageUtil;
+    private final JwtUtil jwtUtil;
 
     private final WebClient webClient = WebClient.builder()
             .baseUrl("https://finopenapi.ssafy.io/ssafy/api/v1")
@@ -62,6 +65,7 @@ public class FundingServiceImpl implements FundingService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final AccountRepository accountRepository;
     private final WebClientExceptionHandler webClientExceptionHandler;
+    private final AgencyRepository agencyRepository;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -74,10 +78,14 @@ public class FundingServiceImpl implements FundingService {
 
     @Override
     @Transactional
-    public void createFunding(FundingCreateRequestDto fundingDto, String authEmail) {
+    public void createFunding(FundingCreateRequestDto fundingDto, String authEmail, MultipartFile fundingImage) {
 
         Artist artist = artistRepository.findById(fundingDto.getArtistId())
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
+
+        // 소속사인 경우 펀딩 생성 불가
+        if (agencyRepository.existsByEmail(authEmail))
+            throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         // User 생성하여 host 찾기
         User host = userRepository.findByEmail(authEmail)
@@ -132,14 +140,29 @@ public class FundingServiceImpl implements FundingService {
     }
 
     @Override
-    public FundingDetailResponseDto getFundingById(int fundingId, String authEmail) {
+    public FundingDetailResponseDto getFundingById(String header, int fundingId) {
 
-        // 로그인한 유저 찾기
-        User loginUser = userRepository.findByEmail(authEmail)
-                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+        String accessToken = header.substring(7);
+        String authEmail = jwtUtil.getLoginUser(header);
+        String role = jwtUtil.roleFromToken(accessToken);
 
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+
+        if (role.equals("USER") && funding.getType().equals(FundingType.VERIFIED)) {
+            FundingAgency fundingAgency = fundingAgencyRepository.findByFunding(funding)
+                    .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_AGENCY_EXCEPTION));
+
+            if (!fundingAgency.isStatus())
+                throw new ExceptionResponse(CustomException.NOT_ACCEPT_FUNDING_EXCEPTION);
+        }
+
+        String fileName = imageUtil.extractFileName(funding.getFundingImage());
+
+        funding.setFundingImage(fileName);
 
         FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
 
@@ -223,6 +246,7 @@ public class FundingServiceImpl implements FundingService {
             throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         // 펀딩이 완료된 상태인지 확인
+        if (!funding.getStatus().equals(FundingStatus.SUCCESS))
             throw new ExceptionResponse(CustomException.NOT_SUCCESS_FUNDING_EXCEPTION);
 
         // 펀딩 계좌에서 총 금액 찾아서 만약 남아있다면 "기부" 메시지로 이체 후 계좌 연결관계 제거
@@ -286,15 +310,15 @@ public class FundingServiceImpl implements FundingService {
 
         List<Funding> fundingEntities = fundingRepository.findByArtistIn(likeArtistEntities);
 
-        // 진행중
+        List<Funding> newFundings = new ArrayList<>();
         for (Funding funding : fundingEntities) {
             String fileName = imageUtil.extractFileName(funding.getFundingImage());
-
             funding.setFundingImage(fileName);
+
+            newFundings.add(funding);
         }
 
-
-        List<FundingResponseDto> fundingList = fundingEntities.stream()
+        List<FundingResponseDto> fundingList = newFundings.stream()
                 .map(funding -> FundingResponseDto.createResponseDto(funding))
                 .collect(Collectors.toList());
 
@@ -311,8 +335,16 @@ public class FundingServiceImpl implements FundingService {
         // totalJoin 기준으로 내림차순 정렬된 펀딩 목록을 가져옴
         List<Funding> popularFundings = fundingRepository.findPopularFundings();
 
+        List<Funding> newFundings = new ArrayList<>();
+        for (Funding funding : popularFundings) {
+            String fileName = funding.getFundingImage();
+            funding.setFundingImage(fileName);
+
+            newFundings.add(funding);
+        }
+
         // Funding 엔티티를 FundingResponseDto 로 변환
-        return popularFundings.stream()
+        return newFundings.stream()
                 .map(FundingResponseDto::createResponseDto)
                 .collect(Collectors.toList());
     }
@@ -327,7 +359,15 @@ public class FundingServiceImpl implements FundingService {
         // 검색어로 펀딩 리스트 불러오기
         List<Funding> searchFundings = fundingRepository.findByTitleContainingIgnoreCase(keyword);
 
-        return searchFundings.stream()
+        List<Funding> newFundings = new ArrayList<>();
+        for (Funding funding : searchFundings) {
+            String fileName = funding.getFundingImage();
+            funding.setFundingImage(fileName);
+
+            newFundings.add(funding);
+        }
+
+        return newFundings.stream()
                 .map(FundingResponseDto::createResponseDto)
                 .collect(Collectors.toList());
     }

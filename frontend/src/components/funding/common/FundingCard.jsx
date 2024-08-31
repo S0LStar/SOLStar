@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import temp from '../../../assets/character/Sol.png'; // 임시 이미지 경로
 import './FundingCard.css';
 import { useEffect, useState } from 'react';
 import Certification from '../../../assets/common/Certification.png';
+import DefaultFunding from '../../../assets/funding/DefaultFunding.png';
 import { useNavigate } from 'react-router-dom';
 
 function FundingCard({ funding }) {
@@ -27,7 +27,11 @@ function FundingCard({ funding }) {
       onClick={() => navigate(`/funding/${funding.fundingId}`)}
     >
       <div className="funding-card-image-container">
-        <img src={temp} alt="img" className="funding-card-image" />
+        <img
+          src={funding.fundingImage || DefaultFunding}
+          alt="img"
+          className="funding-card-image"
+        />
         {funding.type === 'VERIFIED' && (
           <img src={Certification} className="certification-mark"></img>
         )}

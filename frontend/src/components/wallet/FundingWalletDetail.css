@@ -3,6 +3,19 @@
   margin-bottom: 80px;
 }
 
+.fundingwalletdetail-header {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.fundingwalletdetail-header-description {
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
 .fundingwalletdetail-container h2 {
   margin: 20px 0px;
 }
@@ -11,7 +24,7 @@
   position: relative;
   margin: 20px auto; /* 가운데 정렬 */
   min-width: 288px;
-  width: 80vw;
+  width: 84.5vw;
 }
 
 .fundingwalletdetail-background {

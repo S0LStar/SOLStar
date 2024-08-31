@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AxiosInstance from '../../util/AxiosInstance'; // AxiosInstance import
 import './FundingWalletDetail.css';
 import Wallet from '../../assets/wallet/Wallet.png';
 import FundingWallet from '../../assets/wallet/FundingWallet.png';
 import Shinhan from '../../assets/wallet/Shinhan.png';
+import BackButton from '../common/BackButton';
 
 function FundingWalletDetail() {
+  const navigate = useNavigate();
   const location = useLocation();
   const [transactionHistory, setTransactionHistory] = useState([]); // 거래 내역 상태 초기화
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
@@ -66,8 +69,13 @@ function FundingWalletDetail() {
   return (
     <>
       <div className="fundingwalletdetail-container">
+        <div className="fundingwalletdetail-header">
+          <BackButton />
+          <div className="fundingwalletdetail-header-description">
+            펀딩 지갑
+          </div>
+        </div>
         <div className="fundingwalletdetail-item">
-          <div className="fundingwalletdetail-header">펀딩 지갑</div>
           <div className="fundingwalletdetail-background">
             <div className="fundingwalletdetail-owner">
               {walletData.artistName} 펀딩 계좌 잔액
@@ -81,7 +89,14 @@ function FundingWalletDetail() {
               {walletData.balance.toLocaleString()} 원
             </div>
             <div className="fundingwalletdetail-buttons">
-              <button className="fundingwalletdetail-withdrawbutton">
+              <button
+                className="fundingwalletdetail-withdrawbutton"
+                onClick={() => {
+                  navigate(`/wallet/${walletData.id}/transfer`, {
+                    state: { walletData },
+                  });
+                }}
+              >
                 이체
               </button>
             </div>

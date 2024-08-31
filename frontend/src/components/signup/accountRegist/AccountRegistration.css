@@ -1,31 +1,26 @@
 .accountregist-container {
   padding: 16px;
+  margin: 0 auto;
   margin-bottom: 80px;
   /* width: 360px; */
-  /* margin: 0 auto; */
 }
 
 .accountregist-header {
   display: flex;
-  justify-content: space-between;
+  padding: 10px;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-.accountregist-header img {
-  margin-right: 10px;
-  height: 14px;
+.accountregist-header-description {
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  width: 120%;
 }
 
-.accountregist-header-backInfo {
-  min-width: 120px;
-  font-size: 16px;
-}
-
-.accountregist-description {
-  margin-bottom: 20px;
-  font-size: 16px;
-  font-weight: bold;
+.accountregist-container .progress-bar {
+  width: 60%;
 }
 
 .accountregist-form {

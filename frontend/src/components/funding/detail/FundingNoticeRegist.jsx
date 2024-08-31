@@ -13,7 +13,7 @@ function FundingNoticeRegist() {
 
   const [notice, setNotice] = useState({
     title: '',
-    contentImage: '',
+    contentImage: null,
     content: '',
   });
   const [previewImage, setPreviewImage] = useState(null); // 이미지 미리보기 상태
@@ -74,7 +74,8 @@ function FundingNoticeRegist() {
         noticeData.append('contentImage', fileData);
       }
 
-      // TODO: 공지 작성 API 연결
+      console.log(noticeData);
+      // 공지 작성 API 연결
       const response = await axiosInstance.post(
         `/funding/notice/${fundingId}`,
         noticeData,

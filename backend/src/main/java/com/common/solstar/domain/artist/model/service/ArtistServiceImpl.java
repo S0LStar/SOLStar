@@ -14,14 +14,12 @@ import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.common.solstar.global.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -32,6 +30,7 @@ public class ArtistServiceImpl implements ArtistService {
     private final FundingRepository fundingRepository;
     private final UserRepository userRepository;
     private final LikeListRepository likeListRepository;
+    private final ImageUtil imageUtil;
 
     @Override
     public List<ArtistSearchResponseDto> searchArtists(String keyword, String authEmail) {
@@ -57,6 +56,9 @@ public class ArtistServiceImpl implements ArtistService {
     public ArtistResponseDto getArtistById(int artistId) {
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_ARTIST_EXCEPTION));
+
+        String profileImage = imageUtil.extractFileName(artist.getProfileImage());
+        artist.setProfileImage(profileImage);
 
         List<Funding> fundingEntities = fundingRepository.findByArtist_Id(artistId);
 
