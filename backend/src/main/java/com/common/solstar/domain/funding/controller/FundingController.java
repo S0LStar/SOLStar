@@ -138,7 +138,7 @@ public class FundingController {
     public ResponseEntity<?> createBoard(@RequestHeader(value = "Authorization", required = false) String header,
                                          @PathVariable("fundingId") int fundingId,
                                          @RequestBody BoardCreateRequestDto boardDto,
-                                         @RequestPart MultipartFile contentImage) {
+                                         @RequestPart(required = false) MultipartFile contentImage) {
         String authEmail = jwtUtil.getLoginUser(header);
         boardService.createBoard(fundingId, boardDto, authEmail, contentImage);
 
