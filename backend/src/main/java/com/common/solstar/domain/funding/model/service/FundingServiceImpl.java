@@ -157,10 +157,11 @@ public class FundingServiceImpl implements FundingService {
         String authEmail = jwtUtil.getLoginUser(header);
         String role = jwtUtil.roleFromToken(accessToken);
 
-            // 로그인한 유저 찾기
-
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
+
+        User loginUser = userRepository.findByEmail(authEmail)
+                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
         if (role.equals("USER") && funding.getType().equals(FundingType.VERIFIED)) {
             FundingAgency fundingAgency = fundingAgencyRepository.findByFunding(funding)
