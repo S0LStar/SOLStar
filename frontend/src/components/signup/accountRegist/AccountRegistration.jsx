@@ -54,8 +54,8 @@ function AccountRegistration() {
       try {
         const response = await AxiosInstance.post(
           'auth/user-account/validate',
-          { userId: 'ksh219805@gmail.com' }
-          // { userId: account.email }
+          // { userId: 'ksh219805@gmail.com' }
+          { userId: account.email }
         );
         console.log('초기 데이터:', response.data);
 

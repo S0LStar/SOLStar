@@ -91,13 +91,15 @@ function CreateAccount() {
     const { id, value } = e.target;
 
     if (id === 'email' && emailFormatValid) {
+      console.log(value);
       // email 중복 체크
       try {
         const response = await AxiosInstance.post(
-          'auth/user/email/duplicate-check',
+          'auth/email/duplicate-check',
           { email: value }
         );
-        setEmailValid(response.data.isAvailable);
+        console.log(response.data.data);
+        setEmailValid(response.data.data.duplicate === false);
       } catch (error) {
         console.error('이메일 중복 체크 실패:', error);
         setEmailValid(false);
@@ -109,10 +111,11 @@ function CreateAccount() {
       // 닉네임 중복 체크
       try {
         const response = await AxiosInstance.post(
-          'auth/user/nickname/duplicate-check',
+          'auth/nickname/duplicate-check',
           { nickname: value }
         );
-        setNicknameValid(response.data.isAvailable);
+        console.log(response.data.data);
+        setNicknameValid(response.data.data.duplicate === false);
       } catch (error) {
         console.error('닉네임 중복 체크 실패:', error);
         setNicknameValid(false);

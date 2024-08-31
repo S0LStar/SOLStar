@@ -9,7 +9,7 @@ import DefaultArtist from '../../assets/common/DefaultArtist.png';
 function ViewProfile() {
   const navigate = useNavigate();
   const location = useLocation(); // **useLocation을 통해 전달된 state 가져오기**
-  const { profileData } = location.state || {}; // **state에서 profileData 가져오기**
+  const { profileData } = location.state; // **state에서 profileData 가져오기**
 
   return (
     <>
@@ -56,7 +56,7 @@ function ViewProfile() {
             <input
               className="view-input"
               type="text"
-              value={profileData.birthdate}
+              value={profileData.birthday}
               placeholder="yyyy.MM.dd"
               disabled
             />
