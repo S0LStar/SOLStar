@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import BackButton from '../../common/BackButton';
 import WideButton from '../../common/WideButton';
 import './FundingNoticeRegist.css';
+import Error from '../../common/Error';
 
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../../../util/AxiosInstance';
 
 function FundingNoticeRegist() {
   const { fundingId } = useParams();
+  const [error, setError] = useState(false);
 
   const [notice, setNotice] = useState({
     title: '',
@@ -42,7 +44,7 @@ function FundingNoticeRegist() {
       console.log(response);
     } catch (error) {
       console.error('공지 작성 오류:', error);
-      alert('공지글 등록 중 오류가 발생했습니다.');
+      setError(error);
     }
   };
 
@@ -80,6 +82,8 @@ function FundingNoticeRegist() {
       <WideButton isActive={registActive} onClick={handleRegist}>
         확인
       </WideButton>
+
+      {error && <Error setError={setError} />}
     </div>
   );
 }
