@@ -86,7 +86,9 @@ function FundingWalletDetail() {
               <button
                 className="fundingwalletdetail-withdrawbutton"
                 onClick={() => {
-                  navigate(`/wallet/${walletData.fundingId}/transfer`);
+                  navigate(`/wallet/${walletData.id}/transfer`, {
+                    state: { walletData },
+                  });
                 }}
               >
                 이체
