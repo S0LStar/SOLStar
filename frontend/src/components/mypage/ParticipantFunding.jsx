@@ -8,6 +8,7 @@ import LeftVector from '../../assets/common/LeftVector.png';
 import FundingCard from '../funding/common/FundingCard';
 import axiosInstance from '../../util/AxiosInstance';
 import BackButton from '../common/BackButton';
+import Empty from '../common/Empty';
 
 function ParticipantFunding() {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ function ParticipantFunding() {
         </div>
         <div className="participantfunding-funding-list">
           {fundingData.length === 0 ? (
-            <div className="no-funding-message">참여한 펀딩이 없습니다.</div>
+            <Empty>내 참여 펀딩</Empty>
           ) : (
             fundingData.map((funding) => (
               <div

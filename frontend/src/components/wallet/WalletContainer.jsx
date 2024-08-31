@@ -5,6 +5,7 @@ import AxiosInstance from '../../util/AxiosInstance'; // AxiosInstance 임포트
 import WalletItem from './WalletItem.jsx';
 import FundingWalletItem from './FundingWalletItem.jsx';
 import Loading from '../common/Loading';
+import Empty from '../common/Empty';
 
 function WalletContainer() {
   const navigate = useNavigate();
@@ -73,10 +74,6 @@ function WalletContainer() {
     ); // 로딩 중일 때 표시
   }
 
-  if (error) {
-    return <div>{error}</div>; // 에러가 발생했을 때 표시
-  }
-
   return (
     <>
       <div className="wallet-container">
@@ -84,7 +81,7 @@ function WalletContainer() {
         {walletData ? (
           <WalletItem walletData={walletData} />
         ) : (
-          <div className="nowallet">지갑 데이터가 없습니다.</div>
+          <Empty>연동된 지갑</Empty>
         )}
 
         <div className="wallet-header">펀딩 지갑</div>
@@ -101,7 +98,7 @@ function WalletContainer() {
             />
           ))
         ) : (
-          <div className="nowallet">펀딩 지갑 데이터가 없습니다.</div>
+          <Empty>펀딩 지갑</Empty>
         )}
       </div>
     </>

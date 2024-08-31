@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 import AxiosInstance from '../../util/AxiosInstance'; // AxiosInstance import
-import './FundingWalletDetail.css';
+import './AccountTransfer.css';
 import Wallet from '../../assets/wallet/Wallet.png';
 import FundingWallet from '../../assets/wallet/FundingWallet.png';
 import Shinhan from '../../assets/wallet/Shinhan.png';
 
-function FundingWalletDetail() {
-  const navigate = useNavigate();
+function AccountTransfer() {
   const location = useLocation();
   const [transactionHistory, setTransactionHistory] = useState([]); // 거래 내역 상태 초기화
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
@@ -83,12 +81,7 @@ function FundingWalletDetail() {
               {walletData.balance.toLocaleString()} 원
             </div>
             <div className="fundingwalletdetail-buttons">
-              <button
-                className="fundingwalletdetail-withdrawbutton"
-                onClick={() => {
-                  navigate(`/wallet/${walletData.fundingId}/transfer`);
-                }}
-              >
+              <button className="fundingwalletdetail-withdrawbutton">
                 이체
               </button>
             </div>
@@ -143,4 +136,4 @@ function FundingWalletDetail() {
   );
 }
 
-export default FundingWalletDetail;
+export default AccountTransfer;
