@@ -11,8 +11,6 @@ public class FundingUpdateRequestDto {
 
     private String title;
 
-    private String fundingImage;
-
     private String content;
 
     private String contentImage;

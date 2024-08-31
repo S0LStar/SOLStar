@@ -87,7 +87,7 @@ public class ImageUtil {
         return baseUrl + "/" + fileName;
     }
 
-    private String extractFileName(String imageUrl) {
+    public String extractFileName(String imageUrl) {
         if (imageUrl == null || imageUrl.isEmpty()) {
             return null;
         }
