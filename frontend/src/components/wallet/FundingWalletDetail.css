@@ -45,7 +45,7 @@
   margin-top: 19vw;
   color: white;
   font-size: 20px;
-  font-weight: bolder;
+  font-weight: 500;
   text-align: right;
   width: auto;
 }
@@ -72,6 +72,10 @@
 }
 .fundingwalletdetail-withdrawbutton {
   margin-right: 8vw;
+}
+
+.fundingwalletdetail-container hr {
+  border-top: 1px;
 }
 
 .transaction-history {
