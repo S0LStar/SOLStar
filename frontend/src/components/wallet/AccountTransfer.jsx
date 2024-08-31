@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import AxiosInstance from '../../util/AxiosInstance'; // AxiosInstance import
+import { useNavigate } from 'react-router-dom';
 import './AccountTransfer.css';
 import Wallet from '../../assets/wallet/Wallet.png';
 import FundingWallet from '../../assets/wallet/FundingWallet.png';
 import Shinhan from '../../assets/wallet/Shinhan.png';
-import WideButton from '../common/WideButton';
 import BackButton from '../common/BackButton';
 
 function AccountTransfer() {
+  const navigate = useNavigate();
   const location = useLocation();
   const [transactionHistory, setTransactionHistory] = useState([]); // 거래 내역 상태 초기화
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
@@ -28,8 +29,11 @@ function AccountTransfer() {
           const response = await AxiosInstance.get(
             `/wallet/funding/${walletData.id}`
           );
-          setTransactionHistory(response.data.data || []); // 거래 내역 상태 업데이트, 데이터가 없으면 빈 배열로 설정
-          console.log(response);
+
+          if (response !== null) {
+            setTransactionHistory(response.data.data); // 거래 내역 상태 업데이트, 데이터가 없으면 빈 배열로 설정
+            console.log(response);
+          }
         } catch (error) {
           console.error('거래 내역을 가져오는 데 실패했습니다:', error);
           setError('거래 내역을 가져오는 데 실패했습니다.');
