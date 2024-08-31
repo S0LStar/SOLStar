@@ -6,8 +6,10 @@ import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
 import SignUpButton from '../../common/SignUpButton';
+import Error from '../../common/Error';
 
 function ResetPassword() {
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep] = useState(4);
@@ -54,7 +56,8 @@ function ResetPassword() {
       console.log(account);
       if (account.accountpasswordconfirm !== account.accountpassword) {
         // 비밀번호가 일치하지 않으면 경고를 띄우고 종료
-        alert('비밀번호가 일치하지 않습니다.');
+        // alert('비밀번호가 일치하지 않습니다.');
+        setError('비밀번호가 일치하지 않습니다.');
         handleClear();
         return;
       }
@@ -80,14 +83,16 @@ function ResetPassword() {
           navigate('/signup/created', { state: { account } });
         } else {
           // 실패 시 오류 메시지 표시하고 /login으로 이동
-          alert('회원가입에 실패하셨습니다. 다시 시도해 주세요.');
+          // alert('회원가입에 실패하셨습니다. 다시 시도해 주세요.');
+          setError('회원가입에 실패하셨습니다. 다시 시도해 주세요.');
           navigate('/signup/created', { state: { account } });
           navigate('/signup');
         }
       } catch (error) {
         console.error('비밀번호 재설정 요청 실패:', error);
         navigate('/signup/created', { state: { account } });
-        alert('비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        // alert('비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        setError('비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해 주세요.');
         navigate('/login');
       }
     }
@@ -147,6 +152,7 @@ function ResetPassword() {
           회원가입 하기
         </WideButton>
       </div>
+      {error && <Error setError={setError} />}
     </>
   );
 }

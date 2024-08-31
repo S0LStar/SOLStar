@@ -9,33 +9,35 @@ import CircleX from '../../../assets/signup/CircleX.png';
 import DownVector from '../../../assets/common/DownVector.png';
 import axiosInstance from '../../../util/AxiosInstance';
 import SignUpButton from '../../common/SignUpButton';
+import Error from '../../common/Error';
 
 // 은행별 modal 아이콘
 const bankIcons = {
-  신한은행: '/src/assets/signup/신한.png',
-  국민은행: '/src/assets/signup/국민.png',
-  우리은행: '/src/assets/signup/우리.png',
-  하나은행: '/src/assets/signup/하나.png',
-  카카오뱅크: '/src/assets/signup/카카오뱅크.png',
-  토스: '/src/assets/signup/토스뱅크.png',
-  기업은행: '/src/assets/signup/IBK기업.png',
-  농협: '/src/assets/signup/NH농협.png',
-  케이뱅크: '/src/assets/signup/케이뱅크.png',
-  한국시티: '/src/assets/signup/씨티.png',
-  SC제일: '/src/assets/signup/SC제일.png',
-  경남: '/src/assets/signup/경남.png',
-  광주: '/src/assets/signup/광주.png',
-  전북: '/src/assets/signup/전북.png',
-  부산: '/src/assets/signup/부산.png',
-  대구: '/src/assets/signup/대구.png',
-  우체국: '/src/assets/signup/우체국.png',
-  새마을: '/src/assets/signup/새마을.png',
-  수협: '/src/assets/signup/수협.png',
-  신협: '/src/assets/signup/신협.png',
-  KDB산업: '/src/assets/signup/KDB산업.png',
+  신한은행: '/src/assets/signup/Shin.png',
+  국민은행: '/src/assets/signup/Kook.png',
+  우리은행: '/src/assets/signup/Woori.png',
+  하나은행: '/src/assets/signup/Ha.png',
+  카카오뱅크: '/src/assets/signup/Kakko.png',
+  토스: '/src/assets/signup/Toss.png',
+  기업은행: '/src/assets/signup/Sc.png',
+  농협: '/src/assets/signup/NH.png',
+  케이뱅크: '/src/assets/signup/K.png',
+  한국시티: '/src/assets/signup/City.png',
+  SC제일: '/src/assets/signup/Sc.png',
+  경남: '/src/assets/signup/Kyoun.png',
+  광주: '/src/assets/signup/Hwang.png',
+  전북: '/src/assets/signup/Jeon.png',
+  부산: '/src/assets/signup/Bu.png',
+  대구: '/src/assets/signup/Dae.png',
+  우체국: '/src/assets/signup/Woo.png',
+  새마을: '/src/assets/signup/Sae.png',
+  수협: '/src/assets/signup/Soo.png',
+  신협: '/src/assets/signup/Shin.png',
+  KDB산업: '/src/assets/signup/Kdb.png',
 };
 
 function AccountRegistration() {
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep] = useState(3);
@@ -132,14 +134,17 @@ function AccountRegistration() {
           accountHolder: account.name, // 예금주명을 서버에서 반환한다면 사용하고, 그렇지 않다면 기본값 사용
         }));
 
-        alert('계좌 인증이 성공적으로 완료되었습니다.');
+        // alert('계좌 인증이 성공적으로 완료되었습니다.');
+        setError('계좌 인증이 성공적으로 완료되었습니다.');
       } catch (error) {
         console.error('계좌 인증 실패:', error);
         // 계좌 인증 실패 메시지 출력
-        alert('계좌 인증에 실패했습니다. 다시 시도해 주세요.');
+        // alert('계좌 인증에 실패했습니다. 다시 시도해 주세요.');
+        setError('계좌 인증에 실패했습니다. 다시 시도해 주세요.');
       }
     } else {
-      alert('계좌번호와 은행명을 입력해 주세요.');
+      // alert('계좌번호와 은행명을 입력해 주세요.');
+      setError('계좌번호와 은행명을 입력해 주세요.');
     }
   };
 
@@ -259,6 +264,8 @@ function AccountRegistration() {
           1원 송금 요청
         </WideButton>
       </div>
+
+      {error && <Error setError={setError} />}
     </>
   );
 }
