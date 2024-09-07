@@ -8,11 +8,13 @@ import DefaultImage from '../../../assets/common/DefaultArtist.png';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axiosInstance from '../../../util/AxiosInstance';
+import Modal from '../../common/Modal';
 
 function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
   const navigate = useNavigate();
   const [selectedMore, setSelectedMore] = useState(null);
   const [fundingNotice, setFundingNotice] = useState([]);
+  const [successDelete, setSuccessDelete] = useState(false);
 
   useEffect(() => {
     const fetchFundingNotice = async () => {
@@ -37,7 +39,9 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
     const hours = Math.floor(timeDiff / (1000 * 60 * 60));
     const days = Math.floor(hours / 24);
 
-    if (hours < 24) {
+    if (hours < 1) {
+      return `1시간 내`;
+    } else if (hours < 24) {
       return `${hours}시간 전`;
     } else {
       return `${days}일 전`;
@@ -56,10 +60,12 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
     setSelectedMore(null); // 모달 닫기
   };
 
-  const handleDeleteNotice = () => {
-    // TODO : 삭제하기 로직 구현
-    alert('공지 삭제하기');
+  const handleDeleteNotice = async (boardId) => {
+    console.log(boardId);
+    const reseponse = await axiosInstance.delete(`/funding/notice/${boardId}`);
     handleCloseModal();
+    console.log(reseponse);
+    setSuccessDelete(true);
   };
 
   return (
@@ -112,7 +118,10 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
           {selectedMore === notice.boardId && (
             <div className="more-modal">
               <div className="more-modal-content">
-                <div className="more-modal-item" onClick={handleDeleteNotice}>
+                <div
+                  className="more-modal-item"
+                  onClick={() => handleDeleteNotice(notice.boardId)}
+                >
                   글 삭제하기
                 </div>
               </div>
@@ -120,6 +129,13 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
           )}
         </div>
       ))}
+
+      {successDelete && (
+        <Modal
+          mainMessage="공지를 삭제하였습니다."
+          onClose={() => setSuccessDelete(false)}
+        />
+      )}
     </div>
   );
 }

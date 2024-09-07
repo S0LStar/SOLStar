@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -44,15 +45,15 @@ public class FundingController {
     @PostMapping
     @Operation(summary = "펀딩 생성")
     public ResponseEntity<?> createFunding(@RequestHeader(value = "Authorization", required = false) String header,
-                                           @RequestBody FundingCreateRequestDto fundingDto) {
+                                           @RequestBody FundingCreateRequestDto fundingDto,
+                                           @RequestPart MultipartFile fundingImage) {
         String accessToken = header.substring(7);
         String authEmail = jwtUtil.getLoginUser(header);
         String role = jwtUtil.roleFromToken(accessToken);
 
         if (!role.equals("USER") && !role.equals("AGENCY"))
             throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
-
-        fundingService.createFunding(fundingDto, authEmail);
+        fundingService.createFunding(fundingDto, authEmail, fundingImage);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())

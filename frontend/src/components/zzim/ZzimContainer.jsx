@@ -5,7 +5,7 @@ import temp from '../../assets/character/Sol.png'; // Placeholder image
 import Zzim from '../../assets/artist/Zzim.png';
 import NoZzim from '../../assets/artist/NoZzim.png';
 import axiosInstance from '../../util/AxiosInstance';
-import Loading from '../common/Loading';
+import Empty from '../common/Empty';
 
 function ZzimContainer() {
   const navigate = useNavigate();
@@ -98,7 +98,7 @@ function ZzimContainer() {
         <div className="artist-list">
           {zzimArtist.length === 0 ? (
             <div>
-              <div className="no-artist-message">찜한 아티스트가 없습니다.</div>
+              <Empty>찜한 아티스트</Empty>
             </div>
           ) : (
             zzimArtist.map((artist) => (

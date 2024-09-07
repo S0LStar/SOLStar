@@ -6,7 +6,10 @@
 }
 
 .participantfunding-funding {
-  margin-bottom: 20px;
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .participantfunding-container .no-funding-message {
@@ -14,4 +17,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.participantfunding-header-description {
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: 500;
 }

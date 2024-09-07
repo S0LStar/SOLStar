@@ -83,7 +83,7 @@ public class ImageUtil {
         }
     }
 
-    private String getImageUrl(String fileName) {
+    public String getImageUrl(String fileName) {
         return baseUrl + "/" + fileName;
     }
 

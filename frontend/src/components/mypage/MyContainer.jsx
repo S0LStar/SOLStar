@@ -9,6 +9,7 @@ import RightVector from '../../assets/common/RightVector.png';
 import Pencil from '../../assets/mypage/Pencil.png';
 import AxiosInstance from '../../util/AxiosInstance';
 import DefaultArtist from '../../assets/common/DefaultArtist.png';
+import Error from '../../common/Error';
 
 function MyContainer() {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ function MyContainer() {
       } catch (error) {
         console.error('프로필 불러오기 실패:', error);
         setError('프로필 불러오기 실패');
-        alert('로그인 실패');
+        // alert('로그인 실패');
       }
     };
 
@@ -70,14 +71,16 @@ function MyContainer() {
       }));
     } catch (error) {
       console.error('프로필 이미지 업데이트 실패:', error);
-      alert('프로필 이미지 업데이트 실패');
+      // alert('프로필 이미지 업데이트 실패');
+      setError('프로필 이미지 업데이트 실패');
     }
   };
 
   const handleIntroductionChange = (e) => {
     const newIntroduction = e.target.value;
     if (newIntroduction.length > 20) {
-      alert('자기소개는 최대 20자까지 가능합니다.');
+      // alert('자기소개는 최대 20자까지 가능합니다.');
+      setError('자기소개는 최대 20자까지 가능합니다.');
     } else {
       setIntroduction(newIntroduction);
     }
@@ -86,7 +89,8 @@ function MyContainer() {
   const handleNicknameChange = (e) => {
     const newNickname = e.target.value;
     if (newNickname.length > 10) {
-      alert('닉네임은 최대 10자까지 가능합니다.');
+      // alert('닉네임은 최대 10자까지 가능합니다.');
+      setError('닉네임은 최대 10자까지 가능합니다.');
     } else {
       setNickname(newNickname);
     }
@@ -100,10 +104,12 @@ function MyContainer() {
           introduction,
         });
         console.log('자기소개 업데이트 성공:', response.data);
-        alert('자기소개가 업데이트되었습니다.');
+        // alert('자기소개가 업데이트되었습니다.');
+        setError('자기소개가 업데이트되었습니다.');
       } catch (error) {
         console.error('자기소개 업데이트 실패:', error);
-        alert('자기소개 업데이트 실패');
+        // alert('자기소개 업데이트 실패');
+        setError('자기소개 업데이트 실패');
       }
     }
     setIsEditingIntroduction(!isEditingIntroduction); // 자기소개 수정 모드를 토글
@@ -117,10 +123,12 @@ function MyContainer() {
           nickname,
         });
         console.log('닉네임 업데이트 성공:', response.data);
-        alert('닉네임이 업데이트되었습니다.');
+        // alert('닉네임이 업데이트되었습니다.');
+        setError('닉네임이 업데이트되었습니다.');
       } catch (error) {
         console.error('닉네임 업데이트 실패:', error);
-        alert('닉네임 업데이트 실패');
+        // alert('닉네임 업데이트 실패');
+        setError('닉네임 업데이트 실패');
       }
     }
     setIsEditingNickname(!isEditingNickname); // 닉네임 수정 모드를 토글
@@ -145,7 +153,8 @@ function MyContainer() {
       }
     } catch (error) {
       console.error('로그아웃 실패:', error);
-      alert('로그아웃 실패');
+      // alert('로그아웃 실패');
+      setError('로그아웃 실패');
     }
   };
 
@@ -170,14 +179,14 @@ function MyContainer() {
           <>
             <div className="my-name">{profileData.name}</div>
             <div className="my-edit-button">
-              <WideButton
+              {/* <WideButton
                 onClick={() => {
                   navigate(`/my`);
                 }}
                 isActive={true}
               >
                 내 정보 보기
-              </WideButton>
+              </WideButton> */}
               <WideButton onClick={handleLogout} isActive={true}>
                 로그아웃
               </WideButton>
@@ -291,6 +300,7 @@ function MyContainer() {
             </div>
           </>
         )}
+        {error && <Error setError={setError} />}
       </div>
     </>
   );

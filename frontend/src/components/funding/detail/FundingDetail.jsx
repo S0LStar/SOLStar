@@ -8,7 +8,6 @@ import FundingNoti from './FundingNotiList';
 import FundingJoinModal from './FundingJoinModal';
 import FundingPayment from './FundingPayment';
 
-import Sol from '../../../assets/character/Sol.png'; // temp Image
 import Certification from '../../../assets/common/Certification.png';
 import Success from '../../../assets/funding/Success.png';
 import Fail from '../../../assets/funding/Fail.png';
@@ -69,7 +68,11 @@ function FundingDetail() {
     >
       <div className="funding-detail-image-container">
         <BackButton />
-        <img src={Sol} alt="Funding" className="funding-detail-image" />
+        <img
+          src={funding.fundingImage}
+          alt="Funding"
+          className="funding-detail-image"
+        />
       </div>
       <div className="funding-detail-header">
         {funding.type === 'VERIFIED' && (
@@ -205,14 +208,15 @@ function FundingDetail() {
           >
             공지사항
           </button>
-          {funding.joinStatus !== 0 && (
-            <button
-              onClick={() => setActiveTab('payment')}
-              className={`funding-content-tab-button ${activeTab === 'payment' && 'active'}`}
-            >
-              정산
-            </button>
-          )}
+          {funding.joinStatus !== 0 &&
+            (funding.status === 'SUCCESS' || funding.status === 'CLOSED') && (
+              <button
+                onClick={() => setActiveTab('payment')}
+                className={`funding-content-tab-button ${activeTab === 'payment' && 'active'}`}
+              >
+                정산
+              </button>
+            )}
         </div>
         <div className="funding-content-detail">
           {activeTab === 'plan' ? (

@@ -7,6 +7,8 @@ import LeftVector from '../../assets/common/LeftVector.png';
 
 import FundingCard from '../funding/common/FundingCard';
 import axiosInstance from '../../util/AxiosInstance';
+import BackButton from '../common/BackButton';
+import Empty from '../common/Empty';
 
 function CreatedFunding() {
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ function CreatedFunding() {
 
   const fetchCreatedFundingData = async () => {
     const response = await axiosInstance.get('user/host-funding');
-    console.log(response);
+    console.log('1', response);
     setFundingData(response.data.data);
     // const fundingData = response.data;
   };
@@ -74,10 +76,13 @@ function CreatedFunding() {
   return (
     <>
       <div className="createdfunding-container">
-        <div className="createdfunding-funding">내 주최 펀딩</div>
+        <div className="createdfunding-funding">
+          <BackButton />
+          <div className="createdfunding-header-description">내 주최 펀딩</div>
+        </div>
         <div className="createdfunding-funding-list">
           {fundingData.length === 0 ? (
-            <div className="no-funding-message">참여한 펀딩이 없습니다.</div>
+            <Empty>내 주최 펀딩</Empty>
           ) : (
             fundingData.map((funding) => (
               <div

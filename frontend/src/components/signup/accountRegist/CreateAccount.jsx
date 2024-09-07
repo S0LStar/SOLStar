@@ -6,6 +6,7 @@ import ProgressBar from '../accountRegist/ProgressBar';
 import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
 import DefaultImage from '../../../assets/funding/DefaultImage.png';
+import SignUpButton from '../../common/SignUpButton';
 
 function CreateAccount() {
   const API_LINK = import.meta.env.VITE_API_URL;
@@ -145,10 +146,8 @@ function CreateAccount() {
     <>
       <div className="create-container">
         <div className="create-header">
-          <div className="create-header-backInfo">
-            <img src={LeftVector} alt="뒤로가기" onClick={() => navigate(-1)} />
-            회원 정보 등록
-          </div>
+          <SignUpButton />
+          <div className="create-header-description">로그인 정보</div>
           <ProgressBar currentStep={currentStep} />
         </div>
 
