@@ -72,7 +72,10 @@ public class AgencyServiceImpl implements AgencyService {
         // 미승인 상태라면, 승인 상태로 수정
         if (!matchConnection.isStatus()) {
             matchConnection.acceptFunding();
-            selectedFunding.setStatus(FundingStatus.PROCESSING);
+            selectedFunding.updateStatusProcessing();
+
+            fundingAgencyRepository.save(matchConnection);
+            fundingRepository.save(selectedFunding);
         } else {
             throw new ExceptionResponse(CustomException.ALREADY_ACCEPT_FUNDING_EXCEPTION);
         }
