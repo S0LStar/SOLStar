@@ -7,6 +7,7 @@ import com.common.solstar.domain.agency.entity.Agency;
 import com.common.solstar.domain.agency.model.repository.AgencyRepository;
 import com.common.solstar.domain.funding.dto.response.FundingAgencyResponseDto;
 import com.common.solstar.domain.funding.entity.Funding;
+import com.common.solstar.domain.funding.entity.FundingStatus;
 import com.common.solstar.domain.funding.model.repository.FundingRepository;
 import com.common.solstar.domain.fundingAgency.entity.FundingAgency;
 import com.common.solstar.domain.fundingAgency.model.repository.FundingAgencyRepository;
@@ -71,6 +72,7 @@ public class AgencyServiceImpl implements AgencyService {
         // 미승인 상태라면, 승인 상태로 수정
         if (!matchConnection.isStatus()) {
             matchConnection.acceptFunding();
+            selectedFunding.setStatus(FundingStatus.PROCESSING);
         } else {
             throw new ExceptionResponse(CustomException.ALREADY_ACCEPT_FUNDING_EXCEPTION);
         }
