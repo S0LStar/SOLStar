@@ -96,7 +96,7 @@ public class FundingServiceImpl implements FundingService {
       
       // fundingImage 입력된 값 없다면 exception 처리
         String fundingImageInput = null;
-        if (fundingImage.isEmpty()) {
+        if (fundingImage==null || fundingImage.isEmpty()) {
             fundingImageInput = "https://hackerton.s3.ap-northeast-2.amazonaws.com/twice.png";
         } else {
             // s3에 fundingImage 저장
