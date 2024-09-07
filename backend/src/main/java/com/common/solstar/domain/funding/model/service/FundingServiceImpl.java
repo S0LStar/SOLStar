@@ -107,7 +107,7 @@ public class FundingServiceImpl implements FundingService {
         }
 
         // 인증펀딩이면
-        if(fundingType.equals("VERIFIED")){
+        if(fundingType == FundingType.VERIFIED){
 
             // 두번째에 fundingImage 들어가야 함
             Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), fundingImageInput, fundingDto.getContent(), fundingDto.getGoalAmount(),
