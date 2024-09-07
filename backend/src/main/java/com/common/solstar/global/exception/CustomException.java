@@ -37,6 +37,7 @@ public enum CustomException {
     INVALID_FUNDING_HOST_EXCEPTION(400, "InvalidFundingHostException", "해당 사용자는 펀딩 주최자가 아닙니다."),
     NO_AUTH_FUNDING_ACCEPT_EXCEPTION(400, "NoAuthFundingAcceptException", "펀딩 승인할 수 있는 권한이 없습니다."),
     NOT_ACCEPT_FUNDING_EXCEPTION(400, "NotAcceptFundingException", "승인받은 펀딩이 아닙니다."),
+    NOT_FOUND_IMAGE_EXCEPTION(400, "NotFoundImageException", "이미지를 찾을 수 없습니다."),
 
     // 펀딩 공지사항
     NOT_FOUND_BOARD_EXCEPTION(400, "NotFoundBoardException", "펀딩 공지사항이 존재하지 않습니다."),

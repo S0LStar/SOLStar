@@ -93,11 +93,25 @@ public class FundingServiceImpl implements FundingService {
 
         // String 타입의 입력값을 FundingType으로 변환
         FundingType fundingType = FundingType.fromString(fundingDto.getType());
+      
+      // fundingImage 입력된 값 없다면 exception 처리
+        String fundingImageInput = null;
+        if (fundingImage.isEmpty()) {
+            fundingImageInput = "https://hackerton.s3.ap-northeast-2.amazonaws.com/twice.png";
+        } else {
+            // s3에 fundingImage 저장
+            imageUtil.uploadImage(fundingImage);
 
+            // 이미지 funding에 저장할 String 값으로 변환
+            fundingImageInput = imageUtil.upload(fundingImage);
+        }
+
+        // 인증펀딩이면
         if(fundingType.equals("VERIFIED")){
 
-            Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), artist.getProfileImage(), fundingDto.getContent(), fundingDto.getGoalAmount(),
-                    fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.WAITING);
+            // 두번째에 fundingImage 들어가야 함
+            Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), fundingImageInput, fundingDto.getContent(), fundingDto.getGoalAmount(),
+                fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.WAITING);
 
             fundingRepository.save(createdFunding);
 
@@ -105,11 +119,13 @@ public class FundingServiceImpl implements FundingService {
 
             fundingAgencyRepository.save(fundingAgency);
         }
-
+      
+        // 인증펀딩 아니면
         else {
 
-            Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), artist.getProfileImage(), fundingDto.getContent(), fundingDto.getGoalAmount(),
-                    fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
+            // 두번째에 fundingImage 들어가야 함
+            Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), fundingImageInput, fundingDto.getContent(), fundingDto.getGoalAmount(),
+                fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
 
             fundingRepository.save(createdFunding);
         }
