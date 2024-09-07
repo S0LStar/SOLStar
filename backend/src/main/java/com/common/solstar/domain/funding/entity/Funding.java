@@ -110,4 +110,8 @@ public class Funding extends BaseTimeEntity {
         this.isDelete = true;
     }
 
+    public void updateStatusProcessing(){
+        this.status = FundingStatus.PROCESSING;
+    }
+
 }
