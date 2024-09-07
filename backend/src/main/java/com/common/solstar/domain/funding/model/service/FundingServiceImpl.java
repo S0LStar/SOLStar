@@ -93,8 +93,8 @@ public class FundingServiceImpl implements FundingService {
 
         // String 타입의 입력값을 FundingType으로 변환
         FundingType fundingType = FundingType.fromString(fundingDto.getType());
-
-        // fundingImage 입력된 값 없다면 exception 처리
+      
+      // fundingImage 입력된 값 없다면 exception 처리
         String fundingImageInput = null;
         if (fundingImage.isEmpty()) {
             fundingImageInput = "https://hackerton.s3.ap-northeast-2.amazonaws.com/twice.png";
@@ -106,16 +106,28 @@ public class FundingServiceImpl implements FundingService {
             fundingImageInput = imageUtil.upload(fundingImage);
         }
 
-        // 두번째에 fundingImage 들어가야 함
-        Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), fundingImageInput, fundingDto.getContent(), fundingDto.getGoalAmount(),
-                fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
+        // 인증펀딩이면
+        if(fundingType.equals("VERIFIED")){
 
-        fundingRepository.save(createdFunding);
+            // 두번째에 fundingImage 들어가야 함
+            Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), fundingImageInput, fundingDto.getContent(), fundingDto.getGoalAmount(),
+                fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.WAITING);
 
-        if (createdFunding.getType().equals(FundingType.VERIFIED)) {
+            fundingRepository.save(createdFunding);
+
             FundingAgency fundingAgency = FundingAgency.createFundingAgency(createdFunding, createdFunding.getArtist().getAgency());
 
             fundingAgencyRepository.save(fundingAgency);
+        }
+      
+        // 인증펀딩 아니면
+        else {
+
+            // 두번째에 fundingImage 들어가야 함
+            Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), fundingImageInput, fundingDto.getContent(), fundingDto.getGoalAmount(),
+                fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
+
+            fundingRepository.save(createdFunding);
         }
     }
 
@@ -344,6 +356,12 @@ public class FundingServiceImpl implements FundingService {
 
         List<Funding> newFundings = new ArrayList<>();
         for (Funding funding : fundingEntities) {
+
+            // 승인 대기중인 펀딩은 보여주지 않음
+            if(funding.getStatus().name().equals("WAITING")){
+                continue;
+            }
+
             String fileName = imageUtil.extractFileName(funding.getFundingImage());
             funding.setFundingImage(fileName);
 
@@ -369,6 +387,12 @@ public class FundingServiceImpl implements FundingService {
 
         List<Funding> newFundings = new ArrayList<>();
         for (Funding funding : popularFundings) {
+
+            // 승인 대기중인 펀딩은 보여주지 않음
+            if(funding.getStatus().name().equals("WAITING")){
+                continue;
+            }
+
             String fileName = funding.getFundingImage();
             funding.setFundingImage(fileName);
 
@@ -393,6 +417,12 @@ public class FundingServiceImpl implements FundingService {
 
         List<Funding> newFundings = new ArrayList<>();
         for (Funding funding : searchFundings) {
+
+            // 승인 대기중인 펀딩은 보여주지 않음
+            if(funding.getStatus().name().equals("WAITING")){
+                continue;
+            }
+
             String fileName = funding.getFundingImage();
             funding.setFundingImage(fileName);
 
