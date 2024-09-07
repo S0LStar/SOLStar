@@ -160,32 +160,51 @@ public class FundingServiceImpl implements FundingService {
         Funding funding = fundingRepository.findById(fundingId)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_EXCEPTION));
 
-        User loginUser = userRepository.findByEmail(authEmail)
-                .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
+        // USER인 경우 - 인증 수락 안된 펀딩은 조회 불가
+        if(role.equals("USER")){
 
-        if (role.equals("USER") && funding.getType().equals(FundingType.VERIFIED)) {
-            FundingAgency fundingAgency = fundingAgencyRepository.findByFunding(funding)
-                    .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_AGENCY_EXCEPTION));
+            User loginUser = userRepository.findByEmail(authEmail)
+                    .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
-            if (!fundingAgency.isStatus())
-                throw new ExceptionResponse(CustomException.NOT_ACCEPT_FUNDING_EXCEPTION);
+            if (role.equals("USER") && funding.getType().equals(FundingType.VERIFIED)) {
+                FundingAgency fundingAgency = fundingAgencyRepository.findByFunding(funding)
+                        .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_FUNDING_AGENCY_EXCEPTION));
+
+                if (!fundingAgency.isStatus())
+                    throw new ExceptionResponse(CustomException.NOT_ACCEPT_FUNDING_EXCEPTION);
+            }
+
+            String fileName = imageUtil.extractFileName(funding.getFundingImage());
+
+            funding.setFundingImage(fileName);
+
+            FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
+
+            if (funding.getHost().equals(loginUser)) {
+                // 로그인한 유저가 주최자인 경우
+                responseDto.setJoinStatus(2);
+            } else if (fundingJoinRepository.existsByUserAndFunding(loginUser, funding)) {
+                // 로그인한 유저가 참여자인 경우
+                responseDto.setJoinStatus(1);
+            }
+
+            return responseDto;
         }
 
-        String fileName = imageUtil.extractFileName(funding.getFundingImage());
+        // AGENCY인 경우 - 모든 펀딩 조회 가능
+        else {
+            Agency loginUser = agencyRepository.findByEmail(authEmail)
+                    .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
 
-        funding.setFundingImage(fileName);
+            String fileName = imageUtil.extractFileName(funding.getFundingImage());
 
-        FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
+            funding.setFundingImage(fileName);
 
-        if (funding.getHost().equals(loginUser)) {
-            // 로그인한 유저가 주최자인 경우
-            responseDto.setJoinStatus(2);
-        } else if (fundingJoinRepository.existsByUserAndFunding(loginUser, funding)) {
-            // 로그인한 유저가 참여자인 경우
-            responseDto.setJoinStatus(1);
+            FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
+
+            return responseDto;
+
         }
-
-        return responseDto;
     }
 
     @Override

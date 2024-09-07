@@ -53,7 +53,6 @@ public class FundingController {
 
         if (!role.equals("USER") && !role.equals("AGENCY"))
             throw new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION);
-
         fundingService.createFunding(fundingDto, authEmail, fundingImage);
 
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
