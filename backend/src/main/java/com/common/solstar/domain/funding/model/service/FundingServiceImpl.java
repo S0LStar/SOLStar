@@ -94,7 +94,18 @@ public class FundingServiceImpl implements FundingService {
         // String 타입의 입력값을 FundingType으로 변환
         FundingType fundingType = FundingType.fromString(fundingDto.getType());
 
-        Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), artist.getProfileImage(), fundingDto.getContent(), fundingDto.getGoalAmount(),
+        // fundingImage 입력된 값 없다면 exception 처리
+        if (fundingImage.isEmpty())
+            throw new ExceptionResponse(CustomException.NOT_FOUND_IMAGE_EXCEPTION);
+
+        // s3에 fundingImage 저장
+        imageUtil.uploadImage(fundingImage);
+
+        // 이미지 funding에 저장할 String 값으로 변환
+        String fundingImageInput = imageUtil.upload(fundingImage);
+
+        // 두번째에 fundingImage 들어가야 함
+        Funding createdFunding = Funding.createFunding(fundingDto.getTitle(), fundingImageInput, fundingDto.getContent(), fundingDto.getGoalAmount(),
                 fundingDto.getDeadlineDate(), 0, 0, artist, host, fundingType, FundingStatus.PROCESSING);
 
         fundingRepository.save(createdFunding);
