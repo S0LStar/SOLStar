@@ -9,7 +9,11 @@ function RecentPopularFundingCard({ funding, onClick, index }) {
     <div className="popular-funding-card" onClick={onClick}>
       <div className="popular-funding-card-index">{index + 1}</div>
       <div className="popular-funding-img-container">
-        <img src={temp} alt="img" className="popular-funding-img" />
+        <img
+          src={funding.fundingImage}
+          alt="img"
+          className="popular-funding-img"
+        />
         {funding.type === 'VERIFIED' && (
           <img src={Certification} className="certification-mark"></img>
         )}

@@ -23,7 +23,7 @@ function FundingPayment({ artistName, artistProfileImage }) {
     const fetchPayment = async () => {
       setLoading(true);
       try {
-        const response = await axiosInstance.post(
+        const response = await axiosInstance.get(
           `/wallet/funding/${fundingId}`
         );
 

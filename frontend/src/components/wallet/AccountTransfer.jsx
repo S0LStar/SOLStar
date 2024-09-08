@@ -60,7 +60,7 @@ function AccountTransfer() {
       const response = await AxiosInstance.post('/funding/use-money', {
         fundingId: walletData.id,
         balance,
-        storeAccount: memo,
+        storeAccount: accountNumber,
         storeSummary: memo,
       });
       console.log('이체 성공:', response.data);
@@ -130,12 +130,12 @@ function AccountTransfer() {
         <div className="accounttransfer-item">
           <div className="accounttransfer-background">
             <div className="accounttransfer-transfer-form">
-              {/* <input
+              <input
                 type="text"
                 placeholder="계좌번호"
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value)}
-              /> */}
+              />
               <input
                 type="number"
                 placeholder="금액"
