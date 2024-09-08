@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Integer> {
-    List<Board> findByFunding_Id(int fundingId);
+    List<Board> findByFunding_IdAndIsDeleteFalse(int fundingId);
 }
