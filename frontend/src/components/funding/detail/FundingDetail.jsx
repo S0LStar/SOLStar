@@ -94,7 +94,7 @@ function FundingDetail() {
           }}
         >
           {/* TODO: 이미지처리 */}
-          <img src={Certification} alt="" />
+          <img src={funding.artistProfileImage} alt="" />
           <div>{funding.artistName}</div>
         </div>
         {funding.status !== 'PROCESSING' && (
