@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +27,9 @@ public class AuthController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
-    public ResponseEntity<ResponseDto<String>> signup (@Valid @RequestBody SignupRequest signupRequest) {
-        authService.signup(signupRequest);
+    public ResponseEntity<ResponseDto<String>> signup (@Valid @RequestBody SignupRequest signupRequest,
+                                                       @RequestPart(required = false) MultipartFile profileImage) {
+        authService.signup(signupRequest, profileImage);
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
                 .message("회원가입 성공")

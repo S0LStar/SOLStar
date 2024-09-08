@@ -32,8 +32,6 @@ public class SignupRequest {
 
     private String phone;
 
-    private String profileImage;
-
     @NotBlank(message = "계좌번호는 필수 입력값 입니다.")
     private String accountNumber;
 
