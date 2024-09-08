@@ -60,7 +60,12 @@ function WalletContainer() {
     };
 
     fetchWalletData();
+    const timer = setTimeout(() => {
+      console.log('0.3초 대기 완료');
+    }, 300);
     fetchCreateWalletData(); // 추가 요청 실행
+
+    () => clearTimeout(timer);
   }, []);
 
   if (loading) {
