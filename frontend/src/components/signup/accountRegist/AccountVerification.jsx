@@ -7,10 +7,8 @@ import LeftVector from '../../../assets/common/LeftVector.png';
 import WideButton from '../../common/WideButton';
 import CircleX from '../../../assets/signup/CircleX.png';
 import SignUpButton from '../../common/SignUpButton';
-import Error from '../../common/Error';
 
 function AccountVerification() {
-  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep] = useState(3);
@@ -61,8 +59,7 @@ function AccountVerification() {
       // 성공적으로 인증된 경우
       if (response.status === 200) {
         // 상태 코드 직접 확인
-        // alert('인증이 완료되었습니다.');
-        setError('인증이 완료되었습니다.');
+        alert('인증이 완료되었습니다.');
         navigate('/signup/set', { state: { account } });
       } else {
         // 인증 실패 시 다른 인증 API 호출
@@ -80,12 +77,10 @@ function AccountVerification() {
         accountNo: account.accountNo,
         userKey: account.userKey,
       });
-      // alert('인증에 실패했습니다. 다시 시도해 주세요.');
-      setError('인증에 실패했습니다. 다시 시도해 주세요.');
+      alert('인증에 실패했습니다. 다시 시도해 주세요.');
     } catch (error) {
       console.error('인증 중 오류가 발생했습니다. 다시 시도해 주세요.');
-      // alert('인증 중 오류가 발생했습니다. 다시 시도해 주세요.');
-      setError('인증 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      alert('인증 중 오류가 발생했습니다. 다시 시도해 주세요.');
     }
   };
 
@@ -161,8 +156,6 @@ function AccountVerification() {
           1원 송금 인증
         </WideButton>
       </div>
-
-      {error && <Error setError={setError} />}
     </>
   );
 }

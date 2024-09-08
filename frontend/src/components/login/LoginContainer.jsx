@@ -6,7 +6,6 @@ import AxiosInstance from '../../util/AxiosInstance.js';
 import Shoo from '../../assets/character/Shoo.png';
 import WideButton from '../common/WideButton';
 import { setToken } from '../../redux/slices/authSlice'; // Redux 액션 import
-import Error from '../../common/Error';
 
 function LoginContainer() {
   const navigate = useNavigate();
@@ -14,14 +13,11 @@ function LoginContainer() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAgency, setIsAgency] = useState(false); // 소속사 체크 상태
-  const [error, setError] = useState(false);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (email.length < 8 || password.length < 8) {
-      // alert('이메일과 비밀번호는 최소 8글자 이상이어야 합니다.');
-      setError('이메일과 비밀번호는 최소 8글자 이상이어야 합니다.');
+      alert('이메일과 비밀번호는 최소 8글자 이상이어야 합니다.');
       return;
     }
 
@@ -44,14 +40,13 @@ function LoginContainer() {
       if (response !== null) {
         // 0.5초 후에 실행
         setTimeout(() => {
-          // alert('로그인 성공');
+          alert('로그인 성공');
           navigate('/');
         }, 500); // 500 milliseconds = 0.5 seconds
       }
     } catch (error) {
       console.error('로그인 실패:', error);
-      // alert('로그인 실패');
-      setError('로그인 실패');
+      alert('로그인 실패');
     }
   };
 
@@ -112,7 +107,6 @@ function LoginContainer() {
           회원가입
         </span>
       </div>
-      {error && <Error setError={setError} />}
     </div>
   );
 }

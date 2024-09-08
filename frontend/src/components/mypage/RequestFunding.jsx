@@ -8,10 +8,8 @@ import Check from '../../assets/mypage/Check.png';
 import X from '../../assets/mypage/X.png';
 import BackButton from '../common/BackButton';
 import Empty from '../common/Empty';
-import Error from '../../common/Error';
 
 function RequestFunding() {
-  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const [fundingData, setFundingData] = useState([]); // 상태 추가
   const [loading, setLoading] = useState(true); // 로딩 상태
@@ -45,8 +43,7 @@ function RequestFunding() {
       );
     } catch (error) {
       console.error(`Funding ${fundingId} cancellation failed:`, error);
-      // alert('펀딩 거절에 실패했습니다.');
-      setError('펀딩 거절에 실패했습니다.');
+      alert('펀딩 거절에 실패했습니다.');
     }
   };
 
@@ -62,8 +59,7 @@ function RequestFunding() {
       );
     } catch (error) {
       console.error(`Funding ${fundingId} acceptance failed:`, error);
-      // alert('펀딩 승인에 실패했습니다.');
-      setError('펀딩 거절에 실패했습니다.');
+      alert('펀딩 승인에 실패했습니다.');
     }
   };
 
@@ -100,19 +96,18 @@ function RequestFunding() {
                   <img
                     src={Check}
                     alt=""
-                    onClick={() => handleCancel(funding.fundingId)}
+                    onClick={() => handleComplete(funding.fundingId)}
                   />
                   <img
                     src={X}
                     alt=""
-                    onClick={() => handleComplete(funding.fundingId)}
+                    onClick={() => handleCancel(funding.fundingId)}
                   />
                 </div>
               </div>
             ))
           )}
         </div>
-        {error && <Error setError={setError} />}
       </div>
     </>
   );
