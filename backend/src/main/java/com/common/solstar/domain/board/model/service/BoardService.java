@@ -98,7 +98,7 @@ public class BoardService {
         User loginUser = userRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
-        if (loginUser.equals(board.getFunding().getHost()))
+        if (!loginUser.equals(board.getFunding().getHost()))
             throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         board.deleteBoard();
