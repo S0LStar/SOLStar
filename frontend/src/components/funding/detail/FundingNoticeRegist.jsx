@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import BackButton from '../../common/BackButton';
 import WideButton from '../../common/WideButton';
@@ -9,6 +10,7 @@ import axiosInstance from '../../../util/AxiosInstance';
 
 function FundingNoticeRegist() {
   const { fundingId } = useParams();
+  const navigate = useNavigate();
 
   const [notice, setNotice] = useState({
     title: '',
@@ -40,6 +42,7 @@ function FundingNoticeRegist() {
       );
 
       console.log(response);
+      navigate(`/funding/${fundingId}?activeTab=noti`);
     } catch (error) {
       console.error('공지 작성 오류:', error);
       alert('공지글 등록 중 오류가 발생했습니다.');
