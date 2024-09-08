@@ -96,12 +96,12 @@ function RequestFunding() {
                   <img
                     src={Check}
                     alt=""
-                    onClick={() => handleCancel(funding.fundingId)}
+                    onClick={() => handleComplete(funding.fundingId)}
                   />
                   <img
                     src={X}
                     alt=""
-                    onClick={() => handleComplete(funding.fundingId)}
+                    onClick={() => handleCancel(funding.fundingId)}
                   />
                 </div>
               </div>
