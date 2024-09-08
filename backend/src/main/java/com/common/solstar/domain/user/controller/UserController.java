@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -144,9 +145,9 @@ public class UserController {
     @Operation(summary = "프로필 이미지 수정")
     @PostMapping("/profileImage")
     public ResponseEntity<ResponseDto<String>> updateProfileImage (@RequestHeader(value = "Authorization", required = false) String header,
-                                                                   @RequestBody UpdateProfileImageRequest request){
+                                                                   @RequestPart(required = false) MultipartFile profileImage){
         String authEmail = jwtUtil.getLoginUser(header);
-        userService.updateProfileImage(authEmail, request);
+        userService.updateProfileImage(authEmail, profileImage);
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.OK.value())
                 .message("프로필 이미지 수정 성공")

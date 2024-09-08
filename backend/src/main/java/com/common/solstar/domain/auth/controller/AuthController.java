@@ -28,7 +28,7 @@ public class AuthController {
     @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity<ResponseDto<String>> signup (@Valid @RequestBody SignupRequest signupRequest,
-                                                       @RequestPart(required = false)MultipartFile profileImage) {
+                                                       @RequestPart(required = false) MultipartFile profileImage) {
         authService.signup(signupRequest, profileImage);
         ResponseDto<String> responseDto = ResponseDto.<String>builder()
                 .status(HttpStatus.CREATED.value())
