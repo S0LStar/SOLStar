@@ -188,10 +188,6 @@ public class FundingServiceImpl implements FundingService {
                     throw new ExceptionResponse(CustomException.NOT_ACCEPT_FUNDING_EXCEPTION);
             }
 
-            String fileName = imageUtil.extractFileName(funding.getFundingImage());
-
-            funding.setFundingImage(fileName);
-
             FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
 
             if (funding.getHost().equals(loginUser)) {
@@ -209,10 +205,6 @@ public class FundingServiceImpl implements FundingService {
         else {
             Agency loginUser = agencyRepository.findByEmail(authEmail)
                     .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
-
-            String fileName = imageUtil.extractFileName(funding.getFundingImage());
-
-            funding.setFundingImage(fileName);
 
             FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
 

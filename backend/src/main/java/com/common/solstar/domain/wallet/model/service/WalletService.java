@@ -247,18 +247,18 @@ public class WalletService {
             JsonNode root = objectMapper.readTree(response);
 
             // "list" 필드를 추출하고 FundingTransactionHistoryResponse 리스트로 변환
-            JsonNode listNode = root.path("REC").path("list");
+            JsonNode listNode = root.get("REC").get("list");
             if (listNode.isArray()) {
                 for (JsonNode transactionNode : listNode) {
                     FundingTransactionHistoryResponse transaction = FundingTransactionHistoryResponse.builder()
                             .transactionDateTime(LocalDateTime.parse(
-                                    transactionNode.path("transactionDate").asText() + transactionNode.path("transactionTime").asText(),
+                                    transactionNode.get("transactionDate").asText() + transactionNode.get("transactionTime").asText(),
                                     DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
                             ).format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")))
-                            .transactionTypeName(transactionNode.path("transactionTypeName").asText())
-                            .transactionBalance(Integer.parseInt(transactionNode.path("transactionBalance").asText()))
-                            .transactionAfterBalance(Integer.parseInt(transactionNode.path("transactionAfterBalance").asText()))
-                            .transactionSummary(transactionNode.path("transactionSummary").asText())
+                            .transactionTypeName(transactionNode.get("transactionTypeName").asText())
+                            .transactionBalance(Integer.parseInt(transactionNode.get("transactionBalance").asText()))
+                            .transactionAfterBalance(Integer.parseInt(transactionNode.get("transactionAfterBalance").asText()))
+                            .transactionSummary(transactionNode.get("transactionSummary").asText())
                             .build();
                     responseList.add(transaction);
                 }

@@ -62,7 +62,7 @@ public class BoardService {
         // 펀딩의 주최자인지 여부 판단
         boolean isHost = funding.getHost().equals(loginUser);
 
-        List<Board> boardEntities = boardRepository.findByFunding_Id(fundingId);
+        List<Board> boardEntities = boardRepository.findByFunding_IdAndIsDeleteFalse(fundingId);
 
         List<BoardResponseDto> responseDtos = boardEntities.stream()
                 .map(board -> BoardResponseDto.createResponseDto(board, isHost))
@@ -98,7 +98,7 @@ public class BoardService {
         User loginUser = userRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
-        if (loginUser.equals(board.getFunding().getHost()))
+        if (!loginUser.equals(board.getFunding().getHost()))
             throw new ExceptionResponse(CustomException.INVALID_FUNDING_HOST_EXCEPTION);
 
         board.deleteBoard();
