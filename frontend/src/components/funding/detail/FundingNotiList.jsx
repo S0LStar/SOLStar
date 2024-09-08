@@ -29,8 +29,10 @@ function FundingNotiList({ fundingId, isHost, nickname, profileImage }) {
       }
     };
 
+    if (successDelete) fetchFundingNotice();
+
     fetchFundingNotice();
-  }, []);
+  }, [successDelete]);
 
   function formatTimeDifference(date) {
     const now = new Date();

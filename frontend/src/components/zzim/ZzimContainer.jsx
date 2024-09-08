@@ -11,84 +11,38 @@ function ZzimContainer() {
   const navigate = useNavigate();
   const [zzimArtist, setZzimArtist] = useState([]);
 
-  const artistData = async () => {
-    try {
-      const response = await axiosInstance.get('/artist/like');
-      const updatedArtistList = response.data.data.likeArtistList.map(
-        (artist) => ({
-          ...artist,
-          isLike: true,
-        })
-      );
-      setZzimArtist(updatedArtistList);
-      console.log(response.data);
-    } catch (error) {
-      console.log('test' + error);
-    }
-  };
-
   useEffect(() => {
+    const artistData = async () => {
+      try {
+        const response = await axiosInstance.get('/artist/like');
+        const updatedArtistList = response.data.data.likeArtistList.map(
+          (artist) => ({
+            ...artist,
+            isLike: true,
+          })
+        );
+        setZzimArtist(updatedArtistList);
+        console.log(response.data);
+      } catch (error) {
+        console.log('test' + error);
+      }
+    };
     artistData();
-    // [
-    //   {
-    //     artistId: 1,
-    //     type: 'GROUP',
-    //     name: '뉴진스',
-    //     group: null,
-    //     profileImage: 'artist_image_1_url',
-    //     popularity: 230,
-    //     isLike: true,
-    //   },
-    //   {
-    //     artistId: 2,
-    //     type: 'MEMBER',
-    //     name: '민지',
-    //     group: '뉴진스',
-    //     profileImage: 'artist_image_2_url',
-    //     popularity: 200,
-    //     isLike: true,
-    //   },
-    //   {
-    //     artistId: 3,
-    //     type: 'MEMBER',
-    //     name: '혜린',
-    //     group: '뉴진스',
-    //     profileImage: 'artist_image_3_url',
-    //     popularity: 180,
-    //     isLike: true,
-    //   },
-    //   {
-    //     artistId: 4,
-    //     type: 'MEMBER',
-    //     name: '하니',
-    //     group: '뉴진스',
-    //     profileImage: 'artist_image_4_url',
-    //     popularity: 160,
-    //     isLike: true,
-    //   },
-    //   {
-    //     artistId: 4,
-    //     type: 'SOLO',
-    //     name: '아이유',
-    //     group: null,
-    //     profileImage: 'artist_image_4_url',
-    //     popularity: 160,
-    //     isLike: true,
-    //   },
-    // ];
-  }, []); // Add dependency array to run only once
+  }, []);
 
   const toggleZzim = async (artistId) => {
-    await axiosInstance.post(`/artist/like/${artistId}`);
-    navigate(0);
-
-    // setZzimArtist((prevArtists) =>
-    //   prevArtists.map((artist) =>
-    //     artist.artistId === artistId
-    //       ? { ...artist, isLike: !artist.isLike }
-    //       : artist
-    //   )
-    // );
+    try {
+      await axiosInstance.post(`/artist/like/${artistId}`);
+      setZzimArtist((prevArtists) =>
+        prevArtists.map((artist) =>
+          artist.artistId === artistId
+            ? { ...artist, isLike: !artist.isLike } // 찜 상태 반전
+            : artist
+        )
+      );
+    } catch (error) {
+      console.error('찜 상태 변경 중 오류 발생:', error);
+    }
   };
 
   return (

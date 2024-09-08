@@ -54,8 +54,8 @@ function MyContainer() {
     formData.append('profileImage', file);
 
     try {
-      const response = await AxiosInstance.patch(
-        '/user/me/profile-image',
+      const response = await AxiosInstance.post(
+        '/user/profileImage',
         formData,
         {
           headers: {
@@ -156,13 +156,13 @@ function MyContainer() {
           type="file"
           id="profile-image-input"
           style={{ display: 'none' }}
-          // onChange={handleImageUpload}
+          onChange={handleImageUpload}
         />
         <img
           className="my-profile"
           src={profileData && profileData.img ? profileData.img : DefaultArtist}
           alt=""
-          // onClick={() => document.getElementById('profile-image-input').click()}
+          onClick={() => document.getElementById('profile-image-input').click()}
         />
 
         {authState.role === 'AGENCY' ? (
