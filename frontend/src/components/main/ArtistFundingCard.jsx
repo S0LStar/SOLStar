@@ -9,7 +9,11 @@ function ArtistFundingCard({ funding, onClick }) {
   return (
     <div className="artist-funding-card" onClick={onClick}>
       <div className="artist-funding-img-container">
-        <img src={temp} alt="img" className="artist-funding-img" />
+        <img
+          src={funding.fundingImage}
+          alt="img"
+          className="artist-funding-img"
+        />
         {funding.type === 'VERIFIED' && (
           <img src={Certification} className="certification-mark"></img>
         )}
