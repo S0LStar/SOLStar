@@ -194,10 +194,6 @@ public class FundingServiceImpl implements FundingService {
             Agency loginUser = agencyRepository.findByEmail(authEmail)
                     .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_AGENCY_EXCEPTION));
 
-            String fileName = imageUtil.extractFileName(funding.getFundingImage());
-
-            funding.setFundingImage(fileName);
-
             FundingDetailResponseDto responseDto = FundingDetailResponseDto.createResponseDto(funding);
 
             return responseDto;
