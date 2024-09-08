@@ -15,9 +15,11 @@ import com.common.solstar.domain.user.entity.User;
 import com.common.solstar.domain.user.model.repository.UserRepository;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
+import com.common.solstar.global.util.ImageUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +33,7 @@ public class UserService {
     private final FundingRepository fundingRepository;
     private final AgencyRepository agencyRepository;
     private final ArtistRepository artistRepository;
+    private final ImageUtil imageUtil;
 
     // 로그인 유저 정보 조회
     public UserDetailResponse getLoginUserDetail(String authEmail) {
@@ -151,7 +154,7 @@ public class UserService {
 
     // 프로필 이미지 수정
     @Transactional
-    public void updateProfileImage(String authEmail, UpdateProfileImageRequest request) {
+    public void updateProfileImage(String authEmail, MultipartFile profileImage) {
 
         if(authEmail == null) {
             throw new ExceptionResponse(CustomException.ACCESS_DENIEND_EXCEPTION);
@@ -160,10 +163,16 @@ public class UserService {
         User user = userRepository.findByEmail(authEmail)
                 .orElseThrow(() -> new ExceptionResponse(CustomException.NOT_FOUND_USER_EXCEPTION));
 
-        if(request.getProfileImage() == null) {
+        if(profileImage.isEmpty() || profileImage == null) {
             user.deleteProfileImage();
         }
-        else user.updateProfileImage(request.getProfileImage());
+        else {
+            imageUtil.upload(profileImage);
+
+            String profileImageInput = imageUtil.uploadImage(profileImage);
+
+            user.updateProfileImage(profileImageInput);
+        }
         userRepository.save(user);
     }
 

@@ -17,6 +17,7 @@ import com.common.solstar.global.auth.jwt.JwtUtil;
 import com.common.solstar.global.exception.CustomException;
 import com.common.solstar.global.exception.ExceptionResponse;
 import com.common.solstar.global.api.request.CommonHeader;
+import com.common.solstar.global.util.ImageUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,6 +34,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -54,6 +56,7 @@ public class AuthService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final WebClientExceptionHandler webClientExceptionHandler;
     private final ArtistRepository artistRepository;
+    private final ImageUtil imageUtil;
 
     @Value("${ssafy.api.key}")
     private String apiKey;
@@ -63,7 +66,7 @@ public class AuthService {
 
     // 회원가입
     @Transactional
-    public void signup(SignupRequest signupRequest) {
+    public void signup(SignupRequest signupRequest, MultipartFile profileImage) {
 
         String email = signupRequest.getEmail();
         String nickname = signupRequest.getNickname();
@@ -84,6 +87,12 @@ public class AuthService {
                 .bankCode(signupRequest.getBankCode())
                 .build();
 
+        // 프로필 사진 s3에 저장
+        imageUtil.upload(profileImage);
+
+        // 프로필 사진 String으로 변경하여 회원정보에 저장
+        String profileImageInput = imageUtil.uploadImage(profileImage);
+
         User user = User.builder()
                 .email(email)
                 .nickname(nickname)
@@ -91,7 +100,7 @@ public class AuthService {
                 .name(signupRequest.getName())
                 .birthDate(signupRequest.getBirthDate())
                 .phone(signupRequest.getPhone())
-                .profileImage(signupRequest.getProfileImage())
+                .profileImage(profileImageInput)
                 .account(account)
                 .userKey(signupRequest.getUserKey())
                 .build();
