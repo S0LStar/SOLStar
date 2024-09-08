@@ -25,10 +25,10 @@ public class Funding extends BaseTimeEntity {
     @Column(length = 255, nullable = false)
     private String title;
 
-    @Column(length = 255)
+    @Column
     private String fundingImage;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     private int goalAmount;

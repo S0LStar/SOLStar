@@ -98,10 +98,12 @@ public class AgencyServiceImpl implements AgencyService {
 
         if (!matchConnection.getAgency().equals(agency))
             throw new ExceptionResponse(CustomException.NOT_MATCH_AGENCY_EXCEPTION);
-
         // 펀딩 인증 요청이 거절되면 해당 펀딩은 삭제 처리
         if (!matchConnection.isStatus()) {
-            matchConnection.getFunding().deleteFunding();
+            fundingAgencyRepository.delete(matchConnection); // 요청목록에서 삭제
+            matchConnection.getFunding().deleteFunding();// 펀딩 isDelete를 true로 변경
+
+            fundingRepository.save(selectedFunding);
         } else {
             throw new ExceptionResponse(CustomException.ALREADY_ACCEPT_FUNDING_EXCEPTION);
         }
