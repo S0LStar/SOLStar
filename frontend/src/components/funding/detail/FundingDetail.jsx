@@ -9,6 +9,7 @@ import FundingJoinModal from './FundingJoinModal';
 import FundingPayment from './FundingPayment';
 
 import Certification from '../../../assets/common/Certification.png';
+import DefaultArtist from '../../../assets/common/DefaultArtist.png';
 import Success from '../../../assets/funding/Success.png';
 import Fail from '../../../assets/funding/Fail.png';
 import Closed from '../../../assets/funding/Closed.png';
@@ -175,7 +176,7 @@ function FundingDetail() {
               {/* TODO: 이미지처리 */}
 
               <img
-                src={Certification}
+                src={funding.hostProfileImage || DefaultArtist}
                 alt=""
                 className="funding-detail-host-profile"
               />
